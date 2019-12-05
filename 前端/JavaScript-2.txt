@@ -1,0 +1,706 @@
+
+数组：
+	--push() 方法可向数组的末尾添加一个或多个元素，并返回新的长度。应该从头开始遍历arr数组。该方法会改变数组的长度。
+	--shift() 方法用于把数组的第注意： 此方法改变数组的长度！
+		提示: 移除数组末尾的元素可以使用 pop() 方法。一个元素从其中删除，并返回第一个元素的值。
+		注意： 此方法改变数组的长度！
+		提示: 移除数组末尾的元素可以使用 pop() 方法。
+
+	--unshift() 方法将把它的参数插入 arrayObject 的头部，并将已经存在的元素顺次地移到较高的下标处，以便留出空间。该方法的第一个参数将成为数组的新元素 0，如果还有第二个参数，它将成为新的元素 1，以此类推。请注意，unshift() 方法不创建新的创建，而是直接修改原有的数组。
+
+	--slice() 方法可从已有的数组中返回选定的元素。
+		说明：请注意，该方法并不会修改数组，而是返回一个子数组。如果想删除数组中的一段元素，应该使用方法 Array.splice()。
+		eg：arr.splice(5,2,"test1","test2");此句代码表示从arr数组的第5个元素开始，删除随后两个元素，并将“test1”和“test2”插入到第5个元素及之后。
+
+
+	--concat() 方法用于连接两个或多个数组。该方法不会改变现有的数组，而仅仅会返回被连接数组的一个副本。
+
+	--forEach() 方法用于调用数组的每个元素，并将元素传递给回调函数。
+	注意: forEach() 对于空数组是不会执行回调函数。
+	eg：arr.forEach(function(e){
+	        ……（e代表数组中的每个元素）
+	     	});
+	     	
+	--js数组追加数组没有现成的函数，一般用a.push.apply(a, b);？？？
+
+	--sort() 方法用于对数组的元素进行排序。
+		arrayObject.sort(sortby)，sortby	可选，规定排序顺序，必须是函数。
+		对数组的引用。请注意，数组在原数组上进行排序，不生成副本。
+		注：说明
+		如果调用该方法时没有使用参数，将按字母顺序对数组中的元素进行排序，说得更精确点，是按照字符编码的顺序进行排序。要实现这一点，首先应把数组的元素都转换成字符串（如有必要），以便进行比较。
+
+	--arr=str.split('');字符串切割为数组
+
+	--JavaScript数组：var cars=new Array()，下标基于零。
+
+
+
+字符串：
+	
+	--indexOf()： 方法可返回某个指定的字符串值在字符串中首次出现的位置。
+	--indexOf(字符串，起始位)和lastIndexOf(字符串，起始位)返回的是字符串所在的位置索引。
+
+	--eval（）函数：计算字符串表达式的值
+
+	--lastIndexOf() 方法可返回一个指定的字符串值最后出现的位置，在一个字符串中的指定位置从后向前搜索。
+			stringObject.lastIndexOf(searchvalue,fromindex)：searchvalue	必需。规定需检索的字符串值。
+			fromindex	可选的整数参数。规定在字符串中开始检索的位置。它的合法取值是 0 到 stringObject.length - 1。如省略该参数，则将从字符串的最后一个字符处开始检索。
+
+	--match() 方法：
+		如何使用 match() 来查找字符串中特定的字符，并且如果找到的话，则返回这个字符。
+		如何替换字符串中的字符 - replace()：
+		如何使用 replace() 方法在字符串中用某些字符替换另一些字符。
+
+	--js中，数字加字符串=字符串。
+
+	--parseInt() 函数可解析一个字符串，并返回一个整数。
+	1）语法：
+	parseInt(string, radix)
+	2）参数描述：
+		string：必需。要被解析的字符串。
+		radix	：可选。表示要解析的数字的基数。该值介于 2 ~ 36 之间。
+		如果省略该参数或其值为 0，则数字将以 10 为基础来解析。如果它以 “0x” 或 “0X” 开头，将以 16 为基数。如果该参数小于 2 或者大于 36，则 parseInt() 将返回 NaN。
+
+		当参数 radix 的值为 0，或没有设置该参数时，parseInt() 会根据 string 来判断数字的基数。
+		举例，如果 string 以 "0x" 开头，parseInt() 会把 string 的其余部分解析为十六进制的整数。如果 string 以 0 开头，那么 ECMAScript v3 允许 parseInt() 的一个实现把其后的字符解析为八进制或十六进制的数字。如果 string 以 1 ~ 9 的数字开头，parseInt() 将把它解析为十进制的整数。
+		eg：
+		parseInt("10");			//返回 10
+		parseInt("19",10);		//返回 19 (10+9)
+		parseInt("11",2);		//返回 3 (2+1)
+		parseInt("17",8);		//返回 15 (8+7)
+		parseInt("1f",16);		//返回 31 (16+15)
+		parseInt("010");		//未定：返回 10 或 8
+
+
+	--JavaScript 字符串用于存储和处理文本。
+		    a.字符串可以是插入到引号中的任何字符。你可以使用单引号或双引号;
+		    b.可以使用索引位置来访问字符串中的每个字符;
+		    c.可以在字符串中使用引号，字符串中的引号不要与字符串的引号相同;
+		    
+		    d.也可以在字符串添加转义字符来使用引号(相同的)：
+		    e.可以使用内置属性 length 来计算字符串的长度：
+		    f.如何解决以上的问题呢？可以使用反斜杠 (\) 来转义 "Vikings" 字符串中的双引号;
+
+		    g.字符串可以是对象
+		        通常， JavaScript 字符串是原始值，可以使用字符创建： var firstName = "John"
+		        但我们也可以使用 new 关键字将字符串定义为一个对象： var firstName = new String("John");
+		        h.=== 为绝对相等，即数据类型与值都必须相等。
+		        var x = "John";              
+		        var y = new String("John");
+		        (x === y) // 结果为 false，因为 x 是字符串，y 是对象。
+
+
+
+对象：
+
+	--prototype 属性使您有能力向对象添加属性和方法。
+	--Function() 构造函数,	在 JavaScript 中，很多时候，你需要避免使用 new 关键字。
+
+	--函数定义作为对象的属性，称之为对象方法；函数如果用于创建新的对象，称之为对象的构造函数。
+
+	--在 JavaScript 中，对象是拥有属性和方法的数据。
+
+	--JavaScript 基于 prototype，而不是基于类的。它是面向对象的语言，但 JavaScript 不使用类。
+
+	--JavaScript对象：空格和折行无关紧要。声明可横跨多行：
+            var person={
+            firstname : "John",
+            lastname  : "Doe",
+            id        :  5566
+            };
+        对象属性有两种寻址方式：
+        例如实例：
+        name=person.lastname;
+        name=person["lastname"];
+
+	--对象也是一个变量，但对象可以包含多个值（多个变量）。对象的方法定义了一个函数，并作为对象的属性存储。对象方法通过添加 () 调用 (作为一个函数)。JavaScript 对象是属性和方法的容器。
+
+	--你可以使用以下语法创建对象方法：
+	    methodName : function() { code lines }
+	    你可以使用以下语法访问对象方法：
+	    objectName.methodName()
+
+	--javaScript对象中属性具有唯一性（这里的属性包括方法），如果有两个重复的属性，则以最后赋值为准。.
+
+	--声明对象有两种常见的方式：var obj = {};和var obj = new Object（）;。
+		前面一种可以直接在括号中以key:value的方式定义属性，后一种采用点运算符给对象添加属性。
+
+		声明数组有两种方式：var arr = []；和var arr = new Array（）；。
+		eg:
+		function createModule(str1,str2){
+			var object = {
+				greeting ： str1,
+				name : str2,
+				sayIt : function(){
+				//两个属性前都要加上this，因为在这个function中，用this特指全局的greeting和name。
+				return this.greeting+", "+this.name;
+				}
+			};
+			return object;
+		}
+
+
+
+
+
+结构语句：
+
+	-- js的switch ... case 不同于其他语言，switch 也可以是任意数据类型 ，  case里边的值不一定是常量，可以是变量，甚至可以写表达式  。
+
+	--JavaScript 支持不同类型的循环：
+		for - 循环代码块一定的次数
+		for/in - 循环遍历对象的属性
+		while - 当指定的条件为 true 时循环指定的代码块
+		do/while - 同样当指定的条件为 true 时循环指定的代码块。
+
+	--try 语句测试代码块的错误。catch 语句处理错误。throw 语句创建自定义错误。
+
+	--For/In 循环：JavaScript for/in 语句循环遍历对象的属型。eg：for (x in person)  // x 为属性名。
+
+	--break 语句可用于跳出当前循环。
+	    continue 语句中断循环中的迭代，如果出现了指定的条件，然后继续循环中的下一个迭代。代码块: 基本上是｛｝大括号之间。
+
+	        关于 JavaScript 标签与 break 和 continue 一起使用：
+	        有了标签，可以使用break和continue在多层循环的时候控制外层循环。
+	        例如下面：
+	            outerloop:
+	            for (var i = 0; i < 10; i++)
+	            {
+	                innerloop:
+	                    for (var j = 0; j < 10; j++)
+	                    {
+	                    if (j > 3)
+	                    {
+	                        break;
+	                    }
+	                    if (i == 2)
+	                    {
+	                        break innerloop;
+	                    }
+	                    if (i == 4)
+	                    {
+	                        break outerloop;
+	                    }
+	                    document.write("i=" + i + " j=" + j + "");
+	                }
+	            }
+
+
+
+
+数据类型与变量：
+
+	--局部变量：您可以在不同的函数中使用名称相同的局部变量，因为只有声明过该变量的函数才能识别出该变量。
+		只要函数运行完毕，本地变量就会被删除。全局变量会在页面关闭后被删除。
+
+	--JavaScript 会忽略多余的空格。您可以向脚本添加空格，来提高其可读性。
+
+	--在计算机程序中，经常会声明无值的变量。未使用值来声明的变量，其值实际上是 undefined。
+
+	--js的数据类型有字符串、数字、布尔、数组、对象、Null、Undefined。首先说一下，其他数据类型转换为布尔类型的规则: null、undefined、0、NaN、空字符串转换为false，其他转化为 true。
+
+	--比较运算符:这里需要注意绝对等于（===）和绝对不等于（！==）。
+
+	--条件运算符，也就是……？-：-
+
+	--JavaScript 字符集：JavaScript 使用 Unicode 字符集。Unicode 覆盖了所有的字符，包含标点等字符。
+
+	--在定义后可以通过 typeOf() 来获取JavaScript中变量的数据类型.
+
+	--如果重新声明 JavaScript 变量，该变量的值不会丢失：
+	    在以下两条语句执行后，变量 carname 的值依然是 "Volvo"：
+	        var carname="Volvo"; 
+	        var carname;
+
+	--声明变量类型
+	    当您声明新变量时，可以使用关键词 "new" 来声明其类型：
+	    var carname=new String;
+	    var x=      new Number;
+	    var y=      new Boolean;
+	    var cars=   new Array;
+	    var person= new Object;
+	    JavaScript 变量均为对象。当您声明一个变量时，就创建了一个新的对象。
+
+	--局部变量：在函数中通过var声明的变量。
+	    全局变量：在函数外通过var声明的变量。
+	    没有声明就使用的变量，默认为全局变量，不论这个变量在哪被使用。
+	    eg:function myFunction() {
+	        carName = "Volvo";
+	        // 此处可调用 carName 变量
+	    }
+
+	--JavaScript 变量生命周期在它声明时初始化。局部变量在函数执行完毕后销毁。全局变量在页面关闭后销毁。
+
+	--你的全局变量，或者函数，可以覆盖 window 对象的变量或者函数。局部变量，包括 window 对象可以覆盖全局变量和函数。
+
+	--typeof 操作符
+	    你可以使用 typeof 操作符来检测变量的数据类型。
+
+	    typeof 用以获取一个变量或者表达式的类型，typeof 一般只能返回如下几个结果：
+	    number,boolean,string,function（函数）,object（NULL,数组，对象）,undefined。
+
+	    在JavaScript中，数组是一种特殊的对象类型。 因此 typeof [1,2,3,4] 返回 object。
+	    用 typeof 检测 null 返回是object。
+	    typeof 一个没有值的变量会返回 undefined。
+	    undefined 和 null 的区别
+	    实例
+	    null 和 undefined 的值相等，但类型不等：
+	    typeof undefined             // undefined
+	    typeof null                  // object
+	    null === undefined           // false
+	    null == undefined            // true
+
+	    46.constructor 属性
+	    constructor 属性返回所有 JavaScript 变量的构造函数。
+
+	    indexOf() 方法对大小写敏感，
+	    注释：如果要检索的字符串值没有出现，则该方法返回 -1。
+
+	--JavaScript 类型转换：
+	    数字转换为字符串：
+	    全局方法 String() 可以将数字转换为字符串。
+	    Number 方法 toString() 也是有同样的效果。
+	    将字符串转换为数字
+	    全局方法 Number() 可以将字符串转换为数字。
+	    字符串包含数字(如 "3.14") 转换为数字 (如 3.14).
+	    空字符串转换为 0。
+	    其他的字符串会转换为 NaN (不是个数字)。
+
+	    parseFloat()	解析一个字符串，并返回一个浮点数。
+	    parseInt()	解析一个字符串，并返回一个整数。
+
+	    一元运算符 +：
+	    Operator + 可用于将变量转换为数字：
+	    实例
+	    var y = "5";      // y 是一个字符串
+	    var x = + y;      // x 是一个数字
+
+	    将日期转换为数字：要么用Number（），要么用日期对象.getTime();
+	    自动转换类型:
+	    当 JavaScript 尝试操作一个 "错误" 的数据类型时，会自动转换为 "正确" 的数据类型。
+
+
+
+
+关键字：
+
+	--javascript:void(0) 中最关键的是 void 关键字， void 是 JavaScript 中非常重要的关键字，该操作符指定要计算一个表达式但是不返回值。
+		void()仅仅是代表不返回任何值，但是括号内的表达式还是要运行，如void(alert("Wornning!"))
+
+
+	--Undefined 和 Null：Undefined 这个值表示变量不含有值。可以通过将变量的值设置为 null 来清空变量。
+
+	--在Javascript语言中，声明变量使用的都是关键字var，如果不使用var而直接声明变量，则该变量为全局变量。
+	--isNaN() 函数用于检查其参数是否是非数字值。
+
+	--let允许你声明一个作用域被限制在块级中的变量、语句或者表达式。在Function中局部变量推荐使用let变量，避免变量名冲突。
+	    作用域规则
+	    let 声明的变量只在其声明的块或子块中可用，这一点，与var相似。二者之间最主要的区别在于var声明的变量的作用域是整个封闭函数。
+
+	--Undefined 和 Null
+	    Undefined 这个值表示变量不含有值。可以通过将变量的值设置为 null 来清空变量。
+
+	--在 ES6 中，提供了 let 关键字和 const 关键字。
+	    let 的声明方式与 var 相同，用 let 来代替 var 来声明变量，就可以把变量限制在当前代码块中。
+	    使用 const 声明的是常量，其值一旦被设定便不可被更改。let 允许你声明一个作用域被限制在块级中的变量、语句或者表达式。与var关键字不同的是，它声明的变量只能是全局或者整个函数块的。
+
+
+
+
+标签：
+
+	--checkValidity()根据input标签中的限定来确定是否符合条件，返回true或者false。
+
+	--如需从 JavaScript 访问某个 HTML 元素，您可以使用 document.getElementById(id) 方法。请使用 "id" 属性来标识 HTML 元素。
+
+	--请使用 document.write()：如果在文档已完成加载后执行 document.write，整个 HTML 页面将被覆盖。
+		您只能在 HTML 输出中使用 document.write。如果您在文档加载后使用该方法，会覆盖整个文档。
+
+
+
+
+JS结合HTML：
+
+	--改变 HTML 输出流：document.write() 可用于直接向 HTML 输出流写内容
+	--改变 HTML 内容：document.getElementById(id).innerHTML=新的 HTML。JavaScript 更改此元素的内容 (innerHTML)
+
+	--改变 HTML 属性：document.getElementById(id).attribute=新属性值（attribute可变，例如src）
+
+	--改变 HTML 样式：document.getElementById(id).style.property=新样式
+	--使用事件：<button type="button" 	onclick="document.getElementById('id1').style.color='red'">
+
+	--JavaScript 能够改变任意 HTML 元素的大多数属性，而不仅仅是图片；
+	--您会经常看到 document.getElementById("some id")。这个方法是 HTML DOM 中定义的。
+
+	--HTML中如要使用js,则function必被<script>标签包裹着，该标签或在<head>中，或在<body>中或两者。
+
+
+	--JavaScript 获得了足够的能力来创建动态的 HTML。
+		---JavaScript 能够改变页面中的所有 HTML 元素
+		---JavaScript 能够改变页面中的所有 HTML 属性
+		---JavaScript 能够改变页面中的所有 CSS 样式
+		---JavaScript 能够对页面中的所有事件做出反应
+		---Javascript 能够添加或者删除页面中HTML元素
+
+	--查找 HTML 元素
+		---通过 id 查找 HTML 元素：var x=document.getElementById("intro");
+		---通过标签名查找 HTML 元素
+				查找 id="main" 的元素，然后查找 id="main" 元素中的所有 <p> 元素：
+				var x=document.getElementById("main");
+				var y=x.getElementsByTagName("p");
+		---通过类名找到 HTML 元素
+				var x=document.getElementsByClassName("intro");
+
+
+
+格式：
+
+	--JavaScript 中，常见的是驼峰法的命名规则，如 lastName (而不是lastname)。
+
+	--Javascript会忽略多余的空格。
+
+	--js是脚本语言，浏览器在读取代码是，逐行执行脚本代码，而传统编程，会在执行前对所有代码进行编译。
+
+	--您可以在文本字符串中使用反斜杠对代码行进行换行。下面的例子会正确地显示：document.write("你好 \世界!");
+
+	--双引号和单引号一样。
+
+	--JavaScript 字母大小写
+	    JavaScript 对大小写是敏感的。
+	    当编写 JavaScript 语句时，请留意是否关闭大小写切换键。
+	    函数 getElementById 与 getElementbyID 是不同的。
+	    同样，变量 myVariable 与 MyVariable 也是不同的。
+
+
+	--JavaScript的代码规范：
+		---变量名
+				变量名推荐使用驼峰法来命名(camelCase)
+		---格与运算符
+				通常运算符 ( = + - * / ) 前后需要添加空格
+		---代码缩进
+				通常使用 4 个空格符号来缩进代码块，不推荐使用 TAB 键来缩进，因为不同编辑器 TAB 键的解析不一样。
+		---语句规则
+				---简单语句的通用规则:一条语句通常以分号作为结束符。
+				---复杂语句的通用规则:
+				将左花括号放在第一行的结尾。
+				左花括号前添加一空格。
+				将右花括号独立放在一行。
+				不要以分号结束一个复杂的声明。
+
+		---对象规则
+				对象定义的规则:
+				将左花括号与类名放在同一行。
+				冒号与属性值间有个空格。
+				字符串使用双引号，数字不需要。
+				最后一个属性-值对后面不要添加逗号。
+				将右花括号独立放在一行，并以分号作为结束符号。
+				短的对象代码可以直接写成一行。
+
+		---命名规则
+			一般很多代码语言的命名规则都是类似的，例如:
+			变量和函数为小驼峰法标识, 即除第一个单词之外，其他单词首字母大写（ lowerCamelCase）
+			全局变量为大写 (UPPERCASE )
+			常量 (如 PI) 为大写 (UPPERCASE )
+			变量命名你是否使用这几种规则： hyp-hens, camelCase, 或 under_scores ?
+			HTML 和 CSS 的横杠(-)字符:
+			HTML5 属性可以以 data- (如：data-quantity, data-price) 作为前缀。
+			CSS 使用 - 来连接属性名 (font-size)。
+			通常在 JavaScript 中被认为是减法，所以不允许使用。
+
+
+
+
+注意事项：
+
+	--alert() 函数在 JavaScript 中并不常用，但它对于代码测试非常方便。
+	--js可保存到外部，这常用于被多个网页所调用，文件扩展名为.js，请在<script>标签中的“src”属性设置.js文件。注意外部脚本不包含script标签。
+	--<script>通常的做法是把函数放入 <head> 部分中，或者放在页面底部。这样就可以把它们安置到同一处位置，不会干扰页面的内容。
+	--程序中调试是测试，查找及减少bug(错误)的过程。
+
+	--JavaScript 注释://
+	--这条语句里面的 123e5 为什么运算结果会等于 12300000。他们的算法是这样子的：123e5就是123乘以10的5次方。
+
+	--JavaScript代码通常是几行代码。比较常见的是通过事件属性来调用：
+	实例如：
+	<button onclick="displayDate()">现在的时间是?</button>
+
+	--js调试：	debugger：相当于断点；console.log() 方法打印js的值；
+
+	--严格模式:"use strict" 指令只允许出现在脚本或函数的开头。即未经声明的变量无法直接使用。
+
+
+
+
+--JavaScript正则表达式：
+	---RegExp 对象方法：
+							方法						描述
+							compile			在 1.5 版本中已废弃。 编译正则表达式。
+							exec					检索字符串中指定的值。返回找到的值，并确定其位置。
+							test					检索字符串中指定的值。返回 true 或 false。
+							toString			返回正则表达式的字符串。
+
+	---支持正则表达式的 String 对象的方法：
+							方法						描述												FF				IE
+							search			检索与正则表达式相匹配的值。				1				4
+							match			找到一个或多个正则表达式的匹配。		1				4
+							replace			替换与正则表达式匹配的子串。				1				4
+							split				把字符串分割为字符串数组。					1				4
+							RegExp 		对象属性
+
+							属性						描述
+							constructor		返回一个函数，该函数是一个创建 RegExp 对象的原型。
+							global				判断是否设置了 "g" 修饰符
+							ignoreCase		判断是否设置了 "i" 修饰符
+							lastIndex			用于规定下次匹配的起始位置
+							multiline			判断是否设置了 "m" 修饰符
+							source				返回正则表达式的匹配模式
+
+	---用“/”和“/”围起来。
+	---（）\1：\1表示重复正则第一个圆括号内匹配到的内容;  \2表示重复正则第二个圆括号内匹配到的内容
+	---方括号用于查找某个范围内的字符
+
+
+--js正则表达式：
+    ---正则表达式通常用于两个字符串方法 : search() 和 replace()。
+        search() 方法 用于检索字符串中指定的子字符串，或检索与正则表达式相匹配的子字符串，并返回子串的起始位置。
+        replace() 方法 用于在字符串中用一些字符替换另一些字符，或替换一个与正则表达式匹配的子串。
+        /runoob/i  是一个正则表达式。
+        runoob  是一个正则表达式主体 (用于检索)。
+        i  是一个修饰符 (搜索不区分大小写)。
+
+        在 JavaScript 中，RegExp 对象是一个预定义了属性和方法的正则表达式对象。
+
+    ---使用 test()
+        test() 方法是一个正则表达式方法。
+        test() 方法用于检测一个字符串是否匹配某个模式，如果字符串中含有匹配的文本，则返回 true，否则返回 false。
+        以下实例用于搜索字符串中的字符 "e"：
+        实例
+        var patt = /e/;
+        patt.test("The best things in life are free!");
+        字符串中含有 "e"，所以该实例输出为：
+        true
+
+    ---使用 exec()：
+        exec() 方法是一个正则表达式方法。
+        exec() 方法用于检索字符串中的正则表达式的匹配。
+        该函数返回一个数组，其中存放匹配的结果。如果未找到匹配，则返回值为 null。
+
+
+
+
+--"==="和"=="区别：
+
+	一般使用双等来判断（==），如果还需要类型相同那么就用三等（===）。
+	说一下这两个的区别：
+	== equality 等同，=== identity 恒等。
+	==， 两边值类型不同的时候，要先进行类型转换，再比较。 
+	==，不做类型转换，类型不同的一定不等。
+
+	下面分别说明： 
+	先说 ===，这个比较简单。下面的规则用来判断两个值是否===相等： 
+	1、如果类型不同，就[不相等] 
+	2、如果两个都是数值，并且是同一个值，那么[相等]。
+	3、如果两个都是字符串，每个位置的字符都一样，那么[相等]；否则[不相等]。 
+	4、如果两个值都是true，或者都是false，那么[相等]。 
+	5、如果两个值都引用同一个对象或函数，那么[相等]；否则[不相等]。 
+	6、如果两个值都是null，或者都是undefined，那么[相等]。 
+
+	再说 ==，根据以下规则： 
+	1、如果两个值类型相同，进行 === 比较。 
+	2、如果两个值类型不同，他们可能相等。根据下面规则进行类型转换再比较： 
+	a、如果一个是null、一个是undefined，那么[相等]。 
+	b、如果一个是字符串，一个是数值，把字符串转换成数值再进行比较。 
+	c、如果任一值是 true，把它转换成 1 再比较；如果任一值是 false，把它转换成 0 再比较。 
+	d、任何其他组合，都[不相等]。
+
+
+
+
+--JavaScript如何判断一个值是不是数字?
+	第一种方法：isNaN()
+	使用js自带全局函数isNaN(), isNaN()返回一个Boolean值,如下 :
+	var c="hello"; //字符串
+	isNaN(c); //返回一个true;
+	var c=10; //数字
+	isNaN(c);//返回一个false
+	如果以上c为一个空串或是一个空格，isNaN将把c当作数字0来处理，所以检查不严谨。
+
+	第二种方法：正则表达式
+	function checkNum(input){
+	var reg=/^[0-9]+.?[0-9]*$/; //判断字符串是否为数字 ，判断正整数用/^[1-9]+[0-9]*]*$/
+	var num=document.getElementById(input).value;
+	if(!reg.test(num)){
+	    alert("请输入数字");
+	    document.getElementById(input).value="";
+	    return false;
+	    }
+	}
+
+	第三种方法： 利用typeof的返回值
+	验证方法：如果返回的值为Number，则为数字；如果返回值为String或其它，则不是数字。如下所示：
+	var a=123;
+	var b='123abc';
+	typeof(a) ==“number”//Number
+	typeof(b) !="number"  //String
+
+
+
+
+
+
+
+
+--JavaScript 可以做什么?
+	事件可以用于处理表单验证，用户输入，用户行为及浏览器动作:
+	页面加载时触发事件
+	页面关闭时触发事件
+	用户点击按钮执行动作
+	验证用户输入内容的合法性
+	等等 ...
+
+	可以使用多种方法来执行 JavaScript 事件代码：
+	HTML 事件属性可以直接执行 JavaScript 代码
+	HTML 事件属性可以调用 JavaScript 函数
+	你可以为 HTML 元素指定自己的事件处理程序
+	你可以阻止事件的发生。
+	等等 ...
+
+
+--比较运算符常见错误：
+
+    ---在常规的比较中，数据类型是被忽略的，以下 if 条件语句返回 true：
+        var x = 10;
+        var y = "10";
+        if (x == y)
+
+    ---在严格的比较运算中，=== 为恒等计算符，同时检查表达式的值与类型，以下 if 条件语句返回 false：
+        var x = 10;
+        var y = "10";
+        if (x === y)
+
+    ---浮点型数据使用注意事项：
+        JavaScript 中的所有数据都是以 64 位浮点型数据(float) 来存储。
+        所有的编程语言，包括 JavaScript，对浮点型数据的精确度都很难确定：
+        var x = 0.1;
+        var y = 0.2;
+        var z = x + y            // z 的结果为 0.3
+        if (z == 0.3)            // 返回 false
+
+        var z = (x * 10 + y * 10) / 10;       // z 的结果为 0.3
+
+    ---在字符串中直接使用回车换行是会报错的：字符串断行需要使用反斜杠(\)；
+         JavaScript 默认是在代码的最后一行自动结束；
+
+        在 JavaScript 中，分号是可选的 。
+        由于 return 是一个完整的语句，所以 JavaScript 将关闭 return 语句。跟retrurn；一样；
+
+    ---数组中使用名字来索引
+        许多程序语言都允许使用名字来作为数组的索引。
+        使用名字来作为索引的数组称为关联数组(或哈希)。
+        JavaScript 不支持使用名字来索引数组，只允许使用数字索引。
+
+    ---在 JavaScript 中, 对象 使用 名字作为索引。
+        如果你使用名字作为索引，当访问数组时，JavaScript 会把数组重新定义为标准对象。
+        执行这样操作后，数组的方法及属性将不能再使用，否则会产生错误:
+
+    ---Undefined 不是 Null
+        在 JavaScript 中, null 用于对象, undefined 用于变量，属性和方法。
+        对象只有被定义才有可能为 null，否则为 undefined。
+        如果我们想测试对象是否存在，在对象还没定义时将会抛出一个错误。
+        正确的方式是我们需要先使用 typeof 来检测对象是否已定义：
+        if (typeof myObj !== "undefined" && myObj !== null) 
+
+   ---程序块作用域
+        在每个代码块中 JavaScript 不会创建一个新的作用域，一般各个代码块的作用域都是全局的。
+        以下代码的的变量 i 返回 10，而不是 undefined：
+        实例
+        for (var i = 0; i < 10; i++) {
+            // some code
+        }
+        return i;
+
+
+
+--href="#"与href="javascript:void(0)"的区别：
+	# 包含了一个位置信息，默认的锚是#top 也就是网页的上端。而javascript:void(0), 仅仅表示一个死链接。
+
+	在页面很长的时候会使用 # 来定位页面的具体位置，格式为：# + id。如果你要定义一个死链接请使用 javascript:void(0) 。
+
+
+--JavaScript函数调用：
+	---this：	函数作为对象方法调用，会使得 this 的值成为对象本身。
+		有一个总的原则，那就是this指的是，调用函数的那个对象。
+
+	---使用构造函数调用函数：如果函数调用前使用了 new 关键字, 则是调用了构造函数。
+		这看起来就像创建了新的函数，但实际上 JavaScript 函数是重新创建的对象。新对象会继承构造函数的属性和方法。
+
+	---作为函数方法调用函数：call() 和 apply() 是预定义的函数方法。 两个方法可用于调用函数，两个方法的第一个参数必须是对象本身。
+
+
+
+JavaScript HTML DOM：
+
+--onload 和 onunload 事件:
+	onload 和 onunload 事件会在用户进入或离开页面时被触发。
+	onload 事件可用于检测访问者的浏览器类型和浏览器版本，并基于这些信息来加载网页的正确版本。
+	onload 和 onunload 事件可用于处理 cookie。
+
+
+js对象：
+
+--JavaScript Date（日期）对象 实例
+		返回当日的日期和时间
+		如何使用 Date() 方法获得当日的日期。
+		getTime()
+		getTime() 返回从 1970 年 1 月 1 日至今的毫秒数。
+
+		setFullYear()
+		如何使用 setFullYear() 设置具体的日期。
+
+		toUTCString()
+		如何使用 toUTCString() 将当日的日期（根据 UTC）转换为字符串。
+
+		getDay()
+		如何使用 getDay() 和数组来显示星期，而不仅仅是数字。
+
+		显示一个钟表
+		如何在网页上显示一个钟表。
+
+
+
+--JavaScript Boolean（逻辑）对象：
+		Boolean（逻辑）对象用于将非逻辑值转换为逻辑值（true 或者 false）
+		var myBoolean=new Boolean()
+		注释：如果逻辑对象无初始值或者其值为 0、-0、null、""、false、undefined 或者 NaN，那么对象的值为 false。否则，其值为 true（即使当自变量为字符串 "false" 时）！
+
+
+
+--JavaScript Math（算数）对象：
+		round()：如何使用 round()。这个是四舍五入的函数。
+		random()：如何使用 random() 来返回 0 到 1 之间的随机数。
+		max()：如何使用 max() 来返回两个给定的数中的较大的数。（在 ECMASCript v3 之前，该方法只有两个参数。）
+		min()：	如何使用 min() 来返回两个给定的数中的较小的数。（在 ECMASCript v3 之前，该方法只有两个参数。）
+
+
+
+
+
+--JavaScript 计时：
+	通过使用 JavaScript，我们有能力做到在一个设定的时间间隔之后来执行代码，而不是在函数被调用后立即执行。我们称之为计时事件。
+
+	在 JavaScritp 中使用计时事件是很容易的，两个关键方法是:
+	setTimeout("javascript语句",毫秒)：未来的某时执行代码【递归】
+	clearTimeout(setTimeout_variable)：取消setTimeout()
+
+
+--JavaScript Cookies：
+	cookie 用来识别用户。cookie 是存储于访问者的计算机中的变量。每当同一台计算机通过浏览器请求某个页面时，就会发送这个 cookie。你可以使用 JavaScript 来创建和取回 cookie 的值。
+
+
+
+
+
+
+
+
+

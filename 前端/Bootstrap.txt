@@ -1,0 +1,5 @@
+
+bootstrap框架：
+
+1.bootstrap中外层div盒子的class设置为"container"和设置为"container-fluid"的区别：
+	一句话概括：在bootstrap中，规定了每一行都被分为了固定的12个栅栏，每一个栅栏都有自己的宽度。如果你的div用了container的样式，那么它的宽度最大也大不过12个栅栏总共的最大宽度。而，当你的div用了container-fluid的样式，它会无视12个栅栏的规定，根据屏幕自动适应、自动填充。(当然，宽度要设置为width:100%)，下面用例子说明。

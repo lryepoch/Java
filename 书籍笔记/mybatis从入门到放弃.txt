@@ -1,0 +1,3 @@
+第4章
+
+·对于if···else···、if···else···的逻辑，要想实现这样的逻辑，就需要用到choose when otherwise标签。choose元素中包含when和otherwise两个标签，至少有一个when，有0个或者1个otherwise。

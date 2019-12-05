@@ -1,0 +1,112 @@
+AJAX:
+
+--概念：
+	Asychronous JavaScript and xml，AJAX = 异步 JavaScript 和 XML。
+	传统的网页（不使用 AJAX）如果需要更新内容，必需重载整个网页面。
+	ajax通过页面与服务器进行少量数据交换，使网页实现异步更新。意味着可以在不重新加载整个网页的情况下，对网页的某部分进行更新。
+	
+
+
+--XMLHttpRequest ：
+	XMLHttpRequest 是 AJAX 的基础。XMLHttpRequest 用于在后台与服务器交换数据。
+	
+   所有现代浏览器均支持 XMLHttpRequest 对象（IE5 和 IE6 使用 ActiveXObject）。
+   
+   variable=new XMLHttpRequest();【variable=new ActiveXObject("Microsoft.XMLHTTP");】
+   
+
+
+
+--ajax发请求：
+	 将请求发送到服务器，我们使用 XMLHttpRequest 对象的 open() 和 send() 方法：
+	 eg：xmlhttp.open("GET","test1.txt",true);
+
+	1、open(method,url,async)           #规定请求的类型、URL 以及是否异步处理请求。
+
+		method：请求的类型；GET 或 POST。
+		url：文件在服务器上的位置。
+		async：true（异步）或 false（同步）。
+
+	2、send(string)							#将请求发送到服务器。
+
+		 string：仅用于 POST 请求。
+
+
+
+--ajax响应：
+	如需获得来自服务器的响应，请使用 XMLHttpRequest 对象的 responseText 或 responseXML 属性。
+
+	属性						描述
+	responseText		获得字符串形式的响应数据。
+	responseXML		获得 XML 形式的响应数据。
+
+
+
+
+--Ajax在jQuery中的使用范例：
+
+	1、
+		function responseJson(){
+			$.ajax({
+						type:'post',
+						url:'',
+						data:'',
+						success:function(data){       //返回json结果？？？？
+
+						}
+			})
+		}
+
+
+
+
+--jQuery ajax：
+		load() 方法从服务器加载数据，并把返回的数据放入被选元素中。
+
+		$(selector).load(URL,data,callback);
+		必需的 URL 参数规定您希望加载的 URL。
+		可选的 data 参数规定与请求一同发送的查询字符串键/值对集合。
+		可选的 callback 参数是 load() 方法完成后所执行的函数名称。
+
+
+
+
+--AJAX get() 和 post() 方法
+
+	$.get(URL,callback);					##通过 HTTP GET 请求从服务器上请求数据
+	必需的 URL 参数规定您希望请求的 URL。
+	可选的 callback 参数是请求成功后所执行的函数名。
+
+
+	$.post(URL,data,callback);        ##通过 HTTP POST 请求从服务器上请求数据。
+	必需的 URL 参数规定您希望请求的 URL。
+	可选的 data 参数规定连同请求发送的数据。
+	可选的 callback 参数是请求成功后所执行的函数名。
+
+
+
+
+
+
+
+
+
+
+
+
+
+--jQuery与Ajax与JavaScript区别：
+
+		--ajax是一门技术，jquery是javascript的框架，	然后jquery对ajax也有自己的封装，方便用户的使用。
+
+		--ajax是jquery库里面的一个被封装好的函数，可以拿来直接使用，没有jquery的话，ajax的使用就得用原生的javascript去写，比较麻烦。
+
+
+
+
+
+
+
+
+
+

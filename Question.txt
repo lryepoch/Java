@@ -1,0 +1,35 @@
+·@Resource和@Autowire区别
+
+·mysql中bit这个数据类型(0/1对应着false/true)
+
+·@RequestBody在方法参数中的作用
+
+·SET FOREIGN_KEY_CHECKS=0;啥意思？
+
+·KEY department_name(department_name) ？索引
+
+·创建table时，NOT NULL AUTO_INCREMENT顺序可以调换吗
+
+·为什么状态码要定义常量来表示？
+
+
+
+
+·添加或者修改内容时，为什么要在service的实现层把要添加或者修改的属性提取出来？
+
+·根据id进行XXX操作时，为什么method = RequestMethod.GET而非POST?
+
+·insert语句使用foreach标签的作用是什么（直接insert不就好了？）；
+
+·更新操作：先删除再添加 与 直接更新有什么区别（更新操作可以复用添加操作当中的添加操作）；
+
+·mapper.xml文件中parameterType、resultMap、resultType什么时候应该写、应该不写；
+
+·Navicat库名如何实现大写？
+
+
+
+·@RequestBody有什么用？
+
+
+

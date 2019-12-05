@@ -1,0 +1,2 @@
+
+·JPA(Java Persistence API)是Sun官方提出的Java持久化规范，用来方便大家操作数据库。真正干活的可能是Hibernate,TopLink等等实现了JPA规范的不同厂商,默认是Hibernate。

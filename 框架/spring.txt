@@ -1,0 +1,426 @@
+
+Spring系列：spring3.x与jdk1.7兼容，而spring4.x与jdk1.8兼容！！！
+
+
+--spring概念：
+	Spring 是一个轻量级的控制反转IOC和面向切面AOP的容器框架。
+	IOC意味着它是用来进行对象的创建、以及处理对象之间依赖关系的一个开发框架。它打破了我们传统开发的观念，我们不再需要像以前那样在具体的类中创建具体的对象，而是将对象的创建交给IOC容器去完成。
+	AOP意味着通过分离应用程序的业务逻辑与系统级服务（例如审计（auditing）和事务（transaction）管理）进行内聚性的开发。应用对象只实现业务逻辑，它们并不负责其它的系统级关注点，例如日志或事务支持。
+
+
+	spring框架：
+			定义：分层的、一站式、轻量级开发框架。解决业务逻辑层和其他各层的松耦合问题。面向接口的编程思想贯穿整个系统应用。
+			模块：20多个模块。核心容器、数据访问和集成、web、aop、工具、消息、测试模块……
+			好处：DI使得构造器、javabean、properties文件的依赖关系一目了然。
+					  IOC容器更加轻量级。
+					  AOP。
+					  spring可按照模块的方式来组织。
+					  测试简单。
+					  MVC框架。
+					  提供事务管理接口、可扩展到上至本地，下至全局事务（JTA）。
+					  异常处理：转化为一致的unchecked异常。
+
+
+	Spring目的：就是让对象与对象（模块与模块）之间的关系没有通过代码来关联，都是通过配置类说明管理的（Spring根据这些配置内部通过反射去动态的组装对象）。
+						要记住：Spring是一个容器，凡是在容器里的对象才会有Spring所提供的这些服务和功能。
+						Spring里用的最经典的一个设计模式就是：模板方法模式。
+
+
+
+--IOC：
+
+	IOC容器：
+					就是具有依赖注入功能的容器，是可以创建对象的容器，IOC容器负责实例化、定位、配置应用程序中的对象及建立这些对象间的依赖。
+					通常new一个实例，控制权由程序员控制，而"控制反转"是指new实例工作不由程序员来做而是交给Spring容器来做。
+					解耦合将对象间的依赖关系交给Spring容器，使用配置文件来创建所依赖的对象，由主动创建对象改为了被动方式。
+					在Spring中BeanFactory是IOC容器的实际代表者。
+
+
+	IOC基础：beans包和context包。BeanFactory接口提供了一个先进的配置机制，使得任意类型对象的配置成为可能。
+	                                                    ApplicattionContext接口对BeanFactory（一个子接口）进行了扩展。
+
+	                                                    BeanFactory可以理解为含有bean集合的工厂类。接到请求时对bean进行实例化。
+	                                                    最常用BeanFactory实现 XMLBeanFactory类。
+
+
+	IOC容器创建对象的方式有：
+											1.调用无参数构造器。
+											2.调用带参数构造器。
+											3.工厂创建对象：
+											　　工厂类：静态方法创建对象
+											　　工厂类：非静态方法创建对象
+											4.反射。(IOC的原理就是通过反射来创建对象)
+
+
+
+--DI：
+
+	依赖注入【Dependency injection】（管理对象） ：在容器创建对象后，处理对象间的依赖关系。
+
+	依赖注入是一种设计模式，他与具体的框架无关。依赖注入目的是减少组件之间的耦合度，使开发变得简单。
+	http://www.cnblogs.com/yangecnu/p/Introduce-Dependency-Injection.html这篇博文讲到依赖注入。
+
+	依赖注入的几种方式：
+									1.通过构造方法。
+									2.通过set方法给属性注入值。【常用】
+									3.p名称空间。
+									4.自动装配(byName/byType)。
+									5.注解(@component)。
+
+
+
+总结：依赖注入和控制反转是同一概念：
+				依赖注入和控制反转是对同一件事情的不同描述，从某个方面讲，就是它们描述的角度不同；
+				依赖注入是从应用程序的角度在描述，即应用程序依赖容器创建并注入它所需要的外部资源；
+				而控制反转是从容器的角度在描述，即容器控制应用程序，由容器反向的向应用程序注入应用程序所需要的外部资源。
+			
+
+
+
+
+--AOP【即 Aspect Oriented Program】
+
+		面向切面编程：
+		切面，简单来说可以理解为一个类，由很多重复代码形成的类。动态的将代码切入到类的指定方法、指定位置上的编程思想。
+		
+		一般而言，我们管切入到指定类指定方法的代码片段为切面，而切入的哪些类、哪些方法则叫切入点。
+ 		有了AOP，我们就可以把几个类共有的代码，抽取到一个切片中，等到需要时在切入对象中去，从而改变其原有的行为。
+
+		切面举例：日志记录，性能统计，安全控制，事务处理，异常处理等等；
+
+		​情景：如果我们使用了AOP，输入的数据先进过日志、事务等控制模块，然后再流向实际的业务模块。而日志、事务这些控制模块看起来就像一道切面，切在数据流的中间。所有的数据流都要流经它们。
+
+		主要意图：将日志记录，性能统计，安全控制，事务处理，异常处理等代码从业务逻辑代码中划分出来，通过对这些行为的分离，我们希望可以将它们独立到非指导业务逻辑的方法中，进而改变这些行为的时候不影响业务逻辑的代码。
+
+		//--------------------------------------------------------------------------------------------------------------------------------
+		首先，在面向切面编程的思想里面，把功能分为核心业务功能和辅助功能。 
+
+		所谓的核心业务功能，比如登陆系统，增加数据，删除数据；
+		所谓的辅助功能，比如性能统计，日志，事务管理等等 。而辅助功能在Spring的面向切面编程思想里，被定义为切面；
+
+		这种能选择性地、低耦合地把核心业务功能和切面功能分别独立进行开发，然后把核心业务功能和切面功能 "编织" 在一起，这就叫AOP。
+		----------------------------------------------------------------------------------------------------------------------------------//
+		
+		面向切面编程，将辅助功能代码从业务逻辑代码中分离出来。
+		
+		面向切面编程，可以为某一类对象进行监督和控制（也就是在调用这类对象的具体方法的前后，去调用指定的功能模块），从而达到用一个模块来扩充的功能。这些都是通过配置类实现的。 
+
+
+
+		--实现方式：通常以注解的形式实现AOP
+
+				---预编译方式：AspectJ；
+
+				---运行期动态代理（JDK动态代理【默认使用，任何接口都可以被代理】、CGLib动态代理【业务对象没有实现接口】）：springAOP、JBossAOP；
+
+					>AOP 的实现方式有哪几种？如何选择？（必考）
+						答：JDK 动态代理实现和 cglib 实现。
+								选择：
+								如果目标对象实现了接口，默认情况下会采用 JDK 的动态代理实现 AOP，也可以强制使用 cglib 实现 AOP；
+								如果目标对象没有实现接口，必须采用 cglib 库，Spring 会自动在 JDK 动态代理和 cglib 之间转换。
+
+					>JDK 动态代理如何实现？（加分点）
+						答：JDK动态代理，只能对实现了接口的类生成代理，而不是针对类，该目标类型实现的接口都将被代理。原			理是通过在运行期间创建一个接口的实现类来完成对目标对象的代理。
+
+								定义一个实现接口 InvocationHandler 的类；
+								通过构造函数，注入被代理类；
+								实现 invoke（ Object proxy, Method method, Object[] args）方法；
+								在主函数中获得被代理类的类加载器；
+								使用 Proxy.newProxyInstance( ) 产生一个代理对象；
+								通过代理对象调用各种方法。
+
+					>动态代理和静态代理的区别？
+							1)		动态代理的主要作用是什么，以下是我个人理解动态代理：
+		 								动态代理的主要作用就是：实现了日志和业务的分开，也就是某个类只是要提供了某些业务，比如银行取款业务。
+		 							这个类实现了取款业务的同时也需要实现日志功能，如果不用动态代理的话，那么由此一来该类代码里面已经额外地添加了自己不该添加的日志功能能代码。所以我们就得使用动态代理把它的业务代码和日志功能代码分开。所以用到了动态代理概念，spring里面的AOP就是一个很好的例子。
+		 								还有补充，实现了业务和日志的分离也带来很好的独立性，你在开发时一般都是需要日志功能的，但是你开发完毕后有的日志你不想打印出来怎么办呢？所以动态代理给了你很好的设计思想。 
+
+
+		--Advice的类型：
+
+		--AOP的API：
+				---Pointcut：
+
+		--几个概念：
+					---切面Aspect：一个关注点的模块化，这个关注点可能会横切多个对象；
+					---连接点Joinpoint：程序执行过程中的某个特定的点；
+					---通知Advice：在切面的某个特定的连接点上执行的动作；
+					---切入点Pointcut：匹配连接点的断言，在AOP中通知和一个切入点表达式关联；
+					---引入Introduction：在不修改类代码的前提下，为类添加新的方法和属性；
+					---目标对象Target Object：被一个或者多个切面所通知的对象；
+					---AOP代理AOP Proxy：AOP框架创建的对象，用来实现切面契约aspect contract（包括通知方法执行等功能）
+					---织入Weaving：把切面连接到其他的应用程序类型或者对象上，并创建一个被通知的对象，分为：编译时织入、类加载时织入、执行时织入；
+
+
+
+
+--Spring中的常用注解：
+		
+		---修饰类：
+			@Componet注解：代表将该对象放入到IOC容器中，括号里面的名字代表该对象在IOC容器中的唯一标识名字，名字任意取。该注解写在代码第一行。
+
+			@Repository：表示持久层的组件，修改Service层对象添加到IOC容器的注解方式；
+			@Service：表示业务逻辑层的组件，修改Servlet层对象添加到IOC容器的注解方式为；
+			@Controller：表示控制层的组件；
+
+		---属性注入：
+			@Value：设置普通属性的值；
+
+			@Autowired：按照类型（byType）进行装配依赖对象；
+			默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。
+			如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。如下：
+
+			public class TestServiceImpl {
+			    @Autowired
+			    @Qualifier("userDao")
+
+			    }
+			----------------------------------------------------------------------------------------------------
+			@Resource（不带括号的注解），必须要保证该类型只有一个变量，所以一般情况下我们还是优先使用@Resource(name=””)注解。
+			@Resource（name=“”）：用于将该对象依赖的属性从IOC容器中找到并注入，括号里面的name属性值必须跟@Compenent注解里填入的名字相同。
+
+			@Resource有两个重要的属性：name和type，Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。
+				如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
+
+			@Resource装配顺序：
+
+				①如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常。
+
+				②如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常。
+
+				③如果指定了type，则从上下文中找到类似匹配的唯一bean进行装配，找不到或是找到多个，都会抛出异常。
+
+				④如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配。
+
+				@Resource的作用相当于@Autowired，只不过@Autowired按照byType自动注入。
+			---------------------------------------------------------------------------------------------------
+
+		---其他注解：
+			@RequestMapping：映射一个URL到一个类或者一个特定方法上。
+			@Scope：范围注解；默认单例；多例如@Scope（“prototype”）
+		
+
+
+--关于Spring中的Bean：
+	Bean在Spring和SpringMVC中无所不在，将这个概念内化很重要，下面分享一下我的想法：
+					一、Bean是啥
+							1、Java面向对象，对象有方法和属性，那么就需要对象实例来调用方法和属性（即实例化）；
+							2、凡是有方法或属性的类都需要实例化，这样才能具象化去使用这些方法和属性；
+							3、规律：凡是子类及带有方法或属性的类都要加上注册Bean到Spring IoC的注解；
+							4、把Bean理解为类的代理或代言人（实际上确实是通过反射、代理来实现的），这样它就能代表类拥有该拥有的东西了
+							5、我们都在微博上@过某某，对方会优先看到这条信息，并给你反馈，那么在Spring中，你标识一个@符号，那么Spring就会来看看，并且从这里拿到一个Bean或者给出一个Bean
+							6、bean是由ioc容器初始化、装配和管理的对象；相当于对象中spring容器中存在的形式；
+							7、bean间的相互依赖关系通过配置元数据来描述；
+					二、注解分为两类：
+							1、一类是使用Bean，即是把已经在xml文件中配置好的Bean拿来用，完成属性、方法的组装；比如@Autowired , @Resource，可以通过byTYPE（@Autowired）、byNAME（@Resource）的方式获取Bean；
+							2、一类是注册Bean,@Component , @Repository , @ Controller , @Service , @Configration这些注解都是把你要实例化的对象转化成一个Bean，放在IoC容器中，等你要用的时候，它会和上面的@Autowired , @Resource配合到一起，把对象、属性、方法完美组装。
+					总结：
+							1、凡是子类及带属性、方法的类都注册Bean到Spring中，交给它管理；
+							2、@Bean 用在方法上，告诉Spring容器，你可以从下面这个方法中拿到一个Bean
+					三、bean默认情况是单例的，如何在多线程中保证安全？
+							Spring的单例是基于Spring容器的，单例Bean在此容器内只有一个；Java的单例是基于 JVM，每个 JVM 内只有一个实例。
+
+
+	Spring注入：
+						指spring容器在启动并且加载bean配置的时候，完成对常量的赋值行为有：
+						1、set方法注入【setter和getter】：
+						2、构造方法注入【构造器】：在没有设值注入的情况下才会根据配置文件中的构造注入，一旦有设值注入，则构造注入失效。
+						3、p命名空间的属性注入：使用这个需要先引入p名称空间约束；
+						4、spring expresssion language属性注入；
+						5、集合类型属性注入；
+																																		
+
+
+	Spring的Bean的3种配置方式（配置元数据）：
+		--基于XML文件；常用<beans>开头+其他应用配置项（aop、mvc、context……）。
+		--基于注解；<context:annotation-config/>后，可以向属性、方法、构造方法中自动装配变量。常用注解类型：@Required、@Autowired……
+		--基于Java类；
+
+
+
+	Bean的作用域：
+	不仅可以控制注入到对象中的各种依赖和配置值，还可以控制该对象的作用域。这样可以灵活选择所建对象的作用域，而不必在Java Class级定义作用域。Spring Framework支持5种作用域：
+		--scope=“singleton”/prototype/request/session/globalsession。
+		-- @Scope 注解；
+		
+			---singleton：单例，一个Bean容器只存在一份。无状态的bean则应该使用singleton作用域；此作用域下，Spring能够精确地知道bean何时被创建，何时初始化完成，以及何时被销毁；对象在系统启动时就会创建；
+			---prototype：每次请求都会创建新的实例，destroy方法不生效。有状态的 bean 应该使用 prototype 作用域；prototype作用域的bean，Spring只负责创建，当容器创建了bean的实例后，bean的实例就交给了客户端的代码管理，Spring容器将不再跟踪其生命周期，并且不会管理那些被配置成prototype作用域的bean的生命周期。对象在我们需要使用时才创建。
+			---request：每次http请求创建一个实例，且仅在当前request中有效；
+			---session：每次http请求创建一个实例，仅在当前回话中有效；
+			---globalsession：基于portlet的web中有效；
+
+
+	Bean的生命周期：
+		---定义、初始化、使用、销毁；
+		---在bean的配置文件中指定init-method和destroy-method方法：
+			Spring允许我们创建自己的 init 方法和 destroy 方法，只要在 Bean 的配置文件中指定 init-method 和 destroy-method 的值就可以在 Bean 初始化时和销毁之前执行一些操作。
+
+		---bean的装配之AWare接口：继承这个接口可以扩展某些功能；
+		---bean的自动装配：
+				-----no：无操作；
+				-----byName：根据id装配；
+				-----byType：根据类型装配；
+				-----构造器：根据类型装配；
+
+		---Resource：这是针对资源文件的统一接口；
+
+
+--------------------------------------------------------------------------------------------------------------
+
+--关于Spring事务：所谓事务管理，其实就是“按照给定的事务规则来执行提交或者回滚操作”。
+
+		Spring事务管理功能，方式：编程式事务和声明式事务；
+
+													编程式事务是嵌在业务代码中的，而声明式事务是基于xml文件配置；
+
+													声明式事务处理完全看成一个具体的AOP应用；Spring设计出发点是支持POJO的开发，这点在实现事务处理也一样；
+													声明式事务管理建立在AOP之上的。
+															本质是对方法前后进行拦截，然后在目标方法开始之前创建或者加入一个事务，在执行完目标方法之后根据执行情况提交或者回滚事务。
+															最大的优点就是不需要通过编程的方式管理事务，这样就不需要在业务逻辑代码中掺杂事务管理的代码，只需在配置文件中做相关的事务规则声明(或通过基于@Transactional注解的方式)，便可以将事务规则应用到业务逻辑中。
+
+
+		>2种事务管理方式的区别：
+				---编程式事务需要你在代码中直接加入处理事务的逻辑,可能需要在代码中显式调用beginTransaction()、commit()、rollback()等事务管理相关的方法，如在执行a方法时候需要事务处理，你需要在a方法开始时候开启事务，处		理完后，在方法结束时候关闭事务。 
+
+					声明式的事务的做法是在a方法外围添加注解或者直接在配置文件中定义a方法需要事务处理，在spring中会通过配置文件在a方法前后拦截,并添加事务.。
+
+				---编程式事务侵入性比较强，但处理粒度更细. 相当于一个是手动事务，另一个是系统自动事务。 编程试事务就是需要手工写代码提交事务，回滚事务等。 
+
+					声明性事务就是在配置文件里面定义一下什么时候需要事务，到时候系统会自动commit，出异常了自动rollback，不需要在代码里面写commit或者rollback。
+
+
+		>2种事务管理方式的相同点：都需要配置事务管理器；
+
+				---声明式：使用XML配置；代码侵入性小；通过AOP实现；
+							---方式1：基于TransactionProxyFactoryBean的方式：生成一个代理类；这种方式需要为每个事务管理的类配置一个TransactionProxyFactoryBean进行增强，进行开发和维护较难；
+							---方式2：基于AspectJ的XML方式：引入约束；自动代理；经常使用；一旦配置好之后，类上不需要添加任何东西；
+							---方式3：基于注解的方式：注解中也有相关的属性；经常使用；配置简单，需要在在业务层上添加一个@Transactional的注解；
+
+				---编程式：少用；通过模板TransactionTemplate手动管理事务，即在service层手动修改代码；
+
+
+
+		Spring中涉及到事务管理的API有100多个，核心的只有三个： 	
+					1）事务管理器：PlatformTransactionManager；为不同的持久层框架提供了不同的接口实现；“按照……来执行提交或者回滚操作”；用的较多的是DataSourceTransactionManager和HibernateTransactionManager；
+
+					2）事务定义信息（隔离、传播、超时、只读）：TransactionDefinition；一组常量，包括事务的隔离级别、传播行为……；一组“给定的事务规则”；事务的传播行为主要用来解决业务层方法之间的相互调用问题（有时候完成一个业务需要调用多个方法）；
+					
+					3）事务具体运行状态：TransactionStatus；一组方法；
+		
+		
+		  详解：1) 事务管理器：用于执行具体的事务操作。
+							Public interface PlatformTransactionManager{
+
+								   TransactionStatus getTransaction(TransactionDefinition definition)  throws TransactionException;
+
+								   void commit(TransactionStatus status)throws TransactionException;
+
+								   void rollback(TransactionStatus status)throws TransactionException;
+
+							}
+							根据底层所使用的不同的持久化 API 或框架，PlatformTransactionManager 的主要实现类大致如下：
+
+							DataSourceTransactionManager ：适用于使用JDBC和iBatis进行数据持久化操作的情况。
+							HibernateTransactionManager ：适用于使用Hibernate进行数据持久化操作的情况。
+							JpaTransactionManager ：适用于使用JPA进行数据持久化操作的情况。
+							另外还有JtaTransactionManager 、JdoTransactionManager、JmsTransactionManager等等。
+				
+
+					2)事务定义信息：该接口在前面已经介绍过，它用于定义一个事务。它包含了事务的静态属性，比如：事务传播行为、超时时间等等。Spring为我们提供了一个默认的实现类：DefaultTransactionDefinition，该类适用于大								多数情况。如果该类不能满足需求，可以通过实现 TransactionDefinition 接口来实现自己的事务定义。
+
+							 	1).Spring本身并不直接管理事务，而是提供了事务管理器接口，对于不同的框架或者数据源则用不同的事务管理器；
+								 	而对于事务，它把相关的属性都封装到一个实体里边去，有以下的属性:
+									
+								    int propagationBehavior;    /*事务的传播行为*/
+								    int isolationLevel;                /*事务隔离级别*/
+								    int timeout;                            /*事务完成的最短时间*/
+								    boolean readOnly;                /*是否只读*/
+							
+								2). 事务隔离级别：
+									readOnly：表示只读数据，不更新数据
+								
+								3).事务的传播行为类型：
+									PROPAGATION_REQUIRED--支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。 
+									PROPAGATION_SUPPORTS--支持当前事务，如果当前没有事务，就以非事务方式执行。 
+									PROPAGATION_MANDATORY--支持当前事务，如果当前没有事务，就抛出异常。 
+									PROPAGATION_REQUIRES_NEW--新建事务，如果当前存在事务，把当前事务挂起。 
+									PROPAGATION_NOT_SUPPORTED--以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。 
+									PROPAGATION_NEVER--以非事务方式执行，如果当前存在事务，则抛出异常。
+
+								>有关SPRING的事务传播特性：https://www.nowcoder.com/test/question/done?tid=17404962&qid=14942#summary
+
+
+
+
+
+--Spring的Bean和类之间的关系？
+	当我们使用Spring后就应该这样使用User对象，首先在applicationContext.xml中添加<bean>标签，一个<bean>标签代表一个pojo对象。
+
+		class A
+		{
+
+		} 
+
+		class B
+		{
+
+		} 
+
+		class C
+		{
+
+		} 
+
+		class Service
+		{ 
+				private A a; 
+				private B b; 
+				private C c; 
+
+				//setter&getter 
+		} 
+
+		上面对应下面的bean： 
+									<beans> 
+												<bean id="a" class="package.A"> 
+												</bean> 
+
+												<bean id="b" class="package.B"> 
+												</bean> 
+
+												<bean id="c" class="package.C"> 
+												</bean> 
+
+												<bean id="service" class="package.Service"> 
+												   <property name="a" ref="a"/> 
+												   <property name="b" ref="b"/> 
+												   <property name="c" ref="c"/> 
+												</bean> 
+									</beans> 
+
+		这样就把A，B，C，Service都实例化完成了；
+		
+		可以直接
+		Service service=getService()； 
+		A a=getService().getA()；
+
+
+
+--spring涉及的设计模式：
+	---简单工厂：spring的BeanFactory就是简单工厂模式的体现，根据传入一个唯一的标识来获取bean对象。但是在传参前还是传参后创建对象要根据实际；
+
+	---工厂方法：应用程序有自己的工厂对象来创建bean。如果将应用程序自己的工厂对象交给spring管理，那么spring管理的就不是普通的bean，而是工厂bean；
+
+	---单例模式：spring提供了全局的访问点BeanFactory。但没有从构造器级别去控制单例，这是因为spring管理的是任意java对象；spring默认下的bean均为singleton，可以通过singleton="true|false"或者scope						="？"来指定；
+
+	---观察者模式：spring中观察者模式常用的地方就是listener的实现，如applicationListener；
+
+	---策略模式：spring中实例化对象的时候用到strategy模式在SimpleInstantiationStrategy中；
+
+	---代理模式：spring实现aop功能用到；
+
+	---适配器模式：spring的aop中，使用Advice来增强被代理类的功能。对类进行方法级别的切面增强，即生成被代理类的代理类，并在代理类前设置拦截器，通过执行拦截器中的内容增强了代理方法中的功能，实							现切面编程；
+
+	---包装器模式：切换不同的数据源时，对dataSource属性的设置；
+
+	---模板方法模式：spring中JdbcTemplate；

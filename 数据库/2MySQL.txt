@@ -1,0 +1,454 @@
+MySQL：
+
+·MySQL入门：
+	命令行操作：
+	··安装MySQL:
+	··启动和停止MySQL服务：net start/stop mysql具体名称
+		或者在计算机管理上启动和停止；
+
+	··cmd下清屏命令cls；
+
+	以下操作注意：如果您的MySQL没有安装在C盘下，先使用DOS命令进入MySQL的安装目录下的bin目录中。
+	方法如下：输入G，进入G盘。在输入cd G:\phpstudy\mysql\bin 进入到MySQL的bin目录下，才可以输入 mysql -hlocalhost -uroot -p 然后按回车键。
+
+	··登录数据库：在doc窗口。
+		命令格式：mysql -h 主机地址  -P 3306 -u 用户名 -p（指的是密码）
+		···连接本地：mysql -u root -p
+		···连接远程：mysql -h IP -u root -p
+
+	··退出登录：exit；quit；\q；
+
+	··修改用户密码：格式：mysqladmin -u 用户名 -p 旧密码 password 新密码
+		注：因为开始时root没有密码，所以“-p 旧密码”一项就可以省略了。
+
+	··mysql提示符的修改：用prompt关键字
+		\D：完整的日期
+		\d：当前数据库
+		\h：服务器名称
+		\u：当前用户
+		eg：mysql>PROMPT \u@\h \d>
+
+	··常见函数：
+		SELECT VERSION(); 		当前版本
+		SELECT NOW();	当前时间
+		SELECT USER();	当前用户
+
+		语法规范：
+		1.关键字与函数名称全部大写；（为了规范）
+		2.数据库名称、表结构、字段名称全部小写；
+		3.SQL语句必须以分号结尾；
+
+	··数据类型：
+		1.整型：
+		2.浮点型：
+		3.日期时间型：
+			YEAR
+			TIME
+			DATE 
+			DATETIME
+			TIMESTAMP：时间戳
+		4.字符型：
+
+
+
+
+·常用命令：
+	显示全部数据库：SHOW DATABASES;		
+	显示错误信息：SHOW WARNINGS;		
+	显示创建数据库时的全部信息：SHOW CREATE DATABASE 数据库名；
+
+	创建数据库：CREATE {DATABASE | SCHEMA} IF NOT EXISTS db_name CHARACTER SET charset_name;
+	修改数据库（如修改编码方式）：ALTER {DATABASE | SCHEMA} db_name CHARACTER SET charset_name;
+	删除数据库：DROP {DATABASE | SCHEMA} IF EXISTS db_name;
+
+	查看当前数据库：SELECT DATABASE()；
+	创建数据表：CREATE TABLE tb_name(
+		age TINYINT UNSIGNED【无符号！！】,
+		salary FLOAT(8,2) UNSIGNED
+	);
+
+	查看数据表：SHOW TABLES FROM db_name;
+	查看数据表结构，如约束：SHOW COLUMNS FROM tbl_name；
+	显示索引：SHOW INDEXES FROM tb_name;
+
+	想要查看表的定义的话，有如下方式可供选择：
+	　1、show create table 语句：show create table table_name;
+	　2、desc table_name 语句：
+
+	MySql中 delimiter 详解：其实就是告诉MySQL解释器，该段命令是否已经结束了，mysql是否可以执行了。默认情况下，delimiter是分号;。
+
+·约束：
+	
+	··AUTO_INCREMENT：
+		1.自动编号，且必须与主键组合使用；带有自增(AUTO_INCREMENT)的表,插入数据时,自增的字段写null或者DEFAULT；
+		2.默认情况下，起始值为1，每次的增量为1；
+
+	··按照功能划分：
+		NOT NULL：非空；
+			默认为NULL;
+
+		PRIMARY KEY：主键自动为NOT NULL;
+
+		UNIQUE KEY：
+			1.唯一约束可以保证记录的唯一性；
+			2.唯一性约束的字段可以为NULL；
+			3.每张数据表可以存在多个唯一约束；
+
+		DEFAULT:
+			1.默认值；
+			2.当插入记录时，如果没有明确为字段赋值，则自动赋予默认值；
+			eg：sex ENUM('1','2','3') DEFAULT '3'
+
+		FOREIGN KEY：外键约束的参照操作：
+			1.CASCADE：级联
+			2.SET NULL：置空
+			3.RESTRICT：拒绝
+			4.NO ACTION：MySQL中与RESTRICT相同；
+
+	··按照数据列的数目划分：
+		列级约束：针对一列
+		表级约束：针对多列
+
+
+
+
+·数据表的结构：
+	··针对字段：
+		1.增加：ALTER TABLE tb_name ADD column_name 数据类型 ……        【还可以指定列的位置，FIRST, AFTER ……】
+		2.删除：ALTER TABEL tb_name DROP column_name;
+		3.还可以同时增加和删除操作，中间用逗号分隔；
+
+		修改列定义：列定义、数据类型、列顺序有问题等等：ALTER TABLE tb_name MODIFY column_name 数据类型 ……FIRST
+		修改列名称：ALTER TABLE tb_name CHANGE 原字段名 新字段名 数据类型……
+
+	··针对数据表：
+		修改数据表名：ALTER TABLE tb_name RENAME XXX；
+			  					RENAME TABLE XXX TO YYY;	这个可以为多张数据表更名；
+
+	··针对约束：
+		增加和删除：
+		主键约束：……ADD CONSTRAINT 自定义约束名 PRIMARY KEY (字段名)；
+						 ……DROP PRIMARY KEY;
+		唯一约束：……ADD UNIQUE(字段名)；
+						 ……DROP INDEX/KEY 字段名；【删除索引】
+		外键约束：……ADD FOREIGN KEY (字段名) REFERENCES 表名(字段名)
+						 ……DROP FOREIGN KEY 约束名；
+		默认约束：……ALTER 字段名 SET DEFAULT 默认值；
+						 删除：……ALTER 字段名 DROP DEFAULT;
+
+·数据库查询分类：
+	··单表查询：
+
+	··连接查询：
+
+		···等值连接查询：=；
+			从集合论角度看：等值连接是内连接的子集；
+			等值连接和内连接，效果是相同的，执行效率应该也是一样的。
+			前面一种是2000的写法，在学校的时候是用第1种写法。后面一种是2005以后的语法，出来工作就用第2种。
+
+		···自然连接查询：目标列中重复的属性去掉；（在SQL语句中只需手动设置你要查询的字段就行）
+
+		···自身连接查询：一个表与其自己进行连接；想象有2张表，一张主表，一张副表，使用内连接；
+
+
+		···内连接：仅显示满足条件的纪录；JOIN=CROSS JOIN=INNER JOIN；
+
+			INNER JOIN 连接两个数据表的用法：
+					SELECT * FROM 表1 INNER JOIN 表2 ON 表1.字段号=表2.字段号；
+
+					INNER JOIN 连接三个数据表的用法：
+					SELECT * FROM (表1 INNER JOIN 表2 ON 表1.字段号=表2.字段号) INNER JOIN 表3 ON 表1.字段号=表3.字段号；
+
+					INNER JOIN 连接四个数据表的用法：
+					SELECT * FROM ((表1 INNER JOIN 表2 ON 表1.字段号=表2.字段号) INNER JOIN 表3 ON 表1.字段号=表3.字段号) INNER JOIN
+					表4 ON Member.字段号=表4.字段号
+
+		···外连接查询：
+			1.左外连接：left (outer) join。显示左表，显示右表满足条件的；
+			2.右外连接：right (outer) join。显示右表，显示左表满足条件的；
+			3.全外连接：显示左表和右表全部的记录。MySQL目前不支持此种方式，可以用其他方式替代解决。
+
+
+	··嵌套查询：
+		···注意点：
+			1.涉及到父查询和子查询；
+			2.SELECT-FROM-WHERE称为一个查询块；
+			3.将一个查询块嵌套到另一个查询块的WHERE字句或者HAVING短语的条件中的查询；
+			4.子查询的SELECT语句中不能使用ORDER BY字句；
+
+		···子查询：
+			1.带有IN谓词的子查询：
+			2.带有比较运算符的子查询：
+				当内层查询返回的是单值时，可以用比较运算符；
+
+			3.带有ANY或者ALL谓词的子查询：
+				返回很多值时要用ANY（某些）或者ALL（所有），但是必须同时使用比较运算符；
+
+				=ANY等价于IN谓词；
+				<>ALL等价于NOT IN谓词；
+
+				<ANY等价于<MAX；
+				<ALL等价于<MIN；
+
+			4.带有EXISTS谓词的子查询：
+				1）EXISTS是存在量词，SQL中没有全称量词；
+				2）不返回任何数据，只产生true或者false；
+				3）当子查询返回行数时，exists返回true；
+				4）目标列表达式通常用*，因为带exists的子查询只返回真或者假，给出列名无实际意义；
+
+			>IN和EXISTS区别：
+				in在查询的时候，首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。所以相对内表比较小的时候，in的速度较快。
+
+				EXISTS先查询的不是子查询的内容，而是查我们的主查询的表。遍历循环外表，然后看外表中的记录有没有和内表的数据一样的。匹配上 就将结果放入结果集中。
+
+		>能用连接查询就不要使用嵌套查询；
+		>使用聚集函数实现子查询比直接用ANY或ALL查询效率高；
+
+
+	··集合查询：
+		···并操作：UNION；
+		···交操作：INTERSECT；
+		···差操作：EXCEPT；
+
+
+	··基于派生表的查询：
+		···子查询出现在FROM字句中；
+
+
+· Mysql 通用函数：
+	1.字符函数：
+		CONCAT()	字符连接	 模糊查询：concat('%',#{0},'%') 这是mysql的写法。select * from   category_  where name like concat('%',#{0},'%')
+		CONCAT_WS()		使用指定分隔符进行字符连接
+		FORMAT()	数字格式化
+		LOWER()		转换成小写
+		UPPER()		转换成大写
+		LEFT()		获取左侧字符
+		RIGHT()		获取右侧字符
+		LENGTH()		获取长度
+		LTRIM()		删除前导空格
+		RTRIM()		删除后续空格
+		TRIM()		删除空格或者 删除某些特定的字符串；
+		REPLACE()	替换，3个参数
+		SUBSTRING()		截取，3个参数，没有则默认到最后，区别于程序，这是从1开始；
+		[NOT] LIKE：%：任意0个或者多个字符；
+				    _：任意一个字符；
+
+	2.数值运算符与函数：
+		CEIL()：进一取整/向上取整
+		DIV：整数除法
+		FLOOR():舍一取整/向下取整
+		MOD:取余数（取模）
+		POWER():幂运算
+		ROUND(，):四舍五入
+		TRUNCATE():数字截取，不会四舍五入。
+
+	3.比较运算符与函数：
+		[NOT] BETWEEN ……AND……
+		[not] in()：
+		IS [NOT] NULL：
+
+	4.时间日期函数：
+		NOW()：年月日时分秒
+		CURRENT_DATE()：年月日
+		CURRENT_TIME()：时分秒
+		DATE_ADD(''，INTERVAL 差值数)：日期增加或者减少
+
+		DATE_FORMAT()：格式化，一个格式变成另一个格式
+
+		DATEDIFF(A,B):
+			··确定2个日期之间的差异，通常用于计算年龄。比如：select datediff(now(),'20120512')；
+
+			··计算两日期时间之间相差的天数，秒数，分钟数，周数，小时数，这里主要分享的是通过MySql内置的函数 timestampdiff() 实现；
+
+				···计算两日期之间相差多少周：
+					select timestampdiff(week,'2011-09-30','2015-05-04');
+
+				···计算两日期之间相差多少天：
+					select timestampdiff(day,'2011-09-30','2015-05-04');
+
+	5.信息函数：
+		CONNECTION_ID()：连接ID
+		DATEBASE()：当前数据库
+		LAST_INSERT_ID()：最后插入记录的ID
+		USER()：当前用户
+		VERSION（）：当前版本
+
+	6.聚合函数：只用一个返回值
+		AVG()
+		COUTN()
+		MAX()
+		MIN()
+		SUM()
+
+	7.加密函数：
+		MD5()：信息摘要函数；为了web页面做准备；
+		PASSWORD()：密码算法；
+		为了客户端改密码：set passsword= password(' ');
+
+
+
+
+·mysql表中允许有多少个触发器TRIGGERS：6个。如下：
+		BEFORE INSERT;
+		AFTER INSERT;
+
+		BEFORE UPDATE;
+		AFTER UPDATE;
+
+		BEFORE DELETE;
+		AFTER DELETE;
+
+
+
+
+·count 函数：
+	count(*)：针对于全表的，不会跳过空值而只处理非空值。
+	count(列)：针对于某一列的，如果此列值为空的话，count(列)是不会统计这一行的。								
+	count(distinct Sno)：distinct防止重复。
+
+·关键字 distinct 和 group by 区别：
+	··大表一般用distinct效率不高，大数据量的时候都禁止用distinct，建议用group by解决重复问题。
+
+	··对于distinct，group by的性能：
+		数据量非常巨大时候，比如1000万中有300W重复数据，这时候的distinct的效率略好于group by；
+		对于相对重复量较小的数据量比如1000万中1万的重复量，用group by的性能会远优于distnct。
+
+
+
+·having 和 where 的区别：
+		where 搜索条件在进行分组操作之前应用；
+		having 搜索条件在进行分组操作之后应用；having 可以包含聚合函数 sum、avg、max 等；having 子句限制的是组，而不是行。
+
+		··当同时含有 where 子句、group by 子句 、having 子句及聚集函数时，执行顺序如下：
+				执行 where 子句查找符合条件的数据；
+				使用 group by 子句对数据进行分组；
+				对 group by 子句形成的组运行聚集函数计算每一组的值；最后用 having 子句去掉不符合条件的组。
+
+
+
+·JDBC中的3个：
+		··Statement：执行简单的sql语句，不带参数化的查询；
+
+		··preparedStatement：继承自Statement，参数化查询，可以预编译sql语句，性能更好，防止sql注入；
+
+			     ···sql注入：即使得where条件恒为真，无须账号密码也能获取到数据库的数据，甚至可以删除数据库；
+
+			     ···解决办法之一：使用preparedStatement，因为preparedStatement是参数化查询的，数据库不会将参数作为sql指令的一部分来处理，而是在数据库完成编译		后，才套用参数运行，因此就算参数中含有破坏性的指令也不会被数据库编译；局限性：不允许一个占位符（？）有多个值，在执行有in字句查询时会变得棘手。
+
+			     ···之二是组合SQL字符串的时候，先对所传入的参数做字符取代，将单引号字符取代为连续2个单引号字符，这在SQL数据库中会被视为字符串中的一个单引号字符；
+
+		··callableStatement：继承自preparedStatement，调用存储过程；准备一个CallableStatement的方法是：CallableStatement Connection.prepareCall();
+											
+		··关于批处理：mysql中没有批处理。
+		··？是占位符的意思，索引从1开始非0。
+		··preparedStatement不会把sql语句发送给数据库做预处理，而是等到执行查询动作的时候（即调用executeQuery（）方法时）才把查询语句发到数据库。这情况和statement一样的。
+
+		··ResultSet跟普通的数组不同，ResultSet结果集读取数据的方法主要是getXXX() ，他的参数可以使整型表示第几列（是从1开始的），还可以是列名。
+
+
+
+
+·dbcp/c3p0 都是数据库连接池来的：
+	db.properties和c3p0.xml都是配置数据库连接池的配置文件；
+
+	创建数据源对象方法：在static静态代码块里面实现初始化数据源；
+
+	dbcp:
+	1.通过BasicDataSource类直接创建数据源对象；
+	2.通过BasicDataSourceFactory工厂类读取配置文件（db.properties）；
+	  其中有使用到Properties以及InputStream in=new Example02().getClass().getClassLoader().gtResourceAsStream("db.properties");
+
+	c3p0:
+	1.通过ComboPooledDataSource()构造方法创建数据源对象；
+	2.通过读取配置文件(c3p0.xml)创建数据源对象；
+
+·drop、truncate 和 delete 的区别：
+	··内容和范围：
+		drop           删除整个表(包括结构和数据)；
+		truncate     只删除数据，只能对表操作并且只能删除整张表的数据，不可使用where条件；
+		                  且对于外键（foreignkey ）约束引用的表，不能使用 truncate table；
+		delete        只删除数据，可以删除table和view并且可以删除部分数据，因其可以使用where条件；
+
+	··空间：
+		drop           会将表所占用的空间释放；
+		truncate     会将表和索引所占用的空间会恢复到初始化大小；
+		delete        不会减少表和索引的空间，高水线(high watermark)保持原位置不变(这就是为什么有时候一张没有数据的空表所占用的空间仍然很大的原因)；
+
+	··效率：
+		快到慢一般为drop > truncate > delete，delete因为需要写日志会比较慢；
+
+	··语言和回滚：
+		drop和truncate为DDL语句，会隐式自动提交，即操作立即生效，且原数据不放到rollback segment中，不能回滚，不会触发触发器；
+		delete是DML语句，需要手动提交才会永久保存，原数据放到rollback segment中，可以回滚。
+
+
+
+
+·MYSQL_pconnect 和 MYSQL_connect 有什么区别？
+	前者是打开一个持久的数据库连接，这意味着数据库不是每次页面加载时都打开一个新的连接，所以不能用MYSQL_close（）来关闭一个持久的连接。
+	后者在每次页面被加载时打开连接，这个连接可以使用MYSQL_close来关闭。
+
+
+
+
+·limit 的使用：
+	··解析：
+		使用LIMIT语句+ORDER BY语句可以实现查找开头或者结尾开始的特定几条记录。
+		LIMIT m,n : 表示从第m+1条开始，取n条数据；【2个参数的单位都是"条"】
+		LIMIT n ： 表示从第1条开始，取n条数据，缩写是limit 0,n ；【参数n的单位是"条"】
+		本题LIMIT 2,1 表示从第3条数据开始，取一条数据，即入职员工时间排名第三的员工。
+
+	··分页需求：
+		客户端通过传递start(页码)，pageSize(每页显示的条数)两个参数去分页查询数据库表中的数据，那我们知道MySql数据库提供了分页的函数limit m,n，但是该函数的用法和我们的需求不一样，所以就需要我们根据实际情况去改写适合我们自己的分页语句，具体的分析如下：
+
+		比如：
+		首先规定一页有10条数据，
+		查询第1条到第10条的数据的sql是：select * from table limit 0,10;   ->对应我们的需求就是查询第一页的数据：select * from table limit (1-1)*10,10;
+		查询第10条到第20条的数据的sql是：select * from table limit 10,10;  ->对应我们的需求就是查询第二页的数据：select * from table limit (2-1)*10,10;
+		查询第20条到第30条的数据的sql是：select * from table limit 20,10;  ->对应我们的需求就是查询第三页的数据：select * from table limit (3-1)*10,10;
+
+	··总结：分页sql格式是：select * from table limit (start-1)*pageSize,pageSize; 其中start是页码，pageSize是每页显示的条数。
+
+·mysql 如何把查询到的结果插入到另一个表中？
+
+	··如果表存在：
+
+		1、如果两张张表（导出表和目标表）的字段一致，并且希望插入全部数据，可以用这种方法：
+
+		INSERT INTO  目标表  SELECT  * FROM  来源表 ;
+
+		例如，要将 articles 表插入到 newArticles 表中，则可以通过如下SQL语句实现：
+
+		INSERT INTO  newArticles  SELECT  * FROM  articles ;
+
+
+		2、如果只希望导入指定字段，可以用这种方法：
+
+		INSERT INTO  目标表 (字段1, 字段2, ...)  SELECT   字段1, 字段2, ...   FROM  来源表 ;
+
+		INSERT INTO newArticles(id, name) SELECT id, name FROM articles;
+
+	··如果表不存在：
+
+		create table tab1 as select * from tab2
+
+
+
+
+·SQL中 date 与 datetime 的区别：
+
+	NOW()函数返回当前系统的日期和时间。
+
+	··区别1：
+		date类型可用于需要一个日期值而不需要时间部分时；
+		datetime类型:可用于需要同时包含日期和时间信息的值。
+
+	··区别2：
+		date：MySQL 以 'YYYY-MM-DD' 格式检索与显示date值；
+		datetime:MySQL 以 'YYYY-MM-DD HH:mm:ss'格式检索与显示 DATETIME 类型。
+
+	··区别3：
+		date类型：支持的范围是 '1000-01-01' 到'9999-12-31'；
+		datetime类型:支持的范围是'1000-01-01 00:00:00' 到 '9999-12-31 23:59:59'。
+
+

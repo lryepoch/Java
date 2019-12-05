@@ -1,0 +1,81 @@
+
+springboot：
+
+
+--优点：
+	1、可以创建独立的Spring应用程序，并且有内置的服务器。不需要将我们的项目单独的发布到tomcat或者jboss等某个HHTP服务器上，因为它有内置的tomcat.jetty等服务器，它直接回归到了我们最初学习java时的启动方式。也就是通过一个main函数的方式来启动我们的项目。只不过我们的main函数上面多了一个    @SpringBootApplication 的注解。
+
+	2、可以大量减少构建配置。基本上不需要代码的生成、XML的配置以及尽可能多的提供第三方库。SpringBoot只需通过注解的形式配置开发当中一些动态的参数即可；
+
+
+
+--入门：
+
+	>建立过程：
+
+		1.新建一个maven工程；
+		2.导入相应的jar包；
+		3.创建 Application.java，其注解 @SpringBootApplication 表示这是一个SpringBoot应用，运行其主方法就会启动tomcat,默认端口是8080；
+			注意： 启动类Application.java应该位于什么位置呢？因为要扫描所有的类，所以必须位于所有子包的上一层！！！！否则就要手动指定要加载的包！！！
+
+
+	>关注点：
+		1、application.java内嵌有tomcat，所以当启动项目时，像正常滴启动一个java application即可。
+
+		2、springboot是使用maven管理的，注意maven的创建过程。
+			SpringBoot 应用，本质上是一个Java 程序，其采用的风格是 maven 风格，所以又是一个 Maven 项目，接下来我们就按照 maven 项目的方式创建就行了。 不要被花里胡哨的插件掩盖了其本质。
+
+		3、热部署：当发现任何类发生了改变，马上通过JVM类加载的方式，加载最新的类到虚拟机中。这样就不需要重新启动也能看到修改后的效果了。完成热部署只需在pom.xml中新增加一个依赖和一个插件即可。
+
+				Springboot 部署会采用两种方式：全部打包成一个jar，或者打包成一个war。
+
+		4、通过修改application.properties，修改访问的端口号和上下文路径；
+
+
+	>视图：
+			Springboot的默认视图支持是Thymeleaf。也可支持jsp。
+			thymeleaf 跟 JSP 一样，就是运行之后，就得到纯 HTML了。 
+			
+			区别在，不运行之前， thymeleaf 也是 纯 html。
+			所以 thymeleaf 不需要 服务端的支持，就能够被以 html 的方式打开，这样就方便前端人员独立设计与调试。
+			 jsp 就不行了， 不启动服务器 jsp 都没法运行出结果来。
+
+
+	>异常处理：
+			新建一个异常类：
+			使用 @ControllerAdvice + @ExceptionHandler 进行全局的 Controller 层异常处理。而且，@Validated 校验器注解的异常，也可以一起处理，无需手动判断绑定校验结果 BindingResult/Errors 了！
+
+			但是，只能处理 Controller 层未捕获（往外抛）的异常，对于 Interceptor（拦截器）层的异常，Spring 框架层的异常，就无能为力了。
+
+
+	>配置文件格式：
+			springboot的配置文件还支持 yml格式。application.properties，application.yml是2种不同的格式，但作用是一样的。
+			在application.yml 文件书写注意：
+									1. 不同“等级” 用冒号隔开；
+									2. 次等级的前面是空格，不能使用制表符(tab)；
+									3. 冒号之后如果有值，那么冒号和值之间至少有一个空格，不能紧贴着；
+			要么用application.properties ，要么用 application.yml。不要都用。
+
+
+
+
+7.
+	--	JPA是Java Persistence API的简称，中文名Java持久层API，是JDK5.0注解或XML描述对象-关系表的映射关系，并将运行期的实体对象持久化到数据库中。
+		Sun引入新的JPA ORM规范出于两个原因:其一，简化现有Java EE和Java SE应用开发工作；其二，Sun希望整合ORM技术，实现天下归一。
+		真正干活的可能是Hibernate,TopLink等等实现了JPA规范的不同厂商,默认是Hibernate。
+
+	--springboot持久层支持，还可以是mybatis的注解方式；(主要在实体类文件中)
+	--springboot持久层支持，还可以是mybatis的XML方式；（建一个.xml文件，然后在配置文件中指定具体位置）。主要关注mybatis。
+
+	--上传文件：在jsp目录下新建uploadPage.jsp,需要几点：
+									1. method="post" 是必须的
+									2. enctype="multipart/form-data" 是必须的，表示提交二进制文件
+									3. name="file" 是必须的，和后续服务端对应
+									4. accept="image/*" 表示只选择图片
+
+
+
+
+·springboot默认  static中放静态页面，而templates中放动态页面；
+	templates文件夹，是放置模板文件的，因此需要视图解析器来解析它。所以必须通过服务器内部进行访问，也就是要走控制器--服务--视图解析器这个流程才行。
+	static文件夹，既不能直接访问，也不能通过服务器访问到。因此，这个文件夹，可能是放一些css、图片这样的文件供服务器内部引用。

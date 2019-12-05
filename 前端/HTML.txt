@@ -1,0 +1,121 @@
+
+HTML：
+	<html>
+	<head>
+		<meta>：元数据，总是以名称/值的形式被成对传递的。定义了与文档相关联的名称/值对。
+	<body>
+
+	<p>：段落
+	<hx>：x范围1-6，标题大小。
+	<em>：斜体。
+	<strong>：加粗。
+
+	<span>标签是没有语义的，它的作用就是为了设置单独的样式用的。它在<style>中设置元素选择器。
+	<div>：相当于一个容器，可以划分出独立的逻辑部分；
+	eg：<div id= "">……</div>
+
+	<q>：短文本引用。
+	<blockquote>：长文本引用；
+	<code>：修饰少量代码；
+	<pre>：为你的网页加入大段代码，不使用<code>；
+
+	<br />：换行，等价于回车键；
+	&nbsp;：一个空格；
+
+	<ul>：无序列表；
+	<ol>：有序列表；
+	<li>：列表中的选项；
+	<hr>：添加水平横线
+
+	<table>：表格；
+	<tr>：行；
+	<td>：单元格，列；
+	<caption>：添加标题；
+	
+	<th>：表格表头。一个单元格表头。
+	<thead> ：表格的表头。该标签用于组合 HTML 表格的表头内容。
+
+	<form action="目的地" method="get/post">：表单；
+	<input type="框中数据类型" name="框名" value="框默认值" [checked="checked"默认选中某一项] />：文本框；
+
+	<a href="目标网址" title="鼠标滑过显示的文本">链接显示的文本</a>：超链接；
+	<img src="图片地址" alt="下载失败的替换文本" title="提示文本" />：为网页插入图片；
+
+
+Frame：框架。
+
+
+-----------------------------------------------------------
+问题：
+1.<button>和<input type="button"> 的具体区别：
+
+	一句话概括主题：<button>具有<input type="button" ... >相同的作用但是在可操控性方面更加强大。
+
+	1.1 关闭标签设置。<input>禁用关闭标签</input>。闭合的写法：<input type="submit" value="OK" />。
+
+	      <button>的起始标签和关闭标签都是必须的，如 <button>OK</button>。
+
+	1.2 <button>的值并不是写在value属性里，而是在起始、关闭标签之间，如上面的OK。同时<button>的值很广泛，
+
+	     有文字、图像、移动、水平线、框架、分组框、音频视频等。见《button按钮设计初步》
+
+	1.3 可为button元素添加CSS样式。
+
+	     例如，<button style="width:150px;height:50px;border:0;"></button>
+
+	     其中：width:150px;height:50px; 为按钮的宽度、高度， 为按钮的背景色，
+
+	               border:0; 是去掉默认的边框。见《button按钮设计初步》 
+
+	1.4 鼠标单击事件、弹出信息的代码可直接写在<button>标签中，方法简单。
+
+	      例如，<button onclick="alert('弹出信息的内容');window.open('打开网页的地址')">按钮名称</button>
+
+	      其中：alert('弹出信息的内容'); 为单击时弹出的信息，window.open('打开网页的地址') 为打开的网页。
+
+
+
+
+2.form和table之间的区别：
+
+	2.1、form表示一个表单，用来把一系列控件包起来统一发送给目标，例如注册。需要提交的内容都被封装在form内，如果不在form内则不会被提交。
+			表单有一个提交按钮，是用来将你的信息提交给后台服务器，实现网页的交互的。表单有许多控件，如文本框，单选，多选，下拉列表等。
+
+	2.2、table是用来布局的，比如在网页上填写表格的时候，网页的文本框、按钮、单选框都摆放的很整齐，这就是table的作用,一行一行以表格形式展现内容。
+
+	2.3、form和table在概念上是不同的，发送数据时起作用的通常是form，而form中的杂乱无章的内容如何整齐地展现，这就用到表格。所以通常是form中嵌套的table。
+
+
+
+
+
+3.input标签name、value与id属性：
+
+	id是唯一标识符，不允许有重复值可以通过它的值来获得对应的html标签对象。相当于人的身份证具有唯一性；
+
+	name：控件的名字，一个控件是否设置它的 name 属性是不会影响到这个网页的功能实现的。但是，当我们需要把这个控件所关联的数据传递到数据库时，就必须要设置 name 属性。相当于人的姓名，可以重名；一个name可以同时对应多个控件，比如checkbox和radio；
+
+	value：控件的值；
+
+	区别：
+			name主要是表单元素里才有的属性。通过js的document.表单名称.文本框.value来获取文本框的值，其中的表单名称和文本框名 称指的是name。而非表单元素例如div，span等是没有name属性的，
+			而id属性是任何一个HTML元素都会有的。当你需要用js获取非表单元素 对象是就得用document.getElementByIdx("id")；
+
+			1）name在以下用途是不能替代的：
+				1. 表单(form)的控件名，提交的数据都用控件的name而不是id来控制。因为有许多name会同时对应多个控件,比如checkbox和radio, 而id必须是全文档中唯一的。此外浏览器会根据name来设定发送到服务器的request。因此如果用id，服务器是无法得到数据的。
+				2. frame和window的名字,用于在其他frame或window指定target。
+
+			2）以下情况只能用id：
+				1. label与form控件的关联,
+				    <label for="MyInput">My Input</label>
+				     <input id="MyInput" type="text">
+				     for属性指定与label关联的元素的id,不可用name替代。
+
+				2. CSS的元素选择机制，以#MyId的方式指定应用样式的元素,不能用name替代。
+
+				3. 脚本中获得对象:
+				IE支持在脚本中直接以id(而不是name)引用该id标识的对象。例如上面的input,要在脚本中获得输入的内容,可以直接以MyInput.value来获得。
+				如果用DOM的话，则用document.getElementById("MyInput").value。如果要用name的话，通常先得到包含控件的form，例如document.forms[0]，然后从form再引用name，注意这样得到的是经过计算后将发送给服务器的值。
+
+			3）以下两者可以通用，但是强烈建议用id不要用name：
+				1. 锚点，通常以前写作<a name="myname">，现在可以用任何的元素id来指定:<div id="myid">。

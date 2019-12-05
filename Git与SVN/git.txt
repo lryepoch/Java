@@ -1,0 +1,342 @@
+---------------------------------
+·用户名和邮箱：
+
+　　··当安装成功后，因为git是分布式版本控制系统，你需要运行命令来配置你的用户名和邮箱。
+
+　　··初次安装git需要配置用户名和邮箱，否则git会提示：please tell me who you are。
+
+　　　　$ git config --global user.name "superGG1990"　　　　　　　　　　　　　#配置用户名
+　　　　$ git config --global user.email "superGG1990@163.com"　　　　　　　　 #配置邮箱
+　　　　
+　　　　$ git config --global --unset user.name "username"　　　　　　　　　　#移除用户
+　　　　$ git config --global --unset user.email "email"　　　　　　　　　　　#移除邮箱
+
+　　··查看配置信息，包括用户名和邮箱：$ git config --list
+									  $ git config user.name              #查看用户名
+									  $ git config user.email			   #查看邮箱
+
+
+----------------------------------
+·配置ssh：
+
+	··是否已经创建ssh key：先 $ cd ~/.ssh , 后 $ ls
+
+	··生成：$ ssh-keygen -t rsa -C "260408@gree.com.cn"
+
+	··登陆GitHub，打开“Account settings”，配置“SSH Keys” (只要把每台电脑的Key都添加到你的GitHub，就可以在每台电脑上往你的GitHub推送了。)
+
+	··验证是否配置成功：$ssh -T git@github.com
+
+	(如何搭建一个Git服务器？)
+
+
+
+-----------------------------------
+·使用git同步，基本步骤：
+
+		1.在github上新建一个远程仓库；
+
+		2.本地新建文件夹，即为工作区workspace；
+
+		3.$ git init                      ##把这个文件夹变成Git可管理的仓库；
+
+		4.把项目粘贴到工作区workspace；
+
+		5.$ git add 项目名		/ $ git add .					##添加到暂存区index/stage，或(git add .)把该目录下的所有文件添加到暂存区，注意点是用空格隔开的；
+
+		6.$ git commit (指定文件) -m "注释内容"							##把项目提交到本地仓库repository；
+
+		7.$ git remote add origin git@github.com:用户名/仓库名.git 				##将本地仓库和远程仓库进行关联；【之前已有，就不需要运行这行了】
+
+		8.$ git push （-u） origin master						##将本地仓库repository主分支master内容提交到远程仓库origin的master分支，由于新建的远程仓库是空的，所以要加上-u这个参数，
+																	等远程仓库里面有了内容之后，下次再从本地库上传内容的时候,可去掉-u。
+
+		>>另外，这里有个坑需要注意一下，就是在第1步创建远程仓库的时候，如果你勾选了Initialize this repository with a 
+
+			README（就是创建仓库的时候自动给你创建一个README文件），那么到了第8步你将本地仓库内容推送到远程仓库的时候就会报
+			一个failed to push some refs to https://github.com/guyibang/TEST2.git 的错。
+
+			这是由于你新创建的那个仓库里面的 README 文件不在本地仓库目录中，这时我们可以通过以下命令先将内容合并一下：
+			$ git pull --rebase origin master【作用：拉取远程的文件把本地的覆盖，再上传】
+
+
+
+·Command line instructions：You can also upload existing files from your computer using the instructions below.
+		··=================
+		Create a new repository：
+		git clone git@10.2.7.13:260408/plm.git
+		cd plm
+		touch README.md
+		git add README.md
+		git commit -m "add README"
+		git push -u origin master
+
+		··=================
+		Push an existing folder：
+		cd existing_folder
+		git init
+		git remote add origin git@10.2.7.13:260408/plm.git     (本地关联远程库)
+		git add .
+		git commit -m "Initial commit"
+		git push -u origin master
+
+		··=================
+		Push an existing Git repository：
+		cd existing_repo
+		git remote rename origin old-origin
+		git remote add origin git@10.2.7.13:260408/plm.git
+		git push -u origin --all
+		git push -u origin --tags
+
+
+-----------------------------
+·随时掌握工作区的状态：git status
+·查看修改内容：git diff	(如果git status告诉你有文件被修改过，用这个可以查看修改内容)
+
+
+------------------------------
+·版本回退(HEAD指向的版本就是当前版本)：
+	··显示从最近到最远的提交日志：$ git log	  (如果看得眼花缭乱的，可以试试加上：--pretty=oneline)
+	··回退到上一个版本：$ git reset --hard HEAD^	(上上一个版本就是HEAD^^，当然往上100 个版本写100个^比较容易数不过来，所以写成HEAD~100)
+	··回到未来的某个版本：$ git reset --hard commitId	(如果之前的命令行窗口还没有被关掉，就可以顺着往上找到想回到的版本号commit id)
+	··找回之前的全部版本号：$ git reflog	(当回退到了某个版本，关掉了电脑，第二天早上就后悔了，想恢复到新版本怎么办？找不到新版本的commit id怎么办？)
+	
+
+-----------------------------
+·撤销修改：
+	··丢弃工作区(workspace)的修改：git checkout -- <file>
+	··把暂存区(index)的修改撤销掉（unstage），重新放回工作区：$ git reset HEAD <file>，然后再进行“丢弃工作区的修改”操作
+	··已经提交了不合适的修改到版本库(local repository)时，想要撤销本次提交，参考“版本回退”一节
+
+
+-----------------------------
+·删除文件：
+	··命令：rm <file> 或者 手动删除；(这相当于是在工作区中的操作)
+	··两种情况：1）在版本库中确定删除：$ git rm <file> + $ git commit -m "xxx"
+				2）删错了，因为版本库里还有记录，所以可以很轻松地把误删的文件恢复到最新版本：$ git checkout -- <file>
+
+
+------------------------------
+·分支管理：
+	··创建分支：$ git branch dev
+	··切换分支：$ git checkout dev
+	··创建并切换到dev分支：$ git checkout -b dev	（等价于 $ git branch dev + $ git checkout dev）
+	··查看当前所有分支：$ git branch
+	··合并指定分支(dev)到当前分支：$ git merge dev
+	··删除dev分支：$ git branch -d dev
+
+
+
+
+------------------------------
+·解决冲突：
+	··在master分支上合并feature1分支：$ git merge feature1
+		如果发生冲突，查看冲突的地方：$ git status
+		找到冲突文件，查看冲突文件内容：cat xx
+		分析冲突，并修改文件中冲突的部分，最后再合并分支。
+
+	··查看分支合并图：$ git log --graph [--pretty=oneline --abbrev-commit]
+
+
+
+-------------------------------
+·分支管理策略：
+
+		··git使用"fast forward"模式，这种模式删除分支后会丢掉分支信息。可以使用带参数 -no-ff 来禁用"fast forward"模式。 
+		eg：在当前分支合并dev分支：git merge -no-ff -m "注释" dev；合并后删除不会丢失分支信息；
+
+
+		··分支策略：master主分支非常稳定，用来发布新版本，一般不允许在上面干活；干活一般情况下每个人在自己新建的dev分支上干活，干完后，比如要发布或者说dev分支代码稳定后可以合并到主分支master上来。
+
+		··bug分支：每个bug都可以通过一个临时分支来修复，修复完成后，合并分支，然后将临时的分支删除掉。
+
+		　1.比如我在开发中接到一个404bug时候，我们可以创建一个404分支来修复它，但是，当前的dev分支上的工作还没有提交；并不是我不想提交，而是工作进行到一半时候，我们还无法提交；Git还提供了				一个stash功能，可以把当前工作现场 ”隐藏起来”，等以后恢复现场后继续工作【$ git stash】。
+
+		　2.确定在哪个分支上修复bug；比如我现在是在主分支master上来修复的，现在我要在master分支上创建一个临时分支issue-404；
+		　3.修复完成后，切换到master分支上，并完成合并，最后删除issue-404分支。
+
+		　4.现在，我们回到dev分支上干活了。工作现场还在，Git把stash内容存在某个地方了，但是需要恢复一下，有2个方法：
+		
+				　　首先可能需要列举隐藏现场：$ git stash list
+
+				　　1)$ git stash apply恢复，恢复后，stash内容并不删除，你需要使用命令$ git stash drop来删除。
+				　　2)另一种方式是使用$ git stash pop，恢复的同时把stash内容也删除了。
+
+					可以多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash，用命令：$ git stash apply stash@{0}
+
+
+
+----------------------------------
+·多人协作：
+		··当你从远程库clone克隆时候，实际上Git自动把本地的master分支和远程的master分支对应起来了，并且远程库的默认名称是origin。
+
+		　　$ git remote						##查看远程库的信息
+		　　$ git remote –v					##查看远程库的详细信息
+
+		··推送分支：把该分支上所有本地提交到远程库中，推送时要指定本地分支，这样Git就会把该分支推送到远程库对应的远程分支上：$ git push origin master；
+					如果我们现在要推送到其他分支，比如dev分支上，则是：$ git push origin dev；
+							
+					并不是一定要把本地分支往远程推送，那么，哪些分支需要推送，哪些不需要呢？
+						• master分支是主分支，因此要时刻与远程同步；
+						• dev分支是开发分支，团队所有成员都需要在上面工作，所以也需要与远程同步；
+						• bug分支只用于在本地修复bug，就没必要推到远程了，除非老板要看看你每周到底修复了几个bug；
+						• feature分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
+					总之，就是在Git中，分支完全可以在本地自己藏着玩，是否推送，视你的心情而定！
+
+
+
+
+		··抓取分支：多人协作时，大家都会往master分支上推送各自的修改。
+
+				　　1.首先，我的小伙伴克隆远程仓库到本地仓库来：git clone 远程库地址；
+
+				　　2.现在小伙伴他需要在dev分支上做开发，就必须把远程的origin的dev分支对应拉到本地仓库，于是创建本地dev分支：git checkout –b dev origin/dev；
+
+				　　3.开发完成后把dev分支推送到远程库：add+commit+【git push origin dev】；
+
+				　　4.小伙伴们已经向origin/dev分支上推送了提交，而我在我的目录文件下也对同样的文件同个地方作了修改，也试图推送到远程库时：推送失败。
+					  因为小伙伴最新提交的和我试图推送的有冲突，解决办法是，先用git pull把最新的提交从origin/dev抓下来，然后在本地合并，解决冲突，再推送。
+
+				　　5.如果git pull也失败了，原因是我没有指定本地dev分支与远程origin/dev分支的链接。根据提示，设置dev和origin/dev的链接：git branch --set-upstream dev origin/dev；
+					（如果git pull提示 "no tracking information" ，则说明本地分支和远程分支的链接关系没有创建）
+
+				　　6.这回git pull成功，但是合并有冲突，需要手动解决，解决的方法和分支管理中的解决冲突完全一样。解决后，提交，再push；
+
+				 
+		··因此：多人协作工作模式一般是这样的：
+					1. 首先，可以试图用git push origin branch-name推送自己的修改；
+					2. 如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+					3. 如果合并有冲突，则解决冲突，并在本地提交；
+					4. 没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！
+
+
+
+------------------------------------
+·注意：
+
+	··git中从远程的分支获取最新的版本到本地有这样2个命令：
+
+	　　1. git fetch：从远程仓库获取最新版本到本地仓库，不会自动merge【合并】；
+	　　　　首先从远程仓库origin的master主分支上，下载最新版本到本地仓库的【（origin/master）如下的tmp】分支上，
+	　　　　然后比较本地仓库的master分支和下载下来的origin/master分支的差别，最后进行合并 。
+
+	　　　　即：从远程仓库获取最新的版本到本地仓库的tmp分支上，之后再进行比较合并；
+	　　　　git fetch origin master:tmp 				##拉取
+	　　　　git diff tmp 								##对比
+	　　　　git merge tmp								##合并
+
+	　　2. git pull：从远程仓库获取最新版本并且自动 merge 到本地仓库；
+	　　　　git pull origin master 等价于 git fetch 和 git merge；
+
+	　　　　在实际使用中，git fetch更安全一些。因为在merge前，我们可以查看更新情况，然后再决定是否合并。
+
+
+	··git中pull和checkout的区别：
+
+	　　1.从远程仓库中下载新的改动；$ git pull <远程库名> <远程分支名>:<本地分支名>
+	　　　　git pull origin master             #将master分支代码拉取到我本地分支
+
+	　　2.更新本地文件；
+	　　　　git checkout file
+	　　　　pull只是单纯地把远程服务器最新的改动更新到本地。
+			假如本地删除了文件或者修改了文件，则此操作不会更新本地的文件。
+	　　　　本地删除了文件或者修改了文件，如果需要恢复，则直接从本地把文件checkout出来就可以了，用不着从远程服务器上pull下来。因为，所有的历史版本你的本地都有的。
+
+		3.在本地没有项目的时候，使用clone。
+
+		4.在本地有项目的情况下和远程不同步的情况下使用pull拉取更新。
+
+		5.在本地已有项目主分支的情况下还想下载项目的其他分支使用fetch。
+
+
+
+--------------------------------------
+·git常用命令：
+		
+		mkdir XX						##创建一个 XX 空目录
+		touch xx                        ##创建xx文件
+		rm XX 		    				##删除工作区XX文件
+		pwd								##显示当前目录的路径
+		cat XX 							##查看XX文件内容
+		git mv a.cpp b.cpp				##重命名文件
+
+
+		git init 	(目录名)						 							##把当前的目录变成可以管理的git仓库，生成隐藏.git文件。
+		git add xx 					 												##把xx文件添加到暂存区去。
+		git commit –m "注释"															##提交文件 –m 后面的是注释。
+		git remote add origin https://github.com/tugenhua0707/testgit 					##关联一个远程库
+		git push –u(第一次要用-u 以后不需要) origin master 							##把当前master分支推送到远程库对应的远程分支上
+
+		git clone https://github.com/tugenhua0707/test.git 						##拉取远程分支，默认拉取主分支
+		git clone -b dev https://github.com/tugenhua0707/test.git 				##拉取远程指定分支
+		git branch dev origin/dev                                     ##基于远端的dev分支，本地创建dev分支
+
+
+		git status 								##查看有变更的文件，显示工作目录和暂存区的状态。使用此命令能看到那些修改被暂存到了（绿色）, 哪些没有, 哪些文件没有被Git tracked到（红色）。
+		git diff XX 							##查看XX文件修改了哪些内容
+		git diff                                 ##显示暂存区和工作区的差异
+		git diff HEAD                       ##显示工作区与当前分支最新commit之间的差异
+		git log 									##查看历史记录
+		git log --oneline                  ##简化日志
+		git log -n5 --oneline           ##查看前5个日志
+		git reflog 								##查看历史记录的版本号id
+
+
+		版本回滚：
+		git reset HEAD                                        ##恢复暂存区和HEAD一致
+		git reset HEAD -- 文件名									##恢复暂存区指定文件与HEAD一致
+		git reset --hard HEAD                                    	##回退到指定commit
+		git reset --hard HEAD^ / git reset --hard HEAD~ 			##回退到上一个版本
+		git reset --hard HEAD~100 							##回退到100个版本
+
+
+
+		分支管理：
+		git checkout –b dev 												##创建dev分支 并切换到dev分支上【-b参数是指创建并切换】
+		git checkout -- XX 													##把XX文件在工作区的修改全部撤销，恢复工作区与暂存区一致
+		git checkout [master(分支名)]									##切换回master分支
+		git merge dev 															##在当前的分支上合并dev分支
+
+		git branch 										##查看本地分支【当前分支前面会添加一个星号】
+		git branch -r                                   ##查看所有远程分支
+
+		git branch -a                                   ##查看所有本地分支和远程分支【绿色代表当前项目所在的分支，红色就是远程分支列表】
+		git branch -av                                  ##查看所有本地分支和远程分支详细信息【绿色代表当前项目所在的分支，红色就是远程分支列表】
+
+		git branch –d dev 								  ##删除dev分支
+		git push origin --delete [branch-name]            ##删除远程分支
+
+		git branch name 									##新建分支
+		git branch --track [branch][remote-branch]			##新建一个分支，与指定远程分支建立追踪关系
+
+
+		git stash 						##把当前的工作隐藏起来，等以后恢复现场后继续工作
+		git stash list 					##查看所有被隐藏的文件列表
+		git stash apply 				##恢复被隐藏的文件，但是内容不删除
+		git stash drop 					##删除文件
+		git stash pop 					##恢复文件的同时，也删除文件
+
+
+		git remote 						##查看远程库的信息
+		git remote –v 					##查看当前项目的远程git地址，确定地址是否正确
+
+
+
+---------------------------------------
+·问题：
+
+	··新建一个分支，如何把代码迁移到这个新建分支上？	checkout
+
+	··本地仓库和远程仓库都有了更新，本地仓库推送到远程仓库前，拉取远程仓库的更新到本地仓库，本地仓库会不会被覆盖？
+
+	··删除提交到远程仓库的.idea文件：git rm -r –cached .idea
+
+	··.ignore文件无法生效：
+							git rm -r --cached .
+							git add .
+							git commit -m 'update .gitignore'
+	
+	··误删远程分支，如何恢复？
+		查看reflog，找到最后一次commitid，$ git reflog --date=iso     【不用git log？git log是用来记录当前分支的commit log，分支都删除了，找不到commit log了】
+		切出分支，$	git checkout -b recovery_branch_name commit_id
+		切出分支后，本地有分支了，再push到远程仓库就可以了，$ git push  origin recovery_branch_name 

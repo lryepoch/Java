@@ -1,0 +1,51 @@
+
+Maven：
+
+--常用命令解释：
+
+	mvn clean 		##清除。清除target目录下以前编译生成的文件及jar包；
+
+	mvn install		##安装。项目代码将会经过编译、测试、打包并拷贝到本地依赖库，提供给其他项目引用。
+
+	mvn compile		##编译。将Java源文件编译成class文件；编译完成的.class文件将会出现在target/classes目录下
+
+	mvn package    ##如果不想直接运行.class文件，可以将其打包：打包完成后，会在target目录下生成一个JAR文件（动态web工程打war包，Java工程打jar包；），文件名由<artifactId> 和 <version>组成。
+
+	mvn test			##测试，并生成测试报告；
+
+
+
+一些常用命令及简单解释：
+
+mvn compile: 将依赖下载到本地仓库（一般是~/.m2/repository），并编译源码和资源输出到target/classes目录下
+
+mvn test-compile：编译测试源码，同上，但输出到target/test-classes目录下
+
+mvn test: 运行测试，并生成测试报告；
+
+mvn package: 编译、测试并按指定格式打包
+
+mvn install: 打包并将包安装到本地仓库中
+
+mvn deploy: 安装并发布到指定的远程仓库中
+
+
+
+--新建Maven工程：
+
+	groupId：组织名、包路径。eg：com.crud
+	artifactId：项目名。eg：ssm-crud
+	version：版本号。略
+	packaging：包类型。eg：war
+
+
+
+
+--父子-聚合项目：
+	1、通过 maven 可以创建父子-聚合项目。 所谓的父子项目，即有一个父项目，有多个子项目。
+		这些子项目，在业务逻辑上，都归纳在这个父项目下，并且一般来说，都会有重复的jar包共享。
+		所以常用的做法会把重复的 jar 包都放在父项目下进行依赖，那么子项目就无需再去依赖这些重复的 jar 包了。子项目虽然没有依赖jar包，但是通过 父项目达到了依赖的效果。
+
+	2、父项目中，<packaging></packaging>默认是 jar, 修改为pom。 这样才可以作为父项目存在。
+
+	3、在 项目parentMavenProject 的基础上创建其子项目，首先右键点击 parentMavenProject， 然后点击 New -> Other -> Maven -Maven Module -> Next。子项目中<parent></parent>表示是引用父项目。

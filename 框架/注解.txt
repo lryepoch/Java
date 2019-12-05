@@ -1,0 +1,151 @@
+SpringBoot注解验证参数：
+废话不多说，直接上表格说明：
+
+注解	     作用类型	                   解释
+@NotNull	基本类型	              属性不能为null
+@NotEmpty	集合类	                   集合不能为null，且size大于0
+@NotBlanck	字符串、字符	          字符类不能为null，且去掉空格之后长度大于0
+@AssertTrue	Boolean、boolean	        布尔属性必须是true
+@Min	数字类型（原子和包装）	       限定数字的最小值（整型）
+@Max	同@Min	                     限定数字的最大值（整型）
+@DecimalMin	同@Min	              限定数字的最小值（字符串，可以是小数）
+@DecimalMax	同@Min	              限定数字的最大值（字符串，可以是小数）
+@Range	数字类型（原子和包装）	     限定数字范围（长整型）
+@Length	字符串	                    限定字符串长度
+@Size	集合	                   限定集合大小
+@Past	时间、日期	            必须是一个过去的时间或日期
+@Future	时期、时间	              必须是一个未来的时间或日期
+@Email	        字符串	         必须是一个邮箱格式
+@Pattern	字符串、字符	        正则匹配字符串
+以上注解用到要验证参数的封装类中的属性上：
+
+
+public class Test {
+    
+    @NotNull(message = "ID不能为空")
+    @Range(min = 1, max = 100, message = "ID必须在1到100之间")
+    private Integer id;
+
+    @NotBlank(message = "姓名不能为空")
+    @Length(min = 2, max = 6, message = "姓名必须在2到6位之间")
+    private String name;
+
+    @NotNull(message = "余额不能为空")
+    @DecimalMax(value = "30.50", message = "余额不能超过30.5")
+    @DecimalMin(value = "1.50", message = "余额不能低于1.5")
+    private BigDecimal amount;
+
+    @NotNull(message = "生日不能为空")
+    @Past(message = "生日必须是过去")
+    private Date birthday;
+
+    @NotBlank(message = "邮箱不能为空")
+    @Email(message = "邮箱格式不正确")
+    private String email;
+
+    @NotBlank(message = "手机号不能为空")
+    @Pattern(regexp = "^(((13[0-9])|(14[579])|(15([0-3]|[5-9]))|(16[6])|(17[0135678])|(18[0-9])|(19[89]))\\d{8})$", message = "手机号格式错误")
+    private String phone;
+
+}
+
+然后在controller的每个接口中使用@Validated和BindingResult类
+
+@Validated注解用于验证一个入参，验证之后的消息绑定到BindingResult类中：
+
+    @PostMapping("/test")
+    @ApiOperation(value = "测试", notes = "", response = Result.class)
+    public Result test(@ApiParam(name = "test", value = "参数", required = true) @Validated @RequestBody Test test, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            String errorMsg = bindingResult.getFieldError().getDefaultMessage();
+            return Result.error(errorMsg);
+        }
+        return Result.ok("参数验证通过");
+    }
+
+这样使用注解来验证参数就很方便了，不用再写代码去验证入参了
+
+
+
+
+
+注解 数据校验
+@RequestBody 常用其来处理application/json类型。可以将请求体中的JSON字符串绑定到相应的bean上，或将其分别绑定到对应的字符串上。
+
+@Valid
+在API接收数据时添加@valid关键字，这时你的实体将会开启一个校验的功能。
+
+@Null
+限制只能为null
+
+@NotNull
+限制必须不为null，但可以为empty，没有size的约束；
+
+@AssertFalse
+限制必须为false
+
+@AssertTrue
+限制必须为true
+
+@DecimalMax(value)
+限制必须为一个不大于指定值的数字
+
+@DecimalMin(value)
+限制必须为一个不小于指定值的数字
+
+@Digits(integer,fraction)
+限制必须为一个小数，且整数部分的位数不能超过integer，小数部分的位数不能超过fraction
+
+@Future
+限制必须是一个将来的日期
+
+@Max(value)
+限制必须为一个不大于指定值的数字
+
+@Min(value)
+限制必须为一个不小于指定值的数字
+
+@Past
+限制必须是一个过去的日期
+
+@Pattern(value)
+限制必须符合指定的正则表达式
+
+@Size(max,min)
+限制字符长度必须在min到max之间
+
+@Past
+验证注解的元素值（日期类型）比当前时间早
+
+@NotEmpty
+验证注解的元素值不为null且不为空（字符串长度不为0、集合大小不为0）
+
+@NotBlank
+验证注解的元素值不为空（不为null、去除首位空格后长度为0）。不同于@NotEmpty，@NotBlank只应用于字符串且在比较时会去除字符串的空格
+
+@Email
+验证注解的元素值是Email，也可以通过正则表达式和flag指定自定义的email格式
+
+注意：实体类验证只是针对该实体内第一层对象的属性进行验证，如果存在被验证的实体类为另一个实体类的的成员变量,那么就需要在该成员变量（需要验证的实体类）上加 @valid 注解
+
+
+
+
+
+
+
+
+
+
+@RequestParam和@RequestBody区别：
+·使用@RequestParam获取参数，然后使用@RequestBody对json格式的参数转换为Java类型
+
+1、@RequestBody需要把所有请求参数作为json解析，因此，不能包含key=value这样的写法在请求url中，所有的请求参数都是一个json
+2、直接通过浏览器输入url时，@RequestBody获取不到json对象，需要用java编程或者基于ajax的方法请求，将Content-Type设置为application/json
+
+
+
+
+
+
+

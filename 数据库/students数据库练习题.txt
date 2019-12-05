@@ -1,0 +1,11 @@
+
+1.查询挂科数目超过3门的学生全部信息：
+SELECT a.Sno,a.Sname
+FROM student a
+WHERE EXISTS(
+	SELECT *
+	FROM sc b
+	WHERE SCORE<60 AND a.Sno=b.Sno
+	GROUP BY b.Sno
+	HAVING COUNT(*)>3
+)
