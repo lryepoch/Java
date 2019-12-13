@@ -1,0 +1,278 @@
+
+<!--mybatis-plus 与mybatis依赖冲突-->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-boot-starter</artifactId>
+    <version>3.1.2</version>
+</dependency>
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-generator</artifactId>
+    <version>3.1.2</version>
+</dependency>
+<dependency>
+    <groupId>org.freemarker</groupId>
+    <artifactId>freemarker</artifactId>
+    <version>2.3.28</version>
+</dependency>
+
+
+
+
+原：
+--------------------------------------------------------------------------------
+package com.leayun.dubhe.utils;
+
+import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.generator.AutoGenerator;
+import com.baomidou.mybatisplus.generator.InjectionConfig;
+import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import org.apache.commons.lang3.StringUtils;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+
+ /**
+ * @author masterlai
+ * @since 2019/9/26
+ * mybatis-plus代码生成器
+ */
+public class CodeGenerator {
+    /**
+     * 读取控制台内容
+     */
+    private static String scanner(String tip) {
+        System.out.println("请输入" + tip + "：");
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNext()) {
+            String ipt = scanner.next();
+            if (StringUtils.isNotEmpty(ipt)) {
+                return ipt;
+            }
+        }
+        throw new MybatisPlusException("请输入正确的" + tip + "！");
+    }
+
+    public static void main(String[] args) {
+
+        // 代码生成器
+        AutoGenerator mpg = new AutoGenerator();
+
+        // 全局配置
+        GlobalConfig gc = new GlobalConfig();
+        String projectPath = System.getProperty("user.dir");
+        gc.setOutputDir(projectPath + "/authserver/src/main/java");
+        gc.setAuthor("masterlai");
+        gc.setOpen(false);
+        mpg.setGlobalConfig(gc);
+
+        // 数据源配置
+        DataSourceConfig dsc = new DataSourceConfig();
+        dsc.setUrl("jdbc:postgresql://10.2.22.4:5432/dubhe_authserver?useUnicode=true&characterEncoding=utf-8");
+        dsc.setDriverName("org.postgresql.Driver");
+        dsc.setUsername("dubhe");
+        dsc.setPassword("leayun@dubhe");
+        mpg.setDataSource(dsc);
+
+        // 包配置
+        PackageConfig pc = new PackageConfig();
+        pc.setModuleName(scanner("模块名"));
+        pc.setParent("com.leayun.dubhe");
+        pc.setController("controller");
+        pc.setEntity("entity");
+        pc.setMapper("mapper");
+        mpg.setPackageInfo(pc);
+
+        // 自定义配置
+        InjectionConfig cfg = new InjectionConfig() {
+            @Override
+            public void initMap() {
+                // to do nothing
+            }
+        };
+
+
+ // 如果模板引擎是 freemarker
+        String templatePath = "/templates/mapper.xml.ftl";
+        // 如果模板引擎是 velocity
+        //String templatePath = "/templates/mapper.xml.vm";
+
+        // 自定义输出配置
+        ArrayList<FileOutConfig> focList = new ArrayList<>();
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(templatePath) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名
+                return projectPath + "/authserver/src/main/resources/mapper/" + pc.getModuleName()
+                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+            }
+        });
+        cfg.setFileOutConfigList(focList);
+        mpg.setCfg(cfg);
+
+        // 配置模板
+        TemplateConfig templateConfig = new TemplateConfig();
+        templateConfig.setXml(null);
+        mpg.setTemplate(templateConfig);
+
+        // 策略配置
+        StrategyConfig strategy = new StrategyConfig();
+        strategy.setNaming(NamingStrategy.underline_to_camel);
+        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+        strategy.setEntityLombokModel(true);
+        strategy.setRestControllerStyle(true);
+        // 写于父类中的公共字段
+        strategy.setSuperEntityColumns("id");
+        strategy.setInclude(scanner("表名(逗号分隔)").split(","));
+        strategy.setControllerMappingHyphenStyle(true);
+        strategy.setTablePrefix(pc.getModuleName() + "_");
+        mpg.setStrategy(strategy);
+        mpg.setTemplateEngine(new FreemarkerTemplateEngine());
+        mpg.execute();
+    }
+}
+
+
+ 改：
+----------------------------------------------------------------------
+import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.generator.AutoGenerator;
+import com.baomidou.mybatisplus.generator.InjectionConfig;
+import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+/**
+ * @author 260408
+ * @create by 260408 on 2019-11-08 16:29
+ */
+public class CodeGenerator {
+
+    private static String scanner(String tip) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("请输入" + tip + "：");
+        if (scanner.hasNext()) {
+            String ipt = scanner.next();
+            if (StringUtils.isNotEmpty(ipt)) {
+                return ipt;
+            }
+        }
+        throw new MybatisPlusException("请输入正确的" + tip + "！");
+    }
+
+    public static void main(String[] args) {
+
+        // 代码生成器
+        AutoGenerator mpg = new AutoGenerator();
+
+        // 全局配置
+        GlobalConfig gc = new GlobalConfig();
+
+        //user.dir：这是用户的根目录
+        String projectPath = System.getProperty("user.dir");
+
+        //生成文件的输出目录
+        gc.setOutputDir(projectPath + "/src/main/java");
+
+        //是否覆盖已有文件
+        gc.setFileOverride(true);
+
+        gc.setAuthor("li");
+
+        //是否打开输出目录，默认为true
+        gc.setOpen(false);
+
+        mpg.setGlobalConfig(gc);
+
+
+ // 数据源配置
+        DataSourceConfig dsc = new DataSourceConfig();
+        try {
+            dsc.setUrl("jdbc:mysql://localhost:3306/fridge?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=UTC");
+            dsc.setDriverName("com.mysql.cj.jdbc.Driver");
+            dsc.setUsername("root");
+            dsc.setPassword("123456");
+            mpg.setDataSource(dsc);
+        } catch (Exception e) {
+            throw new RuntimeException("数据源配置错误");
+        }
+
+        // 包配置
+        PackageConfig pc = new PackageConfig();
+        
+        //pc.setModuleName(scanner("模块名"));
+
+        pc.setParent("com.gree.fridge");
+        pc.setController("controller");
+        pc.setEntity("entity");
+        pc.setMapper("dao");
+        mpg.setPackageInfo(pc);
+
+        //自定义配置
+        InjectionConfig cfg = new InjectionConfig() {
+            @Override
+            public void initMap() {
+                // to do nothing
+            }
+        };
+
+        // 如果模板引擎是 freemarker
+        String templatePath = "/templates/mapper.xml.ftl";
+
+        // 如果模板引擎是 velocity
+        //String templatePath = "/templates/entity.xml.vm";
+
+        // 自定义输出配置
+        ArrayList<FileOutConfig> focList = new ArrayList<>();
+
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(templatePath) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名
+                return projectPath + "/src/main/resources/mapping/" /*+ pc.getModuleName() + "/"*/ + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+            }
+        });
+
+        cfg.setFileOutConfigList(focList);
+        mpg.setCfg(cfg);
+
+        // 配置模板
+        TemplateConfig templateConfig = new TemplateConfig();
+        templateConfig.setXml(null);
+        mpg.setTemplate(templateConfig);
+
+
+ // 策略配置
+        StrategyConfig strategy = new StrategyConfig();
+        strategy.setNaming(NamingStrategy.underline_to_camel);
+        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+
+        strategy.setEntityLombokModel(true);    //是否为lombok模型
+
+        strategy.setRestControllerStyle(true);  //生成@RestController控制器
+
+        strategy.setSuperEntityColumns("id");   // 写于父类中的公共字段
+
+        strategy.setInclude(scanner("表名(逗号分隔)").split(","));
+
+        strategy.setControllerMappingHyphenStyle(true);     //驼峰转接字符
+
+        strategy.setTablePrefix(pc.getModuleName() + "_");      //表前缀
+        mpg.setStrategy(strategy);
+
+        mpg.setTemplateEngine(new FreemarkerTemplateEngine());  //设置模板引擎类型
+        mpg.execute();
+    }
+}

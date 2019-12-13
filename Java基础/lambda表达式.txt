@@ -1,0 +1,7 @@
+
+·使用Java 8时，首先做的就是使用lambda表达式替换匿名类；用() -> {}代码块替代了整个匿名类。
+
+·可以使用lambda写出如下代码：
+							(params) -> expression
+							(params) -> statement
+							(params) -> { statements }
