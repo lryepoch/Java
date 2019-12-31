@@ -1,11 +1,140 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : localhost
+Source Server Version : 50716
+Source Host           : localhost:3306
+Source Database       : students
+
+Target Server Type    : MYSQL
+Target Server Version : 50716
+File Encoding         : 65001
+
+Date: 2019-12-30 10:49:51
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for course
+-- ----------------------------
+DROP TABLE IF EXISTS `course`;
+CREATE TABLE `course` (
+  `cno` varchar(20) NOT NULL COMMENT '课程号',
+  `cname` varchar(200) DEFAULT NULL COMMENT '课程名',
+  `credit` int(11) DEFAULT NULL COMMENT '学分',
+  PRIMARY KEY (`cno`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='课程表';
+
+-- ----------------------------
+-- Records of course
+-- ----------------------------
+INSERT INTO `course` VALUES ('c001', '语文', '4');
+INSERT INTO `course` VALUES ('c002', '数学', '3');
+INSERT INTO `course` VALUES ('c003', '英语', '2');
+INSERT INTO `course` VALUES ('c004', '计算机', '4');
+INSERT INTO `course` VALUES ('c005', '历史', '2');
+
+-- ----------------------------
+-- Table structure for sc
+-- ----------------------------
+DROP TABLE IF EXISTS `sc`;
+CREATE TABLE `sc` (
+  `sno` varchar(20) NOT NULL COMMENT '学号',
+  `cno` varchar(20) NOT NULL COMMENT '课程号',
+  `score` double DEFAULT NULL COMMENT '成绩',
+  PRIMARY KEY (`sno`,`cno`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='选课表';
+
+-- ----------------------------
+-- Records of sc
+-- ----------------------------
+INSERT INTO `sc` VALUES ('s001', 'c001', '87');
+INSERT INTO `sc` VALUES ('s001', 'c002', null);
+INSERT INTO `sc` VALUES ('s001', 'c004', '99');
+INSERT INTO `sc` VALUES ('s001', 'c005', '100');
+INSERT INTO `sc` VALUES ('s002', 'c002', '90');
+INSERT INTO `sc` VALUES ('s003', 'c001', '59');
+INSERT INTO `sc` VALUES ('s003', 'c002', '45');
+INSERT INTO `sc` VALUES ('s003', 'c005', '26');
+INSERT INTO `sc` VALUES ('s004', 'c001', '39');
+INSERT INTO `sc` VALUES ('s004', 'c003', '77');
+
+-- ----------------------------
+-- Table structure for student
+-- ----------------------------
+DROP TABLE IF EXISTS `student`;
+CREATE TABLE `student` (
+  `sno` varchar(20) NOT NULL COMMENT '学号',
+  `sname` varchar(200) DEFAULT NULL COMMENT '姓名',
+  `birthday` date DEFAULT NULL COMMENT '生日',
+  PRIMARY KEY (`sno`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of student
+-- ----------------------------
+INSERT INTO `student` VALUES ('s001', 'gawtg', '2019-12-18');
+INSERT INTO `student` VALUES ('s002', 'sasf', '2018-11-01');
+INSERT INTO `student` VALUES ('s003', 'gaeg', '2019-12-11');
+INSERT INTO `student` VALUES ('s004', 'gher', '2019-12-04');
+INSERT INTO `student` VALUES ('s005', 'haogo', null);
+INSERT INTO `student` VALUES ('s006', 'heryh', '2019-12-03');
+INSERT INTO `student` VALUES ('s007', 'hrh', '2019-12-03');
+INSERT INTO `student` VALUES ('s008', 'hehe', '2019-12-03');
+INSERT INTO `student` VALUES ('s009', 'aaa', '2019-12-31');
+INSERT INTO `student` VALUES ('s010', 'sss', '2019-10-30');
+
+
 
 1.查询挂科数目超过3门的学生全部信息：
-SELECT a.Sno,a.Sname
+（查什么：学生全部信息
+挂科：score<60
+数目超过3门：即每人都要超过3门，所以对sno进行分组，并使用聚集函数count(*)
+使用exists：内外要建立联系，所以a.sno=b.sno
+）
+SELECT a.sno,a.sname
 FROM student a
 WHERE EXISTS(
 	SELECT *
 	FROM sc b
-	WHERE SCORE<60 AND a.Sno=b.Sno
-	GROUP BY b.Sno
+	WHERE score<60 AND a.sno=b.sno
+	GROUP BY b.sno
 	HAVING COUNT(*)>3
 )
+>查询分类.嵌套查询.子查询.带有exists的子查询：
+
+
+2.列出选修了C001课程的学生的学号、姓名
+select sno,sname
+from student
+where sno in (select sno from sc where cno='c001')
+
+
+3.选出学号为s003的同学所选课程中的成绩大于他平均成绩的课程的课程号
+select cno
+from sc
+where score > (select avg(score) from sc where sno='s003')
+and sno='s003'
+
+
+4.查询选课人数最多的课程号
+select cno
+from sc
+group by cno
+having count(*)>=all(select count(*) from sc group by cno)
+
+
+5.列出选修了c001课程的学生的学号、姓名
+select sno,sname
+from student a
+where exists(select * from sc b where a.sno=b.sno and cno='c001')
+
+
+6.查询选了所有课程的学生
+
+
+7.找出被所有学生选了的课程的课程号和课程名
+
+
+8.求学分获得8分以上学生的学号,平均分以及总学分

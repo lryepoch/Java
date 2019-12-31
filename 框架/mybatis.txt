@@ -388,3 +388,29 @@ MyBatis：
 
 		xxxExample：主键非空的自定义条件操作。
 					对你注入的字段全部更新（不判断是否为Null）。
+
+
+
+·在mybatis中对sql语句中涉及到大于号，小于号，如何操作：
+	··将其放入到<![CDATA[  ]]>标签中；
+		<![CDATA[
+	       and mm.ttime > to_date(#{startDateTime},'yyyy-mm-dd hh24:mi:ss')
+	       and mm.ttime <= to_date(#{endDateTime},'yyyy-mm-dd hh24:mi:ss')
+        ]]>
+        
+	··如果是在动态语句中，则需要转换；
+		<if test="startDateTime!=null"> and mm.ttime &gt; to_date(#{startDateTime},'yyyy-mm-dd hh24:mi:ss')</if>
+		<if test="endDateTime!=null"> and mm.ttime &lt;= to_date(#{endDateTime},'yyyy-mm-dd hh24:mi:ss')</if>
+		符号：
+
+		&lt;          <
+
+		&gt;          >  
+
+		&lt;&gt;   <>
+
+		&amp;      &
+
+		&apos;      '
+
+		&quot;      "

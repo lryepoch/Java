@@ -1,9 +1,14 @@
 
-springMVC注解：
+SpringMVC注解：
 ---------------
 ·@RequestParam:
 	··在SpringMVC后台控制层获取参数的方式主要有两种，一种是request.getParameter("name")，另外一种是用注解@RequestParam直接获取;
 	··加与不加都可以获取到参数，但特定的需求或限制的时候，就需要结合@RequestParam注解来使用；
-	··添加required=false关闭必须传递参数的限制，这样就和不带注解的效果一样；required=false表示不传的话，会给参数赋值为null；
-		required=true就是必须要有，不传值会报错，即抛出异常；
+	··添加required=false关闭必须传递参数的限制，这样就和不带注解的效果一样；required=false 表示不传的话，会给参数赋值为null；
+		required=true 就是必须要有，不传值会报错，即抛出异常；
 	··可以在参数为空的情况下，为我们设置一个参数的默认值defaultValue=""，没有参数的情况下，获取到的就是默认值；
+
+
+·@RequestParam和@RequestBody区别：
+	··使用@RequestParam获取参数，然后使用@RequestBody对json格式的参数转换为Java类型；
+	··@RequestBody需要把所有请求参数作为json解析，因此，不能包含key=value这样的写法在请求url中，所有的请求参数都是一个json。直接通过浏览器输入url时，@RequestBody获取不到json对象，需要用java编程或者基于ajax的方法请求，将Content-Type设置为application/json；
