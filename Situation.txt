@@ -18,9 +18,11 @@
 
 ·常见分页功能的实现方式：
 	··插件；
+		[mybatis]pagehelper，[jpa]Pageable；
 	··自行封装；
+		定义一个Page<T>，有currentPage/pageSize/total/recordList/pageNum/,根据sql语句的limit currentRecord,pageSize;对需要的字段拼接出来；
 
 
 ·如何处理图片问题：
-	··存到数据库；
-	··存到服务器；
+	··存到数据库；存放图片路径；
+	··存到服务器；上传图片到服务器；
