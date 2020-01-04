@@ -45,10 +45,6 @@
 	··static文件夹，既不能直接访问，也不能通过服务器访问到。因此，这个文件夹，可能是放一些css、图片这样的文件供服务器内部引用。
 
 
-·注解：
-	··@ServletComponentScan：
-		在SpringBootApplication上使用，该注解使得Servlet、Filter、Listener可以直接通过@WebServlet、@WebFilter、@WebListener注解自动注册，无需其他代码。
 
-	··
 
 

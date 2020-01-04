@@ -1,6 +1,6 @@
 
 SpringMVC注解：
----------------
+---------------------
 ·@RequestParam:
 	··在SpringMVC后台控制层获取参数的方式主要有两种，一种是request.getParameter("name")，另外一种是用注解@RequestParam直接获取;
 	··加与不加都可以获取到参数，但特定的需求或限制的时候，就需要结合@RequestParam注解来使用；
@@ -12,3 +12,94 @@ SpringMVC注解：
 ·@RequestParam和@RequestBody区别：
 	··使用@RequestParam获取参数，然后使用@RequestBody对json格式的参数转换为Java类型；
 	··@RequestBody需要把所有请求参数作为json解析，因此，不能包含key=value这样的写法在请求url中，所有的请求参数都是一个json。直接通过浏览器输入url时，@RequestBody获取不到json对象，需要用java编程或者基于ajax的方法请求，将Content-Type设置为application/json；
+
+
+·@PathVariable：
+	还有一种应用场景，接口规范为resultful风格时，举个例子：如果要获取某个id下此条问题答案的查询次数的话，则后台就需要动态获取参数，其注解为@PathVariable，并且requestMapping中的value应为value="/{id}/queryNum"
+
+
+
+
+springboot注解：
+----------------------------
+·注解：
+	··@ServletComponentScan：
+		在SpringBootApplication上使用，该注解使得Servlet、Filter、Listener可以直接通过@WebServlet、@WebFilter、@WebListener注解自动注册，无需其他代码。
+
+	··
+
+
+
+
+
+
+
+
+
+
+
+实体类属性注解：
+---------------------------
+注解	     作用类型	                   解释
+@NotNull	基本类型	              属性不能为null
+@NotEmpty	集合类	                   集合不能为null，且size大于0
+@NotBlanck	字符串、字符	          字符类不能为null，且去掉空格之后长度大于0
+@AssertTrue	Boolean、boolean	        布尔属性必须是true
+@Min	数字类型（原子和包装）	       限定数字的最小值（整型）
+@Max	同@Min	                     限定数字的最大值（整型）
+@DecimalMin	同@Min	              限定数字的最小值（字符串，可以是小数）
+@DecimalMax	同@Min	              限定数字的最大值（字符串，可以是小数）
+@Range	数字类型（原子和包装）	     限定数字范围（长整型）
+@Length	字符串	                    限定字符串长度
+@Size	集合	                   限定集合大小
+@Past	时间、日期	            必须是一个过去的时间或日期
+@Future	时期、时间	              必须是一个未来的时间或日期
+@Email	        字符串	         必须是一个邮箱格式
+@Pattern	字符串、字符	        正则匹配字符串
+以上注解用到要验证参数的封装类中的属性上：
+
+
+public class Test {
+    
+    @NotNull(message = "ID不能为空")
+    @Range(min = 1, max = 100, message = "ID必须在1到100之间")
+    private Integer id;
+
+    @NotBlank(message = "姓名不能为空")
+    @Length(min = 2, max = 6, message = "姓名必须在2到6位之间")
+    private String name;
+
+    @NotNull(message = "余额不能为空")
+    @DecimalMax(value = "30.50", message = "余额不能超过30.5")
+    @DecimalMin(value = "1.50", message = "余额不能低于1.5")
+    private BigDecimal amount;
+
+    @NotNull(message = "生日不能为空")
+    @Past(message = "生日必须是过去")
+    private Date birthday;
+
+    @NotBlank(message = "邮箱不能为空")
+    @Email(message = "邮箱格式不正确")
+    private String email;
+
+    @NotBlank(message = "手机号不能为空")
+    @Pattern(regexp = "^(((13[0-9])|(14[579])|(15([0-3]|[5-9]))|(16[6])|(17[0135678])|(18[0-9])|(19[89]))\\d{8})$", message = "手机号格式错误")
+    private String phone;
+
+}
+
+然后在controller的每个接口中使用@Validated和BindingResult类
+
+@Validated注解用于验证一个入参，验证之后的消息绑定到BindingResult类中：
+
+    @PostMapping("/test")
+    @ApiOperation(value = "测试", notes = "", response = Result.class)
+    public Result test(@ApiParam(name = "test", value = "参数", required = true) @Validated @RequestBody Test test, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            String errorMsg = bindingResult.getFieldError().getDefaultMessage();
+            return Result.error(errorMsg);
+        }
+        return Result.ok("参数验证通过");
+    }
+
+这样使用注解来验证参数就很方便了，不用再写代码去验证入参了
