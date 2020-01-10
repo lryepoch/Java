@@ -1,12 +1,29 @@
 
 SpringMVC注解：
 ---------------------
-·@RequestParam:
-	··在SpringMVC后台控制层获取参数的方式主要有两种，一种是request.getParameter("name")，另外一种是用注解@RequestParam直接获取;
-	··加与不加都可以获取到参数，但特定的需求或限制的时候，就需要结合@RequestParam注解来使用；
-	··添加required=false关闭必须传递参数的限制，这样就和不带注解的效果一样；required=false 表示不传的话，会给参数赋值为null；
-		required=true 就是必须要有，不传值会报错，即抛出异常；
-	··可以在参数为空的情况下，为我们设置一个参数的默认值defaultValue=""，没有参数的情况下，获取到的就是默认值；
+
+·@RequestParam注解：接收请求参数。
+	@RequestParam是位列Controller层，作用是为获取前端参数，方式主要有两种，一种是request.getParameter("name")，另外一种是用注解@RequestParam直接获取，解决的是前后端参数不一致的问题。
+	(@RequestParam（value（name）="id"，required=false，defaultValue=1）Integer id)【required默认是true，不传值会抛出异常。当设置为false时，不传id时不会出错，以defaultValue值显示】
+
+
+	区别与联系：
+	··@RequestParam 和 @PathVariable 注解是用于从request中接收请求的，两个都可以接收参数；
+	··不同的是@RequestParam 是从request里面拿取值，而 @PathVariable 是从一个URI模板里面来填充；
+	··总的来说，@RequestParam均是键值对形式。与@PathVariable中的占位符形式不同！！！
+
+
+·@PathVariable
+	这个注解能够识别URL里面的一个模板。
+	【注意：】如果URL中无参数，将会出错；
+					如果URL有参数，但是没有使用@PathVariable该注解，那么URL的参数不会默认与方法参数绑定！方法里的参数会默认绑定表单里面对应的参数！
+					如果参数名与占位符一致，则可直接使用@PathVariable；如果不一致，则在@PathVariable( )括号内绑定占位符。
+
+	带占位符的 URL 是 Spring3.0 新增的功能，该功能在SpringMVC 向 REST 目标挺进发展过程中具有里程碑的意义，
+	通过 @PathVariable 可以将 URL 中占位符参数绑定到控制器处理方法的入参中：URL 中的 {xxx} 占位符可以通过@PathVariable(“xxx“) 绑定到操作方法的入参中。
+
+	举个例子：如果要获取某个id下此条问题答案的查询次数的话，则后台就需要动态获取参数，其注解为@PathVariable，并且requestMapping中的value应为value="/{id}/queryNum"。
+
 
 
 ·@RequestParam和@RequestBody区别：
@@ -14,19 +31,70 @@ SpringMVC注解：
 	··@RequestBody需要把所有请求参数作为json解析，因此，不能包含key=value这样的写法在请求url中，所有的请求参数都是一个json。直接通过浏览器输入url时，@RequestBody获取不到json对象，需要用java编程或者基于ajax的方法请求，将Content-Type设置为application/json；
 
 
-·@PathVariable：
-	还有一种应用场景，接口规范为resultful风格时，举个例子：如果要获取某个id下此条问题答案的查询次数的话，则后台就需要动态获取参数，其注解为@PathVariable，并且requestMapping中的value应为value="/{id}/queryNum"
+·@RequestMapping:
+	··可以用于类或方法上，在类上表示所有响应请求的方法都是以该地址作为"父路径"；
+	··params只是在其中的一个参数而已；
+	··该注解有6个属性，分三类：
+			a.value,method(重要)			##@RequestMapping(value = "/editCourse", method = {RequestMethod.GET})
+			b.consumes,produces
+			c.params,headers
+			@RequestMapping注解：设置访问路径，一般和方法名一致。如果没有写/，会自动加上/。
+
+
+·@PathParam
+	这个注解是和spring的pathVariable是一样的，也是基于模板的，但是这个是jboss包下面的一个实现，上面的是spring的一个实现，都要导包。
+
+·@QueryParam
+	@QueryParam 是 JAX-RS 本来就提供的，和Spring的RequestParam作用一致。
+
+·@ResponseBody
+	@responseBody表示服务器返回的时候以一种什么样的方式进行返回， 将内容或对象作为 HTTP 响应正文返回，值有很多，一般设定为json。
+	Spring的ResponseBody和RestController注解返回的json数据不是json字符串，而是json对象，因为可以点出对象里面的属性。
+
+·@RequestBody
+	一般是post请求的时候才会使用这个请求，把参数丢在@Requestbody里面。
+
+
+·@Valid：@Valid不提供分组功能；
+	··@Valid注解用于校验，所属包为：javax.validation.Valid；
+
+	··首先需要在实体类的相应字段上添加用于充当校验条件的注解，如：@Min,如下代码（age属于Girl类中的属性）：
+		@Min(value = 18,message = "未成年禁止入内")  
+		private Integer age;
+
+	··其次在controller层的方法的要校验的参数上添加@Valid注解，并且需要传入BindingResult对象，用于获取校验失败情况下的反馈信息，
+		@Validated注解用于验证一个入参，验证之后的消息绑定到BindingResult类中。
+
+		如下代码：
+		@PostMapping("/girls")  
+		public Girl addGirl(@Valid Girl girl, BindingResult bindingResult) {  
+		    if(bindingResult.hasErrors()){  
+		        System.out.println(bindingResult.getFieldError().getDefaultMessage());  
+		        return null;  
+		    }  
+		    return girlResposity.save(girl);  
+		}  
+
+		解析：bindingResult.getFieldError.getDefaultMessage()用于获取相应字段上添加的message中的内容，如：@Min注解中message属性的内容。
+				这样使用注解来验证参数就很方便了，不用再写代码去验证入参了。
+
+
+
+MyBatis：
+---------------------------
+·@Param：
+	MyBatis所提供的(org.apache.ibatis.annotations.Param)，作为Dao层的注解，作用是用于传递参数，从而可以与SQL中的的字段名相对应，一般在2=<参数个数<=5时使用最佳。
 
 
 
 
-springboot注解：
+springboot：
 ----------------------------
 ·注解：
 	··@ServletComponentScan：
 		在SpringBootApplication上使用，该注解使得Servlet、Filter、Listener可以直接通过@WebServlet、@WebFilter、@WebListener注解自动注册，无需其他代码。
 
-	··
+
 
 
 
@@ -41,20 +109,20 @@ springboot注解：
 实体类属性注解：
 ---------------------------
 注解	     作用类型	                   解释
-@NotNull	基本类型	              属性不能为null
-@NotEmpty	集合类	                   集合不能为null，且size大于0
-@NotBlanck	字符串、字符	          字符类不能为null，且去掉空格之后长度大于0
-@AssertTrue	Boolean、boolean	        布尔属性必须是true
-@Min	数字类型（原子和包装）	       限定数字的最小值（整型）
-@Max	同@Min	                     限定数字的最大值（整型）
-@DecimalMin	同@Min	              限定数字的最小值（字符串，可以是小数）
-@DecimalMax	同@Min	              限定数字的最大值（字符串，可以是小数）
-@Range	数字类型（原子和包装）	     限定数字范围（长整型）
-@Length	字符串	                    限定字符串长度
-@Size	集合	                   限定集合大小
-@Past	时间、日期	            必须是一个过去的时间或日期
-@Future	时期、时间	              必须是一个未来的时间或日期
-@Email	        字符串	         必须是一个邮箱格式
+@NotNull	 基本类型	                属性不能为null
+@NotEmpty	 集合类	                    集合不能为null，且size大于0
+@NotBlanck	 字符串、字符	            字符类不能为null，且去掉空格之后长度大于0
+@AssertTrue	 Boolean、boolean	        布尔属性必须是true
+@Min	    数字类型（原子和包装）	    限定数字的最小值（整型）
+@Max	    同@Min	                    限定数字的最大值（整型）
+@DecimalMin	同@Min	                限定数字的最小值（字符串，可以是小数）
+@DecimalMax	同@Min	                限定数字的最大值（字符串，可以是小数）
+@Range	    数字类型（原子和包装）	    限定数字范围（长整型）
+@Length	    字符串	                    限定字符串长度
+@Size	    集合	                    限定集合大小
+@Past	    时间、日期	            必须是一个过去的时间或日期
+@Future	    时期、时间	            必须是一个未来的时间或日期
+@Email	    字符串	                必须是一个邮箱格式
 @Pattern	字符串、字符	        正则匹配字符串
 以上注解用到要验证参数的封装类中的属性上：
 
@@ -88,18 +156,6 @@ public class Test {
 
 }
 
-然后在controller的每个接口中使用@Validated和BindingResult类
 
-@Validated注解用于验证一个入参，验证之后的消息绑定到BindingResult类中：
 
-    @PostMapping("/test")
-    @ApiOperation(value = "测试", notes = "", response = Result.class)
-    public Result test(@ApiParam(name = "test", value = "参数", required = true) @Validated @RequestBody Test test, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
-            String errorMsg = bindingResult.getFieldError().getDefaultMessage();
-            return Result.error(errorMsg);
-        }
-        return Result.ok("参数验证通过");
-    }
 
-这样使用注解来验证参数就很方便了，不用再写代码去验证入参了

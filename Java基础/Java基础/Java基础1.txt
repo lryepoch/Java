@@ -259,6 +259,33 @@
 			            int getNumber();				//接口方法
              }         
 
+			所谓的匿名内部类就是一个没有显式的名字的内部类，在实际开发中，此种内部类用的是非常多的。
+			本质：匿名内部类会隐式的继承一个类或者实现一个接口，或者说，匿名内部类是一个继承了该类或者实现了该接口的子类匿名对象。
+			格式：
+					new 类名/接口/抽象类(){
+						//实现的是它的实现类
+					}
+
+			public class Outer{
+				public void method(){
+					new inner(){
+						public void info(){
+							sout("helloworld");
+						}
+					}.info();
+				}
+				public static void main(String[] args){
+					Outer outer = new Outer();
+					outer.method();
+				}
+			}
+
+			interface inner{
+				public void info();
+			}
+
+			总结：通过程序看出，实际上我们的inner是一个接口，本身接口是不能直接new的，但是呢却又发现我们在new的时候，inner这个接口后面带了一对花括号，那么这个就表示实际上我现在new的是这个接口的实现类。但是发现，这个实现类是没有名字的。
+
 
 
 --关于内部类的几个问题：

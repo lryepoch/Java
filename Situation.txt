@@ -26,3 +26,22 @@
 ·如何处理图片问题：
 	··存到数据库；存放图片路径；
 	··存到服务器；上传图片到服务器；
+
+
+
+·程序中如何获取实时时间：
+	··数据库字段默认设置为CURRENT_TIMESTAMP
+	··在sql语句中对时间赋值：now()
+	··在代码中调用setter
+
+
+·mybatis中如何映射实体类
+	··调用@Param注解
+	··在xml文件中使用parameterType
+
+
+
+·查：Get	无注解
+·增：Post	@RequestBody
+·改：Post	@RequestBody
+·删：Post	@RequestParam

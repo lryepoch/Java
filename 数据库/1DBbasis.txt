@@ -203,7 +203,6 @@ https://www.cnblogs.com/luyucheng/p/6289048.html
 ·存储引擎：
 http://www.cnblogs.com/luyucheng/p/6306512.html
 
-
 	··分类：InnoDB，MyISAM，Memory，Merge，Archive，Federated，CSV，Blackhole等；
 
 	··INNODB：存储限制可达64TB；
@@ -224,8 +223,8 @@ http://www.cnblogs.com/luyucheng/p/6306512.html
 			MyISAM 支持空间索引，可以用于地理数据存储；
 
 			适合在以下几种情况下使用：
-				1.对于 count( ) 查询来说 MyISAM 更有优势；
-				2.MyISAM 引擎的表的查询、更新、插入的效率要比 InnoDB 高。
+				1.对于count( )查询来说MyISAM更有优势；
+				2.MyISAM 引擎的表的查询、更新、插入的效率要比InnoDB高。
 
 	··NDBCluster
 			1.特性
@@ -244,10 +243,10 @@ http://www.cnblogs.com/luyucheng/p/6306512.html
 			　　尽可能满足SQL节点的计算性能，大一点的集群SQL节点会明显多余Data节点
 			　　在各节点之间尽可能使用万兆网络环境互联，以减少数据在网络层传输过程中的延时
 
-			4. 它的限制
+			4.它的限制
 			    4.1 不支持临时表。
 			    4.2 不支持基于TEXT and BLOB 字段的索引。
-			   4.3 不支持FULLTEXT indexes.
+			    4.3 不支持FULLTEXT indexes。
 
 
 ··InnoDB和MyISAM的区别？
