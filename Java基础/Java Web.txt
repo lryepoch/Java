@@ -161,6 +161,26 @@ Java Web：
 		4.请求到服务端时，将根据请求中的sessionId查找session，如果可以获取到则返回，否则返回null或者返回新构建的session，老的session依旧存在，请参考API。 
 
 
+	request.getSession()一般是被用来存储当前用户对象到session中，或者从session中获取当前用户对象。 
+
+		分为无参和有参两种写法： 
+		1. 无参： request.getSession() 
+
+		    从当前request中获取session，如果获取不到session，则会自动创建一个session，并返回新创建的session；如果获取到则返回获取到的session; 
+
+
+		2. 有参： request.getSession(boolean var1) 
+
+		    2.1  request.getSession(true) 
+		           这种方式和无参时一样，只是增家了一个true参数，明确告诉它在获取不到的时候自动创建session; 
+		    2.2. request.getSession(false) 
+		           这种方式与上两种的区别，就是在获取不到session的时候，不会自动创建session，而是会返回null。
+
+		各方式的应用场景：
+			如果想要存储信息到session中时，使用request.getSession()；
+			如果想要获取session中的信息时，使用request.getsession(false)，并在获取后对session变量进行是否为null的判断，再进行下一步操作。
+
+
 
 
 --关于JSP：建立在servlet规范之上的动态网页开发技术；html和Java代码可以共存。

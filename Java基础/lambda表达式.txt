@@ -32,7 +32,14 @@
 
 	··使用parallelStream().forEach()，是并行遍历循环，相当于是使用了多线程处理，这样可以在一定程度上提高执行效率.而程序在运行过程中具体会使用多少个线程进行处理,系统会根据运行服务器的资源占用情况自动进行分配。
 
+
+Optional：
+	orElse在不论optional有没有值的时候都会执行，在optional为空值的情况下orElse和orElseGet都会执行，当optional不为空时，orElseGet不会执行。
 	
+
+
+
+
 
 ------------------------------------------------------------
 
@@ -60,35 +67,35 @@
 
 
 ·高级部分：
-··匿名内部类实现
-··lambda表达式的实现方式（在匿名内部类基础上进化）
-··静态引用：将参数默认传给调用的方法
-··实例方法引用：通过创建对象调用实例方法
-··构造方法引用：绑定函数式接口
+	··匿名内部类实现
+	··lambda表达式的实现方式（在匿名内部类基础上进化）
+	··静态引用：将参数默认传给调用的方法
+	··实例方法引用：通过创建对象调用实例方法
+	··构造方法引用：绑定函数式接口
 
 ·stream api
-··聚合操作：
-··stream的处理流程：
-	数据源
-	数据转换
-	获取结果
+	··聚合操作：
+	··stream的处理流程：
+		数据源
+		数据转换
+		获取结果
 
-··获取stream对象
-	1.从集合或者数组中获取
-	2.BufferedReader
-	3.……
+	··获取stream对象
+		1.从集合或者数组中获取
+		2.BufferedReader
+		3.……
 
-··中间操作API：
-	操作结果是一个Stream,中间操作可以有一个或者多个连续的中间操作，中间操作只记录操作方式，不做具体执行，直到结束操作发生时，才做数据的最终执行。
-		中间操作：就是业务逻辑处理。
+	··中间操作API：
+		操作结果是一个Stream,中间操作可以有一个或者多个连续的中间操作，中间操作只记录操作方式，不做具体执行，直到结束操作发生时，才做数据的最终执行。
+			中间操作：就是业务逻辑处理。
 
-	中间操作过程：无状态；数据处理是，不受前置中间操作的影响；
-					map/filter/peek/parallel/sequential/unordered
-				  有状态：数据处理时，受到前置中间操作的影响：
-					distinct/sorted/limit/skip
+		中间操作过程：无状态；数据处理是，不受前置中间操作的影响；
+						map/filter/peek/parallel/sequential/unordered
+					  有状态：数据处理时，受到前置中间操作的影响：
+						distinct/sorted/limit/skip
 
-··结束操作：
-	需要注意：一个stream对象，只能有一个terminal操作，这个操作一旦发生，就会正是处理数据，生成对应的处理结果。
+	··结束操作：
+		需要注意：一个stream对象，只能有一个terminal操作，这个操作一旦发生，就会正是处理数据，生成对应的处理结果。
 
-	分类：非短路操作：当前的stream对象必须处理完集合中所有数据，才能得到处理结果。forEach/forEachOrdered/toArray/reduce/collect/min/max/count/iterator
-			短路操作：当前的stream对象在处理过程中，一旦满足某个条件，就可以得到结果。anyMatch/allMatch/noneMatch/findFirst/findAny等
+		分类：非短路操作：当前的stream对象必须处理完集合中所有数据，才能得到处理结果。forEach/forEachOrdered/toArray/reduce/collect/min/max/count/iterator
+				短路操作：当前的stream对象在处理过程中，一旦满足某个条件，就可以得到结果。anyMatch/allMatch/noneMatch/findFirst/findAny等

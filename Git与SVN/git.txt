@@ -38,7 +38,7 @@
 
 		2.本地新建文件夹，即为工作区workspace；
 
-		3.$ git init                      ##把这个文件夹变成Git可管理的仓库；
+		3.$ git init                      ##把这个文件夹变成git可管理的仓库；
 
 		4.把项目粘贴到工作区workspace；
 
@@ -294,8 +294,8 @@
 		分支管理：
 		git checkout –b dev 												##创建dev分支 并切换到dev分支上【-b参数是指创建并切换】
 		git checkout -- XX 													##把XX文件在工作区的修改全部撤销，恢复工作区与暂存区一致
-		git checkout [master(分支名)]									##切换回master分支
-		git merge dev 															##在当前的分支上合并dev分支
+		git checkout [master(分支名)]										##切换回master分支
+		git merge dev 														##在当前的分支上合并dev分支
 
 		git branch 										##查看本地分支【当前分支前面会添加一个星号】
 		git branch -r                                   ##查看所有远程分支
