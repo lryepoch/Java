@@ -358,10 +358,10 @@ MyBatis：
 	---构建Criteria查询：Criteria对SQL进行封装，让开发人员可以用对象的方式对数据库进行操作。Criteria中的方法是定义SQL 语句where后的查询条件。
 
 		创建 Criteria 对象 可以使用Example类中的 createCriteria() 或者 or() ；
-		用 createCriteria() 创建的，它会自动为 List 属性添加一个 Criteria 对象 - 这使得它更容易写一个简单的where子句， 如果您不需要 or 或者其他几个子句组合的话；
-		用 or(Criteria criteria) 方法创建 Criteria 对象, 方法里的 criteria 对象会被添加进 Criteria 对象的列表中；
+			···用 createCriteria() 创建的，它会自动为 List 属性添加一个 Criteria 对象 - 这使得它更容易写一个简单的where子句， 如果您不需要 or 或者其他几个子句组合的话；
+			···用 or(Criteria criteria) 方法创建 Criteria 对象, 方法里的 criteria 对象会被添加进 Criteria 对象的列表中；
 
-		推荐您只使用 or() 方法创建 Criteria 对象。 我们相信这种方法使代码更有可读性。
+			推荐您只使用 or() 方法创建 Criteria 对象。 我们相信这种方法使代码更有可读性。
 
 		PO包下XXXExample.java文件解析：
 
