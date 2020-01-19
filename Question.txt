@@ -42,3 +42,8 @@
 ·@RequestMapping()默认值？
 @RequestMapping(value="/")
  method 不写的话，默认GET、POST都支持，根据前端方式自动适应
+
+
+
+
+ ·如何求两个集合的交集？
