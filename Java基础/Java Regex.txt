@@ -6,28 +6,28 @@
 ·从JDK1.4开始提供了支持正则表达式API。java.util.regex 包主要包括以下三个类：
 
 		··Pattern 类：
-			pattern 对象是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个 Pattern 对象。该方法接受一个正则表达式作为它的第一个参数。
+			pattern 对象是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个Pattern对象。该方法接受一个正则表达式作为它的第一个参数。
 
 			切割：String split()方法;            #根据给定正则表达式的匹配拆分此字符串。返回一个字符串数组。
 
 			获取：将字符串中的符合规则的子串取出。
 						操作步骤：
-				　　　　1，将正则表达式封装成对象。													Pattern p = Pattern.compile(reg);
+				　　　　1，将正则表达式封装成对象。											Pattern p = Pattern.compile(regex);
 				　　　　2，让正则对象和要操作的字符串相关联。								Matcher m  = p.matcher(str);
 				　　　　3，关联后，获取正则匹配引擎。
-				　　　　4，通过引擎对符合规则的子串进行操作，比如取出。				（m.find()；查找是否有符合规则的子串）
+				　　　　4，通过引擎对符合规则的子串进行操作，比如取出。					（m.find()；查找是否有符合规则的子串）
 																					（m.group()；只能获取一个匹配后的结果，所以需要遍历）
 
 
 			 OR boolean isMatch = Pattern.matches(regex, str);
 
 		··Matcher 类：
-			Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern 类一样，Matcher 也没有公共构造方法。你需要调用 Pattern 对象的 matcher 方法来获得一个 Matcher 对象。
+			Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern类一样，Matcher也没有公共构造方法。你需要调用Pattern对象的matcher方法来获得一个Matcher对象。
 
-			匹配：String  matches（）方法			#用规则匹配整个字符串，只要有一处不符合规则，就匹配结束，返回false。
-				  其实，String类中的matches方法。用的就是Pattern和Matcher对象来完成的。	只不过被String的方法封装后，用起来较为简单。但是功能却单一。
+			匹配：String  matches（） 		#用规则匹配整个字符串，只要有一处不符合规则，就匹配结束，返回false。
+				  							其实，String类中的matches方法。用的就是Pattern和Matcher对象来完成的。	只不过被String的方法封装后，用起来较为简单。但是功能却单一。
 
-			替换：String replaceAll(regex,str)方法          #使用给定的 replacement 替换此字符串所有匹配给定的正则表达式的子字符串。
+			替换：String replaceAll(regex,str)方法          #使用给定的replacement替换此字符串所有匹配给定的正则表达式的子字符串。
 						replaceFirst 替换首次匹配；
 
 
@@ -57,3 +57,30 @@
 
 		所以，在其他的语言中（如Perl），一个反斜杠 \ 就足以具有转义的作用，而在 Java 正则表达式中，则需要有两个反斜杠才能被解析为其他语言中的转义作用。
 		也可以简单的理解在 Java 的正则表达式中，两个 \\ 代表其他语言中的一个 \，这也就是为什么表示一位数字的正则表达式是 \\d，而表示一个普通的反斜杠是 \\\\，一个*普通的反斜杠是 \\\*。
+
+
+
+
+
+·正则表达式的贪婪和非贪婪：
+	··什么是正则表达式的贪婪与非贪婪匹配
+
+		如：String str="abcaxc";
+
+		Patter p="ab*c";
+
+		贪婪匹配:正则表达式一般趋向于最大长度匹配，也就是所谓的贪婪匹配。如上面使用模式p匹配字符串str，结果就是匹配到：abcaxc(ab*c)。
+
+		非贪婪匹配：就是匹配到结果就好，就少的匹配字符。如上面使用模式p匹配字符串str，结果就是匹配到：abc(ab*c)。
+
+	··编程中如何区分两种模式
+
+		默认是贪婪模式；在量词后面直接加上一个问号？就是非贪婪模式。
+
+		量词：{m,n}：m到n个
+
+		*：0个或者多个
+
+		+：1个或者多个
+
+		？：0或一个

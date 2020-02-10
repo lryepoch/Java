@@ -63,3 +63,16 @@
 ·mybatis别名配置：
 	··当实体类中的字段与表中的字段不匹配时（不符合驼峰等），需要使用as来定义别名。
 	··在xml配置文件中自己定义一个resultMap实现别名配置。
+
+
+
+
+·postman的使用：
+	··传入一个参数【get】：
+						(1)Params：输入传入参数的key和value；
+						(2)Body：
+							@RequestParam + form-data：键值对
+							@RequestParam + x-www-form-urlencoded      将表单数据编码为(name1=value1&name2=value2…)
+
+	··传入一个对象【post】：
+						Body：row->json

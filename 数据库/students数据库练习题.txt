@@ -87,7 +87,7 @@ INSERT INTO `student` VALUES ('s010', 'sss', '2019-10-30');
 
 
 
-1.查询挂科数目超过3门的学生全部信息：
+·查询挂科数目超过3门的学生全部信息：
 （查什么：学生全部信息
 挂科：score<60
 数目超过3门：即每人都要超过3门，所以对sno进行分组，并使用聚集函数count(*)
@@ -105,36 +105,36 @@ WHERE EXISTS(
 >查询分类.嵌套查询.子查询.带有exists的子查询：
 
 
-2.列出选修了C001课程的学生的学号、姓名
+·列出选修了C001课程的学生的学号、姓名
 select sno,sname
 from student
 where sno in (select sno from sc where cno='c001')
 
 
-3.选出学号为s003的同学所选课程中的成绩大于他平均成绩的课程的课程号
+·选出学号为s003的同学所选课程中的成绩大于他平均成绩的课程的课程号
 select cno
 from sc
 where score > (select avg(score) from sc where sno='s003')
 and sno='s003'
 
 
-4.查询选课人数最多的课程号
+·查询选课人数最多的课程号
 select cno
 from sc
 group by cno
 having count(*)>=all(select count(*) from sc group by cno)
 
 
-5.列出选修了c001课程的学生的学号、姓名
+·列出选修了c001课程的学生的学号、姓名
 select sno,sname
 from student a
 where exists(select * from sc b where a.sno=b.sno and cno='c001')
 
 
-6.查询选了所有课程的学生
+·查询选了所有课程的学生
 
 
-7.找出被所有学生选了的课程的课程号和课程名
+·找出被所有学生选了的课程的课程号和课程名
 
 
-8.求学分获得8分以上学生的学号,平均分以及总学分
+·求学分获得8分以上学生的学号,平均分以及总学分

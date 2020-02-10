@@ -1,26 +1,25 @@
-Java 	IO：
 
---文件编码：
+·文件编码：
 	
---File类的使用：
+·File类的使用：
 	1.java.io.File用于表示文件（文件）；
 	2.File类只用于表示文件（目录）的信息（名称、大小等），不能用于文件内容的访问；
 	3.ALT+/：显示类的构造方法；
 	4.File的API；
 
 
-1、BIO：同步阻塞。
+·BIO：同步阻塞。
 	NIO：同步非阻塞。
 	AIO：异步非阻塞。
 
-2、实际上字节流在操作时本身不会用到缓冲区（内存），是文件本身直接操作的，而字符流在操作时使用了缓冲区，通过缓冲区再操作文件。
+·实际上字节流在操作时本身不会用到缓冲区（内存），是文件本身直接操作的，而字符流在操作时使用了缓冲区，通过缓冲区再操作文件。
 提问：使用字节流好还是字符流好？
 学习完字节流和字符流的基本操作后，已经大概地明白了操作流程的各个区别，那么在开发中是使用字节流好还是字符流好呢？
 
 回答：使用字节流更好。
 在回答之前，先为读者讲解这样的一个概念，所有的文件在硬盘或在传输时都是以字节的方式进行的，包括图片等都是按字节的方式存储的，而字符是只有在内存中才会形成，所以在开发中，字节流使用较为广泛。
 
-3、抽象类InputStream与OutputStream：
+·抽象类InputStream与OutputStream：
 				--FileInputStream与FileOutputStream
 				把文件作为字节流进行读写操作！！
 				--BufferInputStream与BufferOutputStream
@@ -32,7 +31,7 @@ Java 	IO：
 				--OutputStreamWriter是Writer的子类，而InputStreamReader是Reader的子类：
 					在JDK中提供了两个类可以将字节流转换为字符流，它们分别是InputStreamReader和OutputStreamWriter。
 
-其他IO流：将文件临时存储到缓冲区，方便以后读取；所有的数据先写入缓冲区，最后一次行写入文件。
+·其他IO流：将文件临时存储到缓冲区，方便以后读取；所有的数据先写入缓冲区，最后一次行写入文件。
 				--ByteArrayInputStream和ByteArrayOutputStream：
 				ByteArrayOutputStream类在创建对象时就创建一个byte型数组的缓冲区，向数组中写数据时该对象会把所有的数据先写入缓冲区，
 				最后一次行写入文件，ByteArrayInputStream是从缓冲区中读取数据。
@@ -98,12 +97,12 @@ public class cin_txt {
 
 
 
-4、IO操作包括：对硬盘读写，对socket读写，对外设读写。
+·IO操作包括：对硬盘读写，对socket读写，对外设读写。
 	一个完整的IO请求包括2个阶段：查看数据是否就绪；进行数据拷贝（内核将数据拷贝到用户线程）；
 	Java传统IO都是阻塞IO。
 
 
---IO流的分类：
+·IO流的分类：
 
 按照流的流向分，可以分为输入流和输出流；
 按照操作单元划分，可以划分为字节流和字符流；
