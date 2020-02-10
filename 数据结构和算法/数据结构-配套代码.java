@@ -21,7 +21,7 @@
 		}
 	}
 
-	实现方式2：使用int数组来实现
+实现方式2：使用int数组来实现
 	class MyStack<T>{
 		//栈的最大深度
 		protected int MAX_DEPTH = 10;
@@ -58,10 +58,10 @@
 	实现方式3：用2个队列实现栈；
 
 
-	-----------------------------------------------------------------------------------
-	【二叉树】
+-------------------------------
+【二叉树】
 
-	前序遍历：
+前序遍历：
 1.递归解法：如果二叉树为空，空操作；如果二叉树不为空，访问根节点，前序遍历左子树，前序遍历右子树；
 	class Solution{
 		public static void preorderTraversal(TreeNode root){
@@ -92,7 +92,7 @@
 	}
 
 
-	中序遍历：
+中序遍历：
 1.递归解法：
 class Solution{
 	public static void inorderTraversal(TreeNode root){
@@ -115,7 +115,7 @@ class Solution{
 	}
 	
 
-	后序遍历：
+后序遍历：
 1.递归解法：
  class Solution{
  	public static void postorderTraversal(TreeNode root){
@@ -127,3 +127,7 @@ class Solution{
 
  	}
  }
+
+
+
+ 
