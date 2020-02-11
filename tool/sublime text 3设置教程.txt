@@ -1,0 +1,26 @@
+
+1.Tools -> Command Palette……
+	在弹出框输入inp，回车install package;
+
+2.设置UTF8编码方式：在弹出框输入：convertToUTF8;
+
+3.设置字体：perferences -> settings
+	在弹出框的右侧：
+	{
+     "color_scheme": "Packages/Material Theme/schemes/Material-Theme-Darker.tmTheme",
+     "dictionary": "Packages/Language - English/en_US.dic", 
+     "ignored_packages":
+     [
+         "Vintage"
+     ],
+     "theme": "Soda Dark 3.sublime-theme",
+     "word_wrap": false
+	}
+
+	输入：
+	"font_options": ["gdi"],
+	"theme_font_options": ["gdi"],
+	"dpi_scale": 1.0,
+	"font_face": "YaHei Consolas Hybrid",
+	"font_size": 12,
+	保存。

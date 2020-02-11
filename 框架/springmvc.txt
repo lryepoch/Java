@@ -1,7 +1,7 @@
 
 SpringMVC :
 
---概念：
+·概念：
 	相当于一个controller；
 	一个实现了Web的MVC架构模式【web层职责解耦】的请求驱动型【请求响应模型】的轻量级框架。
 
@@ -9,7 +9,7 @@ SpringMVC :
 	Spring MVC 分离了控制器、模型对象、分派器以及处理程序对象的角色，这种分离让它们更容易进行定制。
 
 
---架构流程：
+·架构流程：
 		1.用户发送请求url到前端控制器DispatcherServelt;
 		2.DispatcherServelt收到请求，调用处理器映射器HandlerMapping;
 		3.处理器映射器根据请求的url找到具体的处理器，生成处理器对象以及、、并返回给DispatcherServlet；
@@ -22,7 +22,7 @@ SpringMVC :
 		9.DispatcherServelt响应用户请求.
 
 
---SpringMVC 开发模式：xml文件（实现Controller接口）、基于注解。
+·SpringMVC 开发模式：xml文件（实现Controller接口）、基于注解。
 
 	问题：如何知道创建哪个Controller接口的实例呢？
 	2种方案：利用xml配置文件：
@@ -30,40 +30,40 @@ SpringMVC :
 
 
 
---SpringMVC 中Controller 返回值类型:
-		---ModelAndView:   
-										ModelAndView类用来存储处理完后的结果数据，以及显示该数据的视图。具体就是业务处理器调用模型层处理完用户请求后，把结果数据存储在model中，把返回的视图信息存储到view中，然后让该ModelAndView返回该springMVC框架。然后通过配置文件中定义的视图解释器，对该对象进行解析，最后把结果数据显示到指定的页面上。
+·SpringMVC 中Controller 返回值类型:
+		··ModelAndView:   
+						ModelAndView类用来存储处理完后的结果数据，以及显示该数据的视图。具体就是业务处理器调用模型层处理完用户请求后，把结果数据存储在model中，把返回的视图信息存储到view中，然后让该ModelAndView返回该springMVC框架。然后通过配置文件中定义的视图解释器，对该对象进行解析，最后把结果数据显示到指定的页面上。
 
-										返回指定页面：（设置转向地址）；
-										addObject(用于向model中添加数据，model底层是一个map，返回值是ModelAndView，可以向该model添加多个数据)，这也等价于在ModelAndView修饰的方法中带上参数 ，例如：在表单中添加数据可以通过带参数的形式。
-										此外，ModelAndView也可以携带session参数，表示一个会话，这里用到getAttribute（）和setAttribute（）方法。
+						返回指定页面：（设置转向地址）；
+						addObject(用于向model中添加数据，model底层是一个map，返回值是ModelAndView，可以向该model添加多个数据)，这也等价于在ModelAndView修饰的方法中带上参数 ，例如：在表单中添加数据可以通过带参数的形式。
+						此外，ModelAndView也可以携带session参数，表示一个会话，这里用到getAttribute（）和setAttribute（）方法。
 
-										返回所需数值：（传递结果数据到结果页面）。
-										setViewName（指定将要跳转到的视图的名称）……，最后要return modelAndView;
-										此外，还有所谓的视图定位，指的是代码还会写成这样：new ModelAndView("index");，但是会跳转到 /WEB-INF/page/index.jsp ，也就是视图解析器的前后缀的配置。
+						返回所需数值：（传递结果数据到结果页面）。
+						setViewName（指定将要跳转到的视图的名称）……，最后要return modelAndView;
+						此外，还有所谓的视图定位，指的是代码还会写成这样：new ModelAndView("index");，但是会跳转到 /WEB-INF/page/index.jsp ，也就是视图解析器的前后缀的配置。
 
-		---Map<Object，Object>：
+		··Map<Object，Object>：
 						Map<String,Object> map=new HashMap<String, Object>();
 						最后，return map;
 
-		---String:   参数列表带有Model或者Map<Object，Object>等等。可以用model.addAttribute（）添加一些信息。最后要跳转页面的话，用return（eg：return "main";）来跳转。
+		··String:   参数列表带有Model或者Map<Object，Object>等等。可以用model.addAttribute（）添加一些信息。最后要跳转页面的话，用return（eg：return "main";）来跳转。
 		
 						  如果controller方法返回jsp页面，可以简单将方法返回值类型定义 为字符串，最终返回逻辑视图名。
 							eg：public String editItems(Model model) throws Exception{}
 							通过返回字符串的方法，有时候会返回一些特殊的字符串(例如返回return "forward:url路径"或return "redirect:url路径")。分别代表请求转发和请求冲定向。
 
-		---void:   添加 HttpServletRequest 和 HttpServletResponse 来进行页面的跳转。或者带参数Model、Map<Object，Object>等等。
+		··void:   添加 HttpServletRequest 和 HttpServletResponse 来进行页面的跳转。或者带参数Model、Map<Object，Object>等等。
 
 						返回void:@RequestMapping(value = "/editItems",method = RequestMethod.GET)
 						public void editItems(HttpServletRequest request, HttpServletResponse response) throws Exception{}
 						返回值为void的方法我们容易输出json、xml格式的数据，即通过response指定响应结果。
 
-		---其他自定义类型也可。
+		··其他自定义类型也可。
 
 
 
 
---Controller中的参数绑定：
+·Controller中的参数绑定：
 
 	Controller的方法中默认支持的形参(即之前我们根据需求手动传入的参数，这些参数处理适配器会默认识别并进行赋值)有：
 
@@ -77,16 +77,16 @@ SpringMVC :
 
 
 
---服务端和客户端跳转：服务端跳转URL地址栏不变，这个由服务器内部发生的；客户端跳转URL地址栏改变，这个由操作者操作的，人眼可见，
+·服务端和客户端跳转：服务端跳转URL地址栏不变，这个由服务器内部发生的；客户端跳转URL地址栏改变，这个由操作者操作的，人眼可见，
 											eg：ModelAndView mav = new ModelAndView("redirect:/index");。
 
---文件上传：
+·文件上传：
 
---拦截器：
+·拦截器：
 
 
 
---Spring mvc 线程不安全的原因：
+·Spring mvc 线程不安全的原因：
 	
 	请求时多线程请求的，但是每次请求过来调用的Controller对象都是一个，而不是一个请求过来就创建一个controller对象。原因就在于如果这个controller对象是单例的，那么如果不小心在类中定义了类变量，那么这个类变量是被所有请求共享的，这可能会造成多个请求修改该变量的值，出现与预期结果不符合的异常。
 
@@ -99,15 +99,15 @@ SpringMVC :
 
 
 
---Spring mvc数据校验：
-	---JSR303：是Java为Bean数据合法性校验提供的一个标准规范；
-			----@Pattern：验证String对象是否符合正则表达式的规范；
+·Spring mvc数据校验：
+	··JSR303：是Java为Bean数据合法性校验提供的一个标准规范；
+			···@Pattern：验证String对象是否符合正则表达式的规范；
 
 
 
 
---SpringMVC 配置文件个别讲解：
-	---<mvc:annotation-driven/>，这个配置会配置处理器映射器和适配器，这是springmvc分发请求所必需的。有了这个，就可以使用注解如：@Controller、@RequestMapping等。
+·SpringMVC 配置文件个别讲解：
+	··<mvc:annotation-driven/>，这个配置会配置处理器映射器和适配器，这是springmvc分发请求所必需的。有了这个，就可以使用注解如：@Controller、@RequestMapping等。
 
 			<!-- 使用 mvc:annotation-driven代替上边注解映射器和注解适配器配置
 			mvc:annotation-driven默认加载很多的参数绑定方法，
@@ -116,62 +116,61 @@ SpringMVC :
 			 -->
 			<!-- <mvc:annotation-driven></mvc:annotation-driven> -->
 
-	---<context:component-scan base-package="">,有了这个，spring自动去扫描base-package包，如果扫描到@Component、@Service、@Controller这些注解的类，就把这些类注册为bean。
+	··<context:component-scan base-package="">,有了这个，spring自动去扫描base-package包，如果扫描到@Component、@Service、@Controller这些注解的类，就把这些类注册为bean。
 			context上下文的意味。
 
 	在Web MVC框架中，每个DispatcherServlet都拥自己的WebApplicationContext，它继承了ApplicationContext。WebApplicationContext包含了其上下文和Servlet实例之间共享的所有的基础框架beans。
 
 
 
---springmvc.xml配置文件内容：
-											---xml文件格式；
-											---spring全约束；
-											---映射器和适配器；
-											---视图解析器；
-											---spring扫描controller包下的注解；
-											---排除扫描静态资源；
+·springmvc.xml配置文件内容：
+							··xml文件格式；
+							··spring全约束；
+							··映射器和适配器；
+							··视图解析器；
+							··spring扫描controller包下的注解；
+							··排除扫描静态资源；
 
-			1、注解的处理器映射器（掌握）
-			对标记@Controller类中标识有@RequestMapping的方法进行映射。在@RequestMapping里边定义映射的url。使用注解的映射器不用在xml中配置url和Handler的映射关系。
+	1、注解的处理器映射器（掌握）
+	对标记@Controller类中标识有@RequestMapping的方法进行映射。在@RequestMapping里边定义映射的url。使用注解的映射器不用在xml中配置url和Handler的映射关系。
 
-			2、注解的处理器适配器（掌握）
-				注解处理器适配器和注解的处理器映射器是配对使用。理解为不能使用非注解映射器进行映射。
+	2、注解的处理器适配器（掌握）
+		注解处理器适配器和注解的处理器映射器是配对使用。理解为不能使用非注解映射器进行映射。
 
-			3、视图解析器配置jsp路径的前缀(/WEB-INF/jsp/)和后缀（.jsp）
-
+	3、视图解析器配置jsp路径的前缀(/WEB-INF/jsp/)和后缀（.jsp）
 
 	（该文件默认位置：与web.xml在同级目录下，与默认命名：*-servlet.xml）
 	（在src目录下时，要在web.xml配置文件中进行配置，如下：
-																							  <!-- 4配置前端控制器 ，拦截所有请求-->
-																							  <servlet>
-																							    <servlet-name>springmvc</servlet-name>
-																							    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-													即在这里加上这块标签：	【    <init-param>
-																									      <param-name>contextConfigLocation</param-name>
-																									      <param-value>classpath:config/springmvc.xml</param-value>
-																									      //classpath：也就是src目录下了。
-																									</init-param>
-													否则，就去掉这块。			  】
-																							    <load-on-startup>1</load-on-startup>
-																							  </servlet>
+														  <!-- 4配置前端控制器 ，拦截所有请求-->
+														  <servlet>
+														    <servlet-name>springmvc</servlet-name>
+														    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+				即在这里加上这块标签：	【    					<init-param>
+																      <param-name>contextConfigLocation</param-name>
+																      <param-value>classpath:config/springmvc.xml</param-value>
+																      //classpath：也就是src目录下了。
+																</init-param>
+				否则，就去掉这块。		 】
+														    <load-on-startup>1</load-on-startup>
+														  </servlet>
 
-																							  <servlet-mapping>
-																							    <servlet-name>springmvc</servlet-name>
-																							    
-																							    <!--可以配置/：此工程所有的请求全部由springmvc解析，此种方式可以实现RESTful方式，需要特殊处理对静态文件的解析不能由springmvc解析，这个另作处理；
-																							    可以配置*.do或者*.action,所有请求的url扩展名为.do或.action由springmvc解析，此种方法常用；
-																							    可以配置/*,如果配置/*,返回jsp也由springmvc解析，这是不对的；
-																							    对于静态资源，如果要拦截处理，则要明确配置好才行。
-																							    -->
-																							    <url-pattern>*.action</url-pattern>
-																							  </servlet-mapping>
+														  <servlet-mapping>
+														    <servlet-name>springmvc</servlet-name>
+														    
+														    <!--可以配置/：此工程所有的请求全部由springmvc解析，此种方式可以实现RESTful方式，需要特殊处理对静态文件的解析不能由springmvc解析，这个另作处理；
+														    可以配置*.do或者*.action,所有请求的url扩展名为.do或.action由springmvc解析，此种方法常用；
+														    可以配置/*,如果配置/*,返回jsp也由springmvc解析，这是不对的；
+														    对于静态资源，如果要拦截处理，则要明确配置好才行。
+														    -->
+														    <url-pattern>*.action</url-pattern>
+														  </servlet-mapping>
 	）
 		
-		additionally，web.xml文件的内容如下：
-																--默认首页（可有可无，Tomcat中也会规定默认页面）；
-																--启动spring容器，即配置上下文；
-																	其中有一个：<param-value>classpath:config/applicationContext-*.xml</param-value>
-																--监听器；
-																--配置前端控制器；有load-on-startup标签
-																--拦截器，全站编码、实现restful风格的URI等等（注意：统一全站编码，这个拦截器filters要放在所有过滤器之前） ；
+	additionally，web.xml文件的内容如下：
+										·默认首页（可有可无，Tomcat中也会规定默认页面）；
+										·启动spring容器，即配置上下文；
+											其中有一个：<param-value>classpath:config/applicationContext-*.xml</param-value>
+										·监听器；
+										·配置前端控制器；有load-on-startup标签
+										·拦截器，全站编码、实现restful风格的URI等等（注意：统一全站编码，这个拦截器filters要放在所有过滤器之前）；
 		

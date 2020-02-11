@@ -1,7 +1,7 @@
  
 MyBatis：
 
---概念：
+·概念：
 		MyBatis消除了几乎所有的 JDBC 代码和参数的手工设置以及结果集的检索。 MyBatis使用简单的 XML 或注解用于配置和原始映射，将接口和 Java 的 POJO(普通的 Java对象)映射成数据库中的记录。
 		支持普通SQL、存储过程和高级映射的持久层框架；
 
@@ -9,23 +9,25 @@ MyBatis：
 		对JDBC操作数据库的过程进行封装，开发组只需关注SQL语句即可。
 
 
--ORM框架
-		--背景：面向对象编程语言和关系型数据库发展不同步情况下的中间解决方案；
-		--好处：采用ORM框架，不再直接访问底层数据库，而是以面向对象的方式来操作持久化对象（即POJO【类似于JavaBean】,完成增删改等操作），ORM框架将这些面向对象操作转换成SQL操作。
-		--现状：当前ORM框架主要有五种：Hibernate(Nhibernate)，iBATIS，mybatis，EclipseLink，JFinal，ORM是通过使用描述对象和数据库之间映射的元数据。可以理解ORM框架可以作为面向对象语言和数据库之间的桥梁。
+
+·ORM框架
+		·背景：面向对象编程语言和关系型数据库发展不同步情况下的中间解决方案；
+		·好处：采用ORM框架，不再直接访问底层数据库，而是以面向对象的方式来操作持久化对象（即POJO【类似于JavaBean】,完成增删改等操作），ORM框架将这些面向对象操作转换成SQL操作。
+		·现状：当前ORM框架主要有五种：Hibernate(Nhibernate)，iBATIS，mybatis，EclipseLink，JFinal，ORM是通过使用描述对象和数据库之间映射的元数据。可以理解ORM框架可以作为面向对象语言和数据库之间的桥梁。
 
 
---架构流程：
+
+·架构流程：
 										SqlMapConfig.xml、mapper.xml(每个字段定义一个statement)【namespace+id表示statement的位置】																											|
 																					|
-										SqlSessionFactory（会话工厂）   作用：创建SqlSession--》相当于创建Connnection。openSession()方法创建sqlsession对象。
+										SqlSessionFactory（会话工厂）   作用：创建SqlSession·》相当于创建Connnection。openSession()方法创建sqlsession对象。
 										底层封装了datasource，来获取数据库连接；
 																					|
 																					|
-										SqlSession    作用：操作数据库--》相当于执行SQL语句【SqlSession类似于JDBC中的connection】，(如果执行添加、更新、删除需要调用SqlSession.commit())
+										SqlSession    作用：操作数据库·》相当于执行SQL语句【SqlSession类似于JDBC中的connection】，(如果执行添加、更新、删除需要调用SqlSession.commit())
 																					|
 																					|
-		输入映射（）   -----》   Executor（操作数据库的执行器）  ------》   输出映射（）
+		输入映射（）   --》   Executor（操作数据库的执行器）  --》   输出映射（）
 										角色：是一个接口，有两个实现
 																					|
 																					|
@@ -35,14 +37,14 @@ MyBatis：
 																					|
 																				mysql
 
-		注：SqlSession是一个面向用户(程序员)的接口，程序员调用 SqlSession接口的方法进行操作数据库。那么我们会思考:SqlSession能否以单例方式使用？？？由于 SqlSession是线程不安全的，所以 SqlSession最佳应用范围在方法体内。也就是说在方法体内定义局部变量 SqlSession的对象来使用。
+		注：SqlSession是一个面向用户(程序员)的接口，程序员调用 SqlSession接口的方法进行操作数据库。那么我们会思考:SqlSession能否以单例方式使用？？？由于 SqlSession是线程不安全的，所以 SqlSession最佳应用范围在方法体内。也就是说在方法体内定义局部变量SqlSession的对象来使用。
 
 
 
--mybatis开发方式：
-		--xml配置文件；
+·mybatis开发方式：
+		··xml配置文件；
 		
-		--注解；
+		··注解；
 			常用：
 			@Param（）	##用于传递参数，从而可以与SQL中的的字段名相对应，一般在2=<参数个数<=5时使用最佳
 										当存在多个参数时，传进去的值就区分不开了，这时可以考虑用Map；
@@ -54,16 +56,15 @@ MyBatis：
 
 
 
+·mybatis开发dao的方式：
 
---mybatis开发dao的方式：
+	··原始dao的开发方式，包括dao接口和dao的实现类，在实现类中调用sqlsession来操作数据库。在测试类中调用接口中的方法并且传参即可操作数据库。
 
-	（1）原始dao的开发方式，包括dao接口和dao的实现类，在实现类中调用sqlsession来操作数据库。在测试类中调用接口中的方法并且传参即可操作数据库。
-
-	（2）mapper动态代理的方式，这里要满足：【在mapper.xml文件中】
-			---namespace指定为mapper接口的全限定名。此步骤的目的:将mapper.xml和mapper.java关联。
-			---statement的id就是mapper.java中的方法名，必须与对应接口的某个对应的方法名一致。id后面有parameterType/ResultType/ResultMap？？？
-			---statement的parameterType和mapper.java中方法输入参数一致。
-			---statement的resultType和mapper.java中方法的返回值类型一致。
+	··mapper动态代理的方式，这里要满足：【在mapper.xml文件中】
+		···namespace指定为mapper接口的全限定名。此步骤的目的:将mapper.xml和mapper.java关联。
+		···statement的id就是mapper.java中的方法名，必须与对应接口的某个对应的方法名一致。id后面有parameterType/ResultType/ResultMap？？？
+		···statement的parameterType和mapper.java中方法输入参数一致。
+		···statement的resultType和mapper.java中方法的返回值类型一致。
 
 	>小结：
 	使用Mapper代理方式进行开发，使程序员只需要关注UserMapper.java接口中的方法，它的实现类由Mapper自动为我们生成，带来了很大的方便。
@@ -71,102 +72,97 @@ MyBatis：
 
 
 
+·MyBatis配置文件中的内容和顺序:
+								<configuration>
+										<properties>(属性)：把一些通用的属性值配置在属性文件中，加载到mybatis运行环境内。例如创建db.properties文件，然后在SqlMapperConfig.xml中进行配置。然后在<environments>标签中用${}符号做如下修改。
 
---MyBatis配置文件中的内容和顺序:
-											<configuration>
-													<properties>(属性)：把一些通用的属性值配置在属性文件中，加载到mybatis运行环境内。例如创建db.properties文件，然后在SqlMapperConfig.xml中进行配置。然后在<environments>标签中用${}符号做如下修改。
+										<setting>(全局配置参数)：包括很多的性能参数(最大线程数、最大等待时间…)，而mybatis没有这些性能参数，由mybatis自动调节。
 
-													<setting>(全局配置参数)：包括很多的性能参数(最大线程数、最大等待时间…)，而mybatis没有这些性能参数，由mybatis自动调节。
+										<typeAliases>(类型别名)：可以将parameterType、resultType中指定的类型通过别名引用。定义别名后这样我们在parameterType和resultType中使用时就不用再繁琐的指定类的全限定类名了。还可以批量别名定义：<package name="domain"/>
 
-													<typeAliases>(类型别名)：可以将parameterType、resultType中指定的类型通过别名引用。定义别名后这样我们在parameterType和resultType中使用时就不用再繁琐的指定类的全限定类名了。还可以批量别名定义：<package name="domain"/>
+										<typeHandlers>(类型处理器)：类型处理器将java类型和jdbc类型进行映射。一般情况下够用。
 
-													<typeHandlers>(类型处理器)：类型处理器将java类型和jdbc类型进行映射。一般情况下够用。
+										<objectFactory>(对象工厂)
 
-													<objectFactory>(对象工厂)
+										<plugins>(插件)
 
-													<plugins>(插件)
-
-													<environments>(环境集合属性对象)
-															<environment>(环境子属性对象)
-																	<transactionManager>(事务管理)
-																	<dataSource>(数据源)
-															
-													<mappers>(映射器)：在配置文件中这样配置<mapper class=“mapper.UserMapper”/>，这样的要求需要保证UserMapper.xml文件和UserMapper.java在同一个包下且.xml文件和.java文件名要同名。还可以批量配置：:<package name=“mapper”/>
-											<configuration>
-
+										<environments>(环境集合属性对象)
+												<environment>(环境子属性对象)
+														<transactionManager>(事务管理)
+														<dataSource>(数据源)
+												
+										<mappers>(映射器)：在配置文件中这样配置<mapper class=“mapper.UserMapper”/>，这样的要求需要保证UserMapper.xml文件和UserMapper.java在同一个包下且.xml文件和.java文件名要同名。还可以批量配置：:<package name=“mapper”/>
+								<configuration>
 
 
 
---	关于 MyBatis 主要考察占位符#和 $ 的区别，区别如下：
+·MyBatis占位符#和$：
 
-	#{}符号将传入的数据都当做一个字符串，会对自动传入的数据加一个双引号；
-	${}符号将传入的数据直接显示生成 SQL 中；
+	能用#号就不要用$符号。
 
-	#{}符号存在预编译的过程，对问号赋值，防止 SQL 注入；
-	${}符号是直译的方式，一般用在 order by ${列名}语句中；
+	占位符#{}和${}区别如下:
+		··#{}:
+			1.表示一个占位符，向占位符输入参数，mybatis自动进行java类型和jdbc类型的转换。
+			2.程序员不需要考虑参数的类型，#{}符号将传入的数据都当做一个字符串，会对自动传入的数据加一个双引号；比如：传入字符串，mybatis最终拼接好的sql就是参数两边加单引号。
+			3.#{}接收pojo(Plain Old Java Object Java数据对象)数据，可以使用OGNL(就是el表达式)解析出pojo的属性值。
+			4.#{}符号存在预编译的过程，对问号赋值，防止SQL注入；
 
-	能用#号就不要用 $ 符号。
-
-	--使用占位符#{}而是使用${}，二者区别如下:
-		#{}:
-		1.表示一个占位符，向占位符输入参数，mybatis自动进行java类型和jdbc类型的转换。
-		2.程序员不需要考虑参数的类型，比如：传入字符串，mybatis最终拼接好的sql就是参数两边加单引号。
-		3.#{}接收pojo(Plain Old Java Object Java数据对象)数据，可以使用OGNL(就是el表达式)解析出pojo的属性值。
-
-		${}:
-		1.表示sql的拼接，通过${}接收参数，将参数的内容不加任何修饰拼接在sql中。
-		2.${}也可以接收pojo数据，可以使用OGNL解析出pojo的属性值。
-		3.缺点:不能防止sql注入。
+		··${}:
+			1.表示sql的拼接，通过${}接收参数，将参数的内容不加任何修饰拼接在sql中。${}符号将传入的数据直接显示在生成SQL中；
+			2.${}也可以接收pojo数据，可以使用OGNL解析出pojo的属性值。${}符号是直译的方式，一般用在order by ${列名}语句中；
+			3.缺点:不能防止sql注入。
 
 
 
 
---MyBatis之输入(parameterType)与输出(resultType、resultMap)映射
-		---输入映射parameterType
-		---输出映射：
-				2.1resultType：sql查询的列名要和resultType指定pojo的属性名相同
-				2.2resultMap：用于别名的配置，实现高级映射【别名+延迟加载】
+·MyBatis之输入(parameterType)与输出(resultType、resultMap)映射
+		··输入映射parameterType
+		··输出映射：
+				···resultType：sql查询的列名要和resultType指定pojo的属性名相同
+				···resultMap：用于别名的配置，实现高级映射【别名+延迟加载】
 
-		---高级映射：输入映射parameterType而言是没有所谓的高级映射的，也就是说高级映射只针对于输出映射(因为高级映射设计到多张表)。
-
-
+		··高级映射：输入映射parameterType而言是没有所谓的高级映射的，也就是说高级映射只针对于输出映射(因为高级映射设计到多张表)。
 
 
---表间的一对一、一对多、多对多查询解析：
+
+
+·表间的一对一、一对多、多对多查询解析：
 
 	（1）使用resultType实现一对一映射：
 	（2）使用resultMap实现一对一映射：
 	
-			比较resultType和resultMap完成一对一映射：
-					resultType：要自定义pojo，继承一个已存在的pojo。保证sql查询列和pojo的属性对应，这种方法相对较简单，所以应用广泛。
+		比较resultType和resultMap完成一对一映射：
+				resultType：要自定义pojo，继承一个已存在的pojo。保证sql查询列和pojo的属性对应，这种方法相对较简单，所以应用广泛。
 
-					resultMap：使用association完成一对一映射需要配置一个resultMap标签，过程有点复杂，如果要实现延迟加载，就只能用resultMap实现，如果为了方便对关联信息进行解析，也可以用association将关联信息映射到pojo中方便解析。
+				resultMap：使用association完成一对一映射需要配置一个resultMap标签，过程有点复杂。可以配置别名。
+							如果要实现延迟加载，就只能用resultMap实现，如果为了方便对关联信息进行解析，也可以用association将关联信息映射到pojo中方便解析。
 
 	（3）多表间的一对多查询：使用collection完成一对多映射。
 
 	（4）多表间的多对多查询：一对多是多对多的特例。
 
-	插曲：区别一对一和一对多（association与selection区别）
-					public class Student{
-							//学生姓名
-							private String name;
+		插曲：区别一对一和一对多（association与selection区别）
+						public class Student{
+								//学生姓名
+								private String name;
 
-							//学生父亲
-							private Parent p;
+								//学生父亲
+								private Parent p;
 
-							//学生所选课程
-							private List c;
-					}
+								//学生所选课程
+								private List c;
+						}
 
-	小结：查询学生时关联查询其父信息用association：用于映射关联查询单个对象的信息。【一个学生只有一个父亲】
-			  关联查询所选课程时用collection：对关联查询到的多条记录映射到集合对象中。【一个学生要上多门课程】
+		小结：查询学生时关联查询其父信息用association：用于映射关联查询单个对象的信息。【一个学生只有一个父亲】
+				  关联查询所选课程时用collection：对关联查询到的多条记录映射到集合对象中。【一个学生要上多门课程】
 
 
 			  单表查询时，可以直接使用mybatis generator生成的xml；
-			  多表查询时，有2种解决方案：1、直接在类中加入另一个类的类名；2、设计一个包装类继承于之前存在的类；
+			  多表查询时，有2种解决方案：1、直接在类中加入另一个类的类名；2、设计一个包装类继承于之前存在的类。
 
 
---resultType、resultMap、延迟加载使用场景总结：
+
+·【resultType】、【resultMap】、【延迟加载】的使用场景：
 
 		resultType:
 				作用：将查询结果按照sql字段名和pojo属性名一致性映射到pojo中。
@@ -177,14 +173,15 @@ MyBatis：
 				使用association和collection完成一对一和一对多高级映射。
 
 				association的作用：将关联查询信息映射到一个pojo类中。【一对一】【多对一】【外键在association之上】
-				场合：为了方便获取关联信息可以使用association将关联订单映射为pojo，比如：查询订单及关联用户信息。
+							 场合：为了方便获取关联信息可以使用association将关联订单映射为pojo，比如：查询订单及关联用户信息。
 
 				collection的作用：将关联查询（2张表）信息映射到一个list集合中。【一对多】【外键在其中】
-				场合：为了方便获取关联信息可以使用collection将关联信息映射到list集合中，比如：查询用户权限范围模块和功能，可使用collection将模块和功能列表映射到list中。
+							场合：为了方便获取关联信息可以使用collection将关联信息映射到list集合中，比如：查询用户权限范围模块和功能，可使用collection将模块和功能列表映射到list中。
 
-				【多对多】： </association>               先是一对多，然后多对一。
+				【多对多】： 		</association>               先是一对多，然后多对一。
 				            </collection>
-				注意：多对多不存在修改关系的做法，就是删除旧的，然后新增一条即达到修改的效果。
+					  注意：多对多不存在修改关系的做法，就是删除旧的，然后新增一条即达到修改的效果。
+
 
 				延迟加载：
 					在数据库查询中，单表查询肯定比关联查询速度更快。如果查询单表就可以满足需求，则一开始先查询单表，当需要关联信息时，再进行关联查询，这个过程就叫做延迟加载。
@@ -198,18 +195,18 @@ MyBatis：
 						如何配置？		
 								延迟加载在全局配置<settings>中决定是否开启：
 								延迟加载总开关：lazyLoadingEnabled，默认值为false。
-								设置按需加载：aggressiveLazyLoading	，默认值为true，这代表不按需加载。
+								设置按需加载：aggressiveLazyLoading	，默认值为true代表着不按需加载。
 
 
 
 
---mybatis持久层缓存：
+·mybatis持久层缓存：
 
-		---用户查询的数据放在缓存中，不用从数据库中查找，提高了查询效率，解决了高并发系统的性能问题。
+		··用户查询的数据放在缓存中，不用从数据库中查找，提高了查询效率，解决了高并发系统的性能问题。
 
-		---MyBatis提供了一级缓存和二级缓存，MyBatis一级缓存是一个SqlSession级别，SqlSession只能访问自己的一级缓存的数据；二级缓存是跨SqlSession，是mapper级别的缓存，对于mapper级别的缓存不同的Sqlsession是可以共享的。
+		··MyBatis提供了一级缓存和二级缓存，MyBatis一级缓存是一个SqlSession级别，SqlSession只能访问自己的一级缓存的数据；二级缓存是跨SqlSession，是mapper级别的缓存，对于mapper级别的缓存不同的Sqlsession是可以共享的。
 
-		---缓存机制是基于id进行缓存的，mybatis使用hashmap缓存数据时，是使用对象的id作为key，对象作为value的。
+		··缓存机制是基于id进行缓存的，mybatis使用hashmap缓存数据时，是使用对象的id作为key，对象作为value的。
 
 		>一级缓存：同一个sqlsession再次发出相同的sql，就从缓存中取,而不走数据库。如果两次中间出现commit操作（修改、添加、删除），本sqlsession中的一级缓存区域全部清空，下次再去缓存中查询不到所以要从数据库查询，从数据库查询到再写入缓存。即对于查询操作，每次查询都先从缓存中查询，如果缓存中查询到数据则将缓存数据直接返回，如果缓存中查询不到就从数据库查询。
 
@@ -235,20 +232,20 @@ MyBatis：
 
 
 
---动态sql：使用到了标签。
-		--<if>：条件判断。
-		--<where>:<where>标签会进行自动判断，这是为了弥补<if>标签的缺陷而使用的，所以两者通常一起使用。如果任何条件都不成立，那么就在sql语句里就不会出现where关键字。如果有任何条件成立，会自动去掉多出来的 and 或者 or。
+·动态sql：使用到了标签。
+		··<if>：条件判断。
+		··<where>:<where>标签会进行自动判断，这是为了弥补<if>标签的缺陷而使用的，所以两者通常一起使用。如果任何条件都不成立，那么就在sql语句里就不会出现where关键字。如果有任何条件成立，会自动去掉多出来的 and 或者 or。
 			将自定义查询条件查询用户列表和查询用户列表总记录数改为动态sql，需要使用where标签和if标签。where中包含if标签。但是这样会有重复，我们要定义sql片段。然后在where中使用include引用sql片段。
 
-		--<set>：与where标签类似的，在update语句里也会碰到多个字段相关的问题。<set>标签嵌套<if>，,<where>标签放在外面。
-		--trim标签。
-		--Mybatis里面没有else标签，但是可以使用when otherwise标签来达到这样的效果。
-		--foreach标签通常用于in 这样的语法里，用来遍历parameterType中的集合类型。
-		--bind标签就像是再做一次字符串拼接，方便后续使用。
+		··<set>：与where标签类似的，在update语句里也会碰到多个字段相关的问题。<set>标签嵌套<if>，,<where>标签放在外面。
+		··trim标签。
+		··Mybatis里面没有else标签，但是可以使用when otherwise标签来达到这样的效果。
+		··foreach标签通常用于in 这样的语法里，用来遍历parameterType中的集合类型。
+		··bind标签就像是再做一次字符串拼接，方便后续使用。
 
 
 
---MyBatis相关概念：
+·MyBatis相关概念：
 		日志：log4j
 		事务管理：<transactionManager type="JDBC"/>
 						在Mysql中，只有当表的类型是INNODB的时候，才支持事务.
@@ -264,13 +261,13 @@ MyBatis：
 
 
 
---逆向工程：
+·逆向工程：
 
-	---在平常的开发中，有时会使用mybatis的逆向工程，来快速的创建类，其中在创建实例的过程中有一个以Example结尾的类，这个类是专门用来对这个单表查询的类，就相当于，对该单表的增删改查是脱离sql性质的，直接在service层就可以完成（当然这个sql是逆向已经生过的）。
+	··在平常的开发中，有时会使用mybatis的逆向工程，来快速的创建类，其中在创建实例的过程中有一个以Example结尾的类，这个类是专门用来对这个单表查询的类，就相当于，对该单表的增删改查是脱离sql性质的，直接在service层就可以完成（当然这个sql是逆向已经生过的）。
 
-	---MyBatis的逆向工程不仅仅可以生成和表相对应的实体类，还可以根据数据库中的表自动生成Example类，我们可以用Example类，实现条件增删改查而不用自己再去写sql语句。
+	··MyBatis的逆向工程不仅仅可以生成和表相对应的实体类，还可以根据数据库中的表自动生成Example类，我们可以用Example类，实现条件增删改查而不用自己再去写sql语句。
 
-	---Mybatis逆向工程会生成实例及实例对应的example（用于添加条件，相当于where后的部分），Example类可以用来生成一个几乎无限的where子句。
+	··Mybatis逆向工程会生成实例及实例对应的example（用于添加条件，相当于where后的部分），Example类可以用来生成一个几乎无限的where子句。
 		xxxExample example = new xxxExample();  
 		Criteria criteria = example.createCriteria();  
 
@@ -283,7 +280,7 @@ MyBatis：
 
 		等价于
 
-			@Test  
+				@Test  
 			    public void testFindUserByName(){  
 			  
 			        //通过criteria构造查询条件  
@@ -291,16 +288,16 @@ MyBatis：
 
 			        userExample.setOrderByClause("username asc"); 							//asc升序,desc降序排列  
 
-			        userExample.setDistinct(false); 														//去除重复,true是选择不重复记录,false反之  
+			        userExample.setDistinct(false); 										//去除重复,true是选择不重复记录,false反之  
 
-			        ----------------------------------------------------------------------------------------------
+			        ----------------------------------
 			        //第一种：
 			        UserExample.Criteria criteria = userExample.createCriteria();			 //构造自定义查询条件  
 			        criteria.andUsernameEqualTo("张三");  
 
 			        //第二种：
 			        //userExample.or().andUsernameEqualTo("张三");						//或者，不使用createCriteria()，使用or()
-			  		----------------------------------------------------------------------------------------------
+			  		----------------------------------
 
 			        //自定义查询条件可能返回多条记录，使用List接收  
 			        List<User> users = userMapper.selectByExample(userExample);  
@@ -309,80 +306,80 @@ MyBatis：
 			    }  
 
 
-		方法说明：  
-		（1）.example的：
-		// 1.添加升序排列条件，DESC为降序  
-		example.setOrderByClause("字段名ASC")  
+	··方法说明：  
+				（1）.example的：
+				// 1.添加升序排列条件，DESC为降序  
+				example.setOrderByClause("字段名ASC")  
 
-		// 2.去除重复，boolean类型，true为选择不重复的记录  
-		example.setDistinct(false)  
+				// 2.去除重复，boolean类型，true为选择不重复的记录  
+				example.setDistinct(false)  
 
-		（2）.criteria的：Criteria 内部类的每个属性都包含 andXXX 方法；
-		// 3.添加字段xxx为null的条件  
-		criteria.andXxxIsNull  
+				（2）.criteria的：Criteria 内部类的每个属性都包含 andXXX 方法；
+				// 3.添加字段xxx为null的条件  
+				criteria.andXxxIsNull  
 
-		// 4.添加字段xxx不为null的条件  
-		criteria.andXxxIsNotNull  
+				// 4.添加字段xxx不为null的条件  
+				criteria.andXxxIsNotNull  
 
-		// 5.添加xxx字段等于value条件  
-		criteria.andXxxEqualTo(value)  
+				// 5.添加xxx字段等于value条件  
+				criteria.andXxxEqualTo(value)  
 
-		// 6.添加xxx字段不等于value条件  
-		criteria.andXxxNotEqualTo(value)  
+				// 6.添加xxx字段不等于value条件  
+				criteria.andXxxNotEqualTo(value)  
 
-		// 7.添加xxx字段大于value条件  
-		criteria.andXxxGreaterThan(value)  
+				// 7.添加xxx字段大于value条件  
+				criteria.andXxxGreaterThan(value)  
 
-		// 8.添加xxx字段大于等于value条件  
-		criteria.andXxxGreaterThanOrEqualTo(value)  
+				// 8.添加xxx字段大于等于value条件  
+				criteria.andXxxGreaterThanOrEqualTo(value)  
 
-		// 9.添加xxx字段小于value条件  
-		criteria.andXxxLessThan(value)  
+				// 9.添加xxx字段小于value条件  
+				criteria.andXxxLessThan(value)  
 
-		// 10.添加xxx字段小于等于value条件  
-		criteria.andXxxLessThanOrEqualTo(value)  
+				// 10.添加xxx字段小于等于value条件  
+				criteria.andXxxLessThanOrEqualTo(value)  
 
-		// 11.添加xxx字段值在List  
-		criteria.andXxxIn(List)  
+				// 11.添加xxx字段值在List  
+				criteria.andXxxIn(List)  
 
-		// 12.不添加xxx字段值在List  
-		criteria.andXxxNotIn(List)  
+				// 12.不添加xxx字段值在List  
+				criteria.andXxxNotIn(List)  
 
-		// 13.添加xxx字段值在之间  
-		criteria.andXxxBetween(value1,value2)  
+				// 13.添加xxx字段值在之间  
+				criteria.andXxxBetween(value1,value2)  
 
-		// 14.添加xxx字段值不在之间  
-		criteria.andXxxNotBetween(value1,value2) 
+				// 14.添加xxx字段值不在之间  
+				criteria.andXxxNotBetween(value1,value2) 
 
 
-	---构建Criteria查询：Criteria对SQL进行封装，让开发人员可以用对象的方式对数据库进行操作。Criteria中的方法是定义SQL 语句where后的查询条件。
+	··构建Criteria查询：Criteria对SQL进行封装，让开发人员可以用对象的方式对数据库进行操作。Criteria中的方法是定义SQL语句where后的查询条件。
 
 		创建 Criteria 对象 可以使用Example类中的 createCriteria() 或者 or() ；
-			···用 createCriteria() 创建的，它会自动为 List 属性添加一个 Criteria 对象 - 这使得它更容易写一个简单的where子句， 如果您不需要 or 或者其他几个子句组合的话；
+			···用 createCriteria() 创建的，它会自动为 List 属性添加一个 Criteria 对象 -> 这使得它更容易写一个简单的where子句， 如果您不需要 or 或者其他几个子句组合的话；
 			···用 or(Criteria criteria) 方法创建 Criteria 对象, 方法里的 criteria 对象会被添加进 Criteria 对象的列表中；
 
 			推荐您只使用 or() 方法创建 Criteria 对象。 我们相信这种方法使代码更有可读性。
 
 		PO包下XXXExample.java文件解析：
 
-		成员变量：
+			成员变量：
 
-					orderByClause：指定ORDER BY条件，这个条件没有构造方法，直接通过传递字符串值指定。
+						orderByClause：指定ORDER BY条件，这个条件没有构造方法，直接通过传递字符串值指定。
 
-					distinct：指定DISTINCT查询。
+						distinct：指定DISTINCT查询。
 
-					oredCriteria：是criteria的集合，就像其名字所预示的一样，这个集合中的所有criteria是由or连接的，是逻辑或关系。
-											而Criteria包含一个Cretiron的集合,每一个Criteria对象内包含的Cretiron之间是由AND连接的,是逻辑与的关系。
+						oredCriteria：是criteria的集合，就像其名字所预示的一样，这个集合中的所有criteria是由or连接的，是逻辑或关系。
+												而Criteria包含一个Cretiron的集合,每一个Criteria对象内包含的Cretiron之间是由AND连接的,是逻辑与的关系。
 
 
-	---何时适合使用createCriteria（）呢？
+	··何时适合使用createCriteria（）呢？
 
 			当只根据非主键或者多个主键执行操作时，需要给mapper接口传入example。此时可以使用example.createCriteria()；
 
 
 
 
-	---区别：
+	··区别：
 		xxxSelective：主键可以为空(自增)或者不用设置的自定义条件操作。
 						对字段进行判断再更新(如果为Null就忽略更新)。
 
@@ -391,7 +388,9 @@ MyBatis：
 
 
 
-·在mybatis中对sql语句中涉及到大于号，小于号，如何操作：
+
+·在mybatis的xml配置文件中对sql语句中涉及到大于号，小于号，如何操作：
+
 	··将其放入到<![CDATA[  ]]>标签中；
 		<![CDATA[
 	       and mm.ttime > to_date(#{startDateTime},'yyyy-mm-dd hh24:mi:ss')
@@ -401,16 +400,17 @@ MyBatis：
 	··如果是在动态语句中，则需要转换；
 		<if test="startDateTime!=null"> and mm.ttime &gt; to_date(#{startDateTime},'yyyy-mm-dd hh24:mi:ss')</if>
 		<if test="endDateTime!=null"> and mm.ttime &lt;= to_date(#{endDateTime},'yyyy-mm-dd hh24:mi:ss')</if>
+		
 		符号：
 
-		&lt;          <
+		&lt;       <
 
-		&gt;          >  
+		&gt;       >  
 
 		&lt;&gt;   <>
 
 		&amp;      &
 
-		&apos;      '
+		&apos;     '
 
-		&quot;      "
+		&quot;     "

@@ -1,10 +1,10 @@
 图解HTTP：
 
---HTTP：超文本传输协议。
-	概念：是TCP/IP协议的一个【应用层】协议，用于定义web浏览器与web服务器之间交换数据的过程，定义两端通讯的格式。
+·HTTP：超文本传输协议。
+	··概念：是TCP/IP协议的一个【应用层】协议，用于定义web浏览器与web服务器之间交换数据的过程，定义两端通讯的格式。
 				HTTP协议是建立在请求/响应模型上的。首先由客户建立一条与服务器的TCP链接，并发送一个请求到服务器，请求中包含请求方法、URI、协议版本以及相关的MIME样式的消息。服务器响应一个状态行，包含消息的协议版本、一个成功和失败码以及相关的MIME式样的消息。
 
-	HTTP协议版本：
+	··HTTP协议版本：
 
 		0.9：只有get；
 
@@ -19,100 +19,101 @@
 		
 		2.0：仍在制订中
 
-	2者区别：
+	··2者区别：
 					在1.0中，连接后，只能获得一个web资源，然后连接关闭；
 					1.1中，连接后，在一个连接上可以获取多个web资源。
 
 
 
 
---HTTP请求报文，响应报文：
+·HTTP请求报文，响应报文：
 
 	1.HTTP请求：【请求某个web资源】
-			--请求行：
-					---请求方式：GET方式的URL可携带参数但不能超过1KB；
+			·请求行：
+					··请求方式：GET方式的URL可携带参数但不能超过1KB；
 										POST方式传输数据在实体内容中且无限制大小。
 
-					---资源路径：URL:统一资源定位符，是一种自愿位置的抽象唯一识别方法。
+					··资源路径：URL:统一资源定位符，是一种自愿位置的抽象唯一识别方法。
 											组成：<协议>：//<主机>：<端口>/<路径>
 
-					---版本号：HTTP/主版本号.次版本号，常用的有HTTP/1.0和HTTP/1.1；
+					··版本号：HTTP/主版本号.次版本号，常用的有HTTP/1.0和HTTP/1.1；
 
-			--请求头：通知服务器有关于客户端请求的信息。由“名/值”对组成，每行一对，名和值之间使用冒号分隔；
+			·请求头：通知服务器有关于客户端请求的信息。由“名/值”对组成，每行一对，名和值之间使用冒号分隔；
 					 		为请求报文添加了一些附加信息：User-Agent：产生请求的浏览器类型。
 					 															Accept：客户端可识别的内容类型列表。
 					 															Host：请求的主机名，允许多个域名同处一个IP地址，即虚拟主机。
 
-			--空行：请求头部的最后会有一个空行，表示请求头部结束，这一行非常重要，必不可少。
+			·空行：请求头部的最后会有一个空行，表示请求头部结束，这一行非常重要，必不可少。
 
-			--请求内容：可选部分，比如GET请求就没有请求数据。
+			·请求内容：可选部分，比如GET请求就没有请求数据。
 
-		eg：下面是一个POST方法的请求报文：
-																	POST 　/index.php　HTTP/1.1 　　 请求行
-																	Host: localhost
-																	User-Agent: Mozilla/5.0 (Windows NT 5.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2　　请求头
-																	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,/;q=0.8
-																	Accept-Language: zh-cn,zh;q=0.5
-																	Accept-Encoding: gzip, deflate
-																	Connection: keep-alive
-																	Referer: http://localhost/			Refer【告诉服务器，客户机是哪个页面的，防止盗链】
+			eg：下面是一个POST方法的请求报文：
+											POST 　/index.php　HTTP/1.1 　　 请求行
+											Host: localhost
+											User-Agent: Mozilla/5.0 (Windows NT 5.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2　　请求头
+											Accept: text/html,application/xhtml+xml,application/xml;q=0.9,/;q=0.8
+											Accept-Language: zh-cn,zh;q=0.5
+											Accept-Encoding: gzip, deflate
+											Connection: keep-alive
+											Referer: http://localhost/			Refer【告诉服务器，客户机是哪个页面的，防止盗链】
 
-																	Content-Length：25
-																	Content-Type：application/x-www-form-urlencoded
-																	　　空行
-																	username=aa&password=1234　　请求数据
+											Content-Length：25
+											Content-Type：application/x-www-form-urlencoded
+											　　空行
+											username=aa&password=1234　　请求数据
 
 	2.HTTP响应：【向客户端回送数据】
-			--响应状态行：描述对请求的处理结果。
+			·响应状态行：描述对请求的处理结果。
 
-					---版本号：协议版本与请求报文一致；
+					··版本号：协议版本与请求报文一致；
 
-					---状态码：状态代码为3位数字。
+					··状态码：状态代码为3位数字。
 
-					---状态码描述：
+					··状态码描述：
 
-			--响应消息头：描述服务器的基本信息。由“名/值”对组成，每行一对，名和值之间使用冒号分隔；
+			·响应消息头：描述服务器的基本信息。由“名/值”对组成，每行一对，名和值之间使用冒号分隔；
 									与请求头部类似，为响应报文添加了一些附加信息：Allow：服务器支持哪种请求方法。
-																												  Refresh：表示浏览器在多久时间后刷新文档。
-																												  Server：服务器名字。
-																												  Set-Cookie：设置和页面关联的Cookie。
-																												  Content-Type：内容类型，指网页中存在的Content-Type，用于定义网络文件的类型和网页的编码，决定浏览器将以什么形式、什么编码读取这个文件。
 
-			--空行：
+						  Refresh：表示浏览器在多久时间后刷新文档。
+						  Server：服务器名字。
+						  Set-Cookie：设置和页面关联的Cookie。
+						  Content-Type：内容类型，指网页中存在的Content-Type，用于定义网络文件的类型和网页的编码，决定浏览器将以什么形式、什么编码读取这个文件。
 
-			--响应正文：用于存放需要返回给客户端的数据信息。
+			·空行：
 
-			eg：下面是一个POST方法的响应报文：
-																		HTTP/1.1 200 OK　　状态行
-																		Date: Sun, 17 Mar 2013 08:12:54 GMT　　响应头部
-																		Server: Apache/2.2.8 (Win32) PHP/5.2.5
-																		X-Powered-By: PHP/5.2.5
-																		Set-Cookie: PHPSESSID=c0huq7pdkmm5gg6osoe3mgjmm3; path=/
-																		Expires: Thu, 19 Nov 1981 08:52:00 GMT
-																		Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-																		Pragma: no-cache
-																		Content-Length: 4393
-																		Keep-Alive: timeout=5, max=100
-																		Connection: Keep-Alive
-																		Content-Type: text/html; charset=utf-8
-																		　　空行
+			·响应正文：用于存放需要返回给客户端的数据信息。
 
-																		<html>　　响应数据
-																		<head>
-																		<title>HTTP响应示例<title>
-																		</head>
-																		<body>
-																		Hello HTTP!
-																		</body>
-																		</html>
+				eg：下面是一个POST方法的响应报文：
+												HTTP/1.1 200 OK　　状态行
+												Date: Sun, 17 Mar 2013 08:12:54 GMT　　响应头部
+												Server: Apache/2.2.8 (Win32) PHP/5.2.5
+												X-Powered-By: PHP/5.2.5
+												Set-Cookie: PHPSESSID=c0huq7pdkmm5gg6osoe3mgjmm3; path=/
+												Expires: Thu, 19 Nov 1981 08:52:00 GMT
+												Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+												Pragma: no-cache
+												Content-Length: 4393
+												Keep-Alive: timeout=5, max=100
+												Connection: Keep-Alive
+												Content-Type: text/html; charset=utf-8
+												　　空行
+
+												<html>　　响应数据
+												<head>
+												<title>HTTP响应示例<title>
+												</head>
+												<body>
+												Hello HTTP!
+												</body>
+												</html>
 
 			>HTTP状态码的英文为HTTP Status Code。状态代码由三位数字组成，第一个数字定义了响应的类别，且有五种可能取值。
 
-				1xx：指示信息--表示请求已接收，继续处理。
-				2xx：成功--表示请求已被成功接收、理解、接受。
-				3xx：重定向--要完成请求必须进行更进一步的操作。
-				4xx：客户端错误--请求有语法错误或请求无法实现。
-				5xx：服务器端错误--服务器未能实现合法的请求。
+				1xx：指示信息·表示请求已接收，继续处理。
+				2xx：成功·表示请求已被成功接收、理解、接受。
+				3xx：重定向·要完成请求必须进行更进一步的操作。
+				4xx：客户端错误·请求有语法错误或请求无法实现。
+				5xx：服务器端错误·服务器未能实现合法的请求。
 
 				常见状态代码、状态描述的说明如下。
 
@@ -128,14 +129,14 @@
 
 
 
---了解的端口及对应的服务？
+·了解的端口及对应的服务？
 	80：HTTP超文本传输协议；
 	1521：Oracle数据库默认端口；
 	3306：Mysql服务；
 
 
 
---HTTP特点：
+·HTTP特点：
 	1.基于请求与响应：客户端发送请求，服务器端响应数据。
 
 	2.简单快速：客户向服务器请求服务时，只需传送请求方法和路径。请求方法常用的有GET、HEAD、POST。每种方法规定了客户与服务器联系的类型不同。由于HTTP协议简单，使得HTTP服务器的程序规模小，因而通信速度很快。
@@ -152,41 +153,42 @@
 
 
 
---HTTP的缺点：
-		---通信使用明文，内容可能会被窃听；
-			解决：加密处理
-			通信的加密：可通过SSL（安全套接层）或TLS（完全层传输协议）的组合使用，加密HTTP的通信内容；
-			内容的加密：对HTTP协议传输的内容本身加密。即把HTTP报文里所含的内容进行加密处理；
+·HTTP的缺点：
+	··通信使用明文，内容可能会被窃听；
+		解决：加密处理
+		通信的加密：可通过SSL（安全套接层）或TLS（完全层传输协议）的组合使用，加密HTTP的通信内容；
+		内容的加密：对HTTP协议传输的内容本身加密。即把HTTP报文里所含的内容进行加密处理；
 
-		---不验证通信方的身份，因此有可能遭遇伪装；
-			解决：查明对手的证书
-			虽然HTTP协议无法确定通信方，但SSL可以。SSL不仅提供加密处理，而且还使用了一种被称为证书的手段，应用于确定方；
-			客户端持有证书即可完成个人身份的确认，也可用于Web网站的认证环节；
+	··不验证通信方的身份，因此有可能遭遇伪装；
+		解决：查明对手的证书
+		虽然HTTP协议无法确定通信方，但SSL可以。SSL不仅提供加密处理，而且还使用了一种被称为证书的手段，应用于确定方；
+		客户端持有证书即可完成个人身份的确认，也可用于Web网站的认证环节；
 
-		---无法证明报文的完整性，有可能已遭篡改，也就意味着无法判断信息是否准确；
-			确定报文完整性常用的方法是MD5和SHA-1等散列值校验的方法，以及确认文件数字签名的方法；
-			提供文件下载服务的Web网站也会提供相应的以PGP创建的数字签名及MD5算法生成的散列值；
+	··无法证明报文的完整性，有可能已遭篡改，也就意味着无法判断信息是否准确；
+		确定报文完整性常用的方法是MD5和SHA-1等散列值校验的方法，以及确认文件数字签名的方法；
+		提供文件下载服务的Web网站也会提供相应的以PGP创建的数字签名及MD5算法生成的散列值；
 
 	综上，有必要使用HTTPS。
 	SSL提供认证和加密处理及摘要功能；仅靠HTTP自身确保安全性非常困难，应与其他协议组合达成目标；
 
 
 
---HTTPS的介绍：
-	---全称：Hypertext Transfer Protocol Secure，超文本传输安全协议；
-	---HTTPS=HTTP【上层协议】+TLS/SSL（安全套接字层）【解决安全问题】；
-	---一般的情况下http直接和Tcp进行通信，当使用了SSL之后，就会变成先和SSL通信，SSL再和Tcp进行通信；当采用了SSL协议之后，Http协议就具备了加密、证书、完整性保护三大功能，SSL是独立于Http存在的，它是现存的广泛		使用的网络安全技术。
+·HTTPS的介绍：
+	··全称：Hypertext Transfer Protocol Secure，超文本传输安全协议；
+	··HTTPS=HTTP【上层协议】+TLS/SSL（安全套接字层）【解决安全问题】；
+	··一般的情况下http直接和Tcp进行通信，当使用了SSL之后，就会变成先和SSL通信，SSL再和Tcp进行通信；当采用了SSL协议之后，Http协议就具备了加密、证书、完整性保护三大功能，SSL是独立于Http存在的，它是现存的广泛使用的网络安全技术。
 
 
 
---HTTP与HTTPS不同之处：
+·HTTP与HTTPS不同之处：
 
 	1.HTTP和HTTPS使用的端口也不一样，前者是80，后者是443；
 	2.HTTP是明文传输，HTTPS则是具有安全性的SSL加密传输；
 	3.HTTPS协议需要到CA申请证书，一般免费证书很少，需要交费；
 
 
---对称加密和非对称加密：
+
+·对称加密和非对称加密：
 		1“对称加密技术”，意思就是说：“加密”和“解密”使用【相同的】密钥。SSL采用的加密技术就是这种。
 			但是，一旦被窃听，或者信息被挟持，就有可能破解密钥，进而破解其中的信息。因此“对称加密技术”这种方式存在安全隐患。
 		2“非对称加密技术”，意思就是说：“加密”和“解密”使用【不同的】密钥。
@@ -195,7 +197,7 @@
 
 
 
---HTTP通信过程：
+·HTTP通信过程：
 		HTTP通信机制是在一次完整的HTTP通信过程中，Web浏览器与Web服务器之间将完成下列7个步骤：
 
 		1、建立TCP连接
@@ -227,14 +229,14 @@
 
 
 
---HTTP 协议包括哪些请求？
+·HTTP协议包括哪些请求？
 
 	HTTP1.0定义了三种请求方法： GET, POST 和 HEAD方法。
 	HTTP1.1新增了五种请求方法：OPTIONS, PUT, DELETE, TRACE 和 CONNECT 方法。
 
 	GET：对服务器资源的简单请求
 	POST：用于发送包含用户提交数据的请求
-	------------以及------------
+	········以及········
 
 	HEAD：类似于GET请求，不过返回的响应中没有具体内容，用于获取报头
 	PUT：传说中请求文档的一个版本
@@ -245,10 +247,10 @@
 
 
 
---HTTP中POST和GET方式的区别：
-		---POST和GET都是向服务器提交数据，并且都会从服务器获取数据。
+·HTTP中POST和GET方式的区别：
+		··POST和GET都是向服务器提交数据，并且都会从服务器获取数据。
 
-		---区别：
+		··区别：
 				1、传送方式：get通过地址栏传输；post通过报文传输。
 				2、传送长度：get传送的数据量较小，一般不超过1KB；post传送的数据量较大，一般被默认为不受限制。因为GET请求的数据会附在URL后面，POST的数据放在HTTP包体。
 				3、get安全性非常低；post安全性较高，但是执行效率却比Post方法好。
@@ -265,14 +267,14 @@
 								2. 据研究，在网络环境好的情况下，发一次包的时间和发两次包的时间差别基本可以无视。而在网络环境差的情况下，两次包的TCP在验证数据包完整性上，有非常大的优点。
 								3. 并不是所有浏览器都会在POST中发送两次包，Firefox就只发送一次。
 
-		---建议：
+		··建议：
 				1、get方式的安全性较Post方式要差些，包含机密信息的话，建议用Post数据提交方式；
 				2、在做数据查询时，建议用Get方式；而在做数据添加、修改或删除时，建议用Post方式；
 
 				案例：一般情况下，登录的时候都是用的POST传输，涉及到密码传输，而页面查询的时候，如文章id查询文章，用get 地址栏的链接为：article.php?id=11，用post查询地址栏链接为：article.php， 不会将传输的数据展现出来。
 
 
-		---拓展资料：
+		··拓展资料：
 				GET在浏览器回退时是无害的，而POST会再次提交请求。
 				GET产生的URL地址可以被Bookmark，而POST不可以。
 				GET请求会被浏览器主动cache，而POST不会，除非手动设置。

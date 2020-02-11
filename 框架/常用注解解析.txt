@@ -4,31 +4,37 @@ SpringMVC注解：
 
 ·@RequestParam注解：接收请求参数。
 	@RequestParam是位列Controller层，作用是为获取前端参数，方式主要有两种，一种是request.getParameter("name")，另外一种是用注解@RequestParam直接获取，解决的是前后端参数不一致的问题。
-	(@RequestParam（value（name）="id"，required=false，defaultValue=1）Integer id)【required默认是true，不传值会抛出异常。当设置为false时，不传id时不会出错，以defaultValue值显示】
-
-
-	区别与联系：
-	··@RequestParam 和 @PathVariable 注解是用于从request中接收请求的，两个都可以接收参数；
-	··不同的是@RequestParam 是从request里面拿取值，而 @PathVariable 是从一个URI模板里面来填充；
-	··总的来说，@RequestParam均是键值对形式。与@PathVariable中的占位符形式不同！！！
-
+	(@RequestParam（value/name="id"，required=false，defaultValue=1）Integer id)【required默认是true，不传值会抛出异常。当设置为false时，不传id时不会出错，以defaultValue值显示】
 
 ·@PathVariable
 	这个注解能够识别URL里面的一个模板。
 	【注意：】如果URL中无参数，将会出错；
-					如果URL有参数，但是没有使用@PathVariable该注解，那么URL的参数不会默认与方法参数绑定！方法里的参数会默认绑定表单里面对应的参数！
-					如果参数名与占位符一致，则可直接使用@PathVariable；如果不一致，则在@PathVariable( )括号内绑定占位符。
+				如果URL有参数，但是没有使用@PathVariable该注解，那么URL的参数不会默认与方法参数绑定！方法里的参数会默认绑定表单里面对应的参数！
+				如果参数名与占位符一致，则可直接使用@PathVariable；如果不一致，则在@PathVariable( )括号内绑定占位符。
 
-	带占位符的 URL 是 Spring3.0 新增的功能，该功能在SpringMVC 向 REST 目标挺进发展过程中具有里程碑的意义，
-	通过 @PathVariable 可以将 URL 中占位符参数绑定到控制器处理方法的入参中：URL 中的 {xxx} 占位符可以通过@PathVariable(“xxx“) 绑定到操作方法的入参中。
+	带占位符的URL是Spring3.0新增的功能，该功能在SpringMVC向REST目标挺进发展过程中具有里程碑的意义，
+	通过@PathVariable可以将URL中占位符参数绑定到控制器处理方法的入参中：URL中的{xxx}占位符可以通过@PathVariable(“xxx“)绑定到操作方法的入参中。
 
-	举个例子：如果要获取某个id下此条问题答案的查询次数的话，则后台就需要动态获取参数，其注解为@PathVariable，并且requestMapping中的value应为value="/{id}/queryNum"。
+	eg：如果要获取某个id下此条问题答案的查询次数的话，则后台就需要动态获取参数，其注解为@PathVariable，并且requestMapping中的value应为value="/{id}/queryNum"。
 
+·@RequestParam和@PathVariable区别与联系：
+	··@RequestParam和@PathVariable注解是用于从request中接收请求的，两个都可以接收参数；
+	··不同的是@RequestParam是从request里面拿取值，而 @PathVariable是从一个URI模板里面来填充；
+	··总的来说，@RequestParam均是键值对形式。与@PathVariable中的占位符形式不同！！！
+
+
+·@RequestBody
+	一般是post请求的时候才会使用这个请求，把参数丢在@Requestbody里面。
 
 
 ·@RequestParam和@RequestBody区别：
 	··使用@RequestParam获取参数，然后使用@RequestBody对json格式的参数转换为Java类型；
 	··@RequestBody需要把所有请求参数作为json解析，因此，不能包含key=value这样的写法在请求url中，所有的请求参数都是一个json。直接通过浏览器输入url时，@RequestBody获取不到json对象，需要用java编程或者基于ajax的方法请求，将Content-Type设置为application/json；
+
+
+·@ResponseBody
+	@responseBody表示服务器返回的时候以一种什么样的方式进行返回， 将内容或对象作为 HTTP 响应正文返回，值有很多，一般设定为json。
+	Spring的ResponseBody和RestController注解返回的json数据不是json字符串，而是json对象，因为可以点出对象里面的属性。
 
 
 ·@RequestMapping:
@@ -45,14 +51,8 @@ SpringMVC注解：
 	这个注解是和spring的pathVariable是一样的，也是基于模板的，但是这个是jboss包下面的一个实现，上面的是spring的一个实现，都要导包。
 
 ·@QueryParam
-	@QueryParam 是 JAX-RS 本来就提供的，和Spring的RequestParam作用一致。
+	@QueryParam是JAX-RS本来就提供的，和Spring的RequestParam作用一致。
 
-·@ResponseBody
-	@responseBody表示服务器返回的时候以一种什么样的方式进行返回， 将内容或对象作为 HTTP 响应正文返回，值有很多，一般设定为json。
-	Spring的ResponseBody和RestController注解返回的json数据不是json字符串，而是json对象，因为可以点出对象里面的属性。
-
-·@RequestBody
-	一般是post请求的时候才会使用这个请求，把参数丢在@Requestbody里面。
 
 
 ·@Valid：@Valid不提供分组功能；
@@ -80,10 +80,71 @@ SpringMVC注解：
 
 
 
+shiro:
+-------------------------
+·@RequirePermission：添加权限
+	这种方式直观，哪里需要权限，哪里写就行。但是，真正项目开发的时候，这种方式就很有局限性了。
+	当权限配置关系发生变化，每次都要修改代码，编译打包重启系统，这肯定是不能够被接受的。
+
+	所以，最好的方式，还是通过动态配置，给不同的用户配置不同的角色，权限，修改之后立马生效这种方式。 为了实现这个效果，就需要基于URL配置权限的方式来做了。
+
+
+
+
+
+
 MyBatis：
 ---------------------------
 ·@Param：
 	MyBatis所提供的(org.apache.ibatis.annotations.Param)，作为Dao层的注解，作用是用于传递参数，从而可以与SQL中的的字段名相对应，一般在2=<参数个数<=5时使用最佳。
+
+
+
+
+Spring：
+-----------------------------
+	·修饰类：
+		@Componet注解：代表将该对象放入到IOC容器中，括号里面的名字代表该对象在IOC容器中的唯一标识名字，名字任意取。该注解写在代码第一行。
+
+		@Repository：表示持久层的组件，修改Service层对象添加到IOC容器的注解方式；
+		@Service：表示业务逻辑层的组件，修改Servlet层对象添加到IOC容器的注解方式为；
+		@Controller：表示控制层的组件；
+
+	·属性注入：
+		@Value：设置普通属性的值；
+
+		@Autowired：按照类型（byType）进行装配依赖对象；
+		默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。
+		如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。如下：
+
+		public class TestServiceImpl {
+		    @Autowired
+		    @Qualifier("userDao")
+
+		    }
+		-----------------------------
+		@Resource（不带括号的注解），必须要保证该类型只有一个变量，所以一般情况下我们还是优先使用@Resource(name=””)注解。
+		@Resource（name=“”）：用于将该对象依赖的属性从IOC容器中找到并注入，括号里面的name属性值必须跟@Compenent注解里填入的名字相同。
+
+		@Resource有两个重要的属性：name和type，Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。
+			如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
+
+		@Resource装配顺序：
+
+			①如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常。
+
+			②如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常。
+
+			③如果指定了type，则从上下文中找到类似匹配的唯一bean进行装配，找不到或是找到多个，都会抛出异常。
+
+			④如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配。
+
+			@Resource的作用相当于@Autowired，只不过@Autowired按照byType自动注入。
+		--------------------------------
+
+	·其他注解：
+		@RequestMapping：映射一个URL到一个类或者一个特定方法上。
+		@Scope：范围注解；默认单例；多例如@Scope（“prototype”）
 
 
 

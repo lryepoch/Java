@@ -1,113 +1,104 @@
 
-SSM:
+·SSM全过程：
+	··mysql:先说数据库吧，对于数据库的使用初期只需要掌握增删改查以及表与表之间的关系就可以了，还有分页啥的尽量了解一些，我个人觉得mysql是比sqlserver灵活一些的，下面是mysql的分页语句，limit后面的意思是从第101			条数据开始，显示10数据，看起来就很精简。
 
---SSMȫ���̣�
-		1)mysql:��˵���ݿ�ɣ��������ݿ��ʹ�ó���ֻ��Ҫ������ɾ�Ĳ��Լ������֮��Ĺ�ϵ�Ϳ����ˣ����з�ҳɶ�ľ����˽�һЩ���Ҹ��˾���mysql�Ǳ�sqlserver���һЩ�ģ�������mysql�ķ�ҳ��䣬limit�������˼�Ǵӵ�101			�����ݿ�ʼ����ʾ10���ݣ��������ͺܾ���
+	··mybatis:作为持久层，刚火没多久，其实它和Hibernate各有千秋，hibernate几乎是全自动的，配置好连接所有的配置文件基本上都能自动生成，适用于快速开发，但是它会把数据全部加载出来，不够灵活。mybatis按需加载，半自动，够灵活的特性越来越受欢迎，前提是数据库的底子不能太差，你要在mapper里面做大量的表之间关系的映射，还要写所有的sql操作语句，总之，留给码农发挥的空间非常大，主要包含配置文件和映射文件两块！
 
-		2��mybatis:��Ϊ�־ò㣬�ջ�û��ã���ʵ����Hibernate����ǧ�hibernate������ȫ�Զ��ģ����ú��������е������ļ������϶����Զ����ɣ������ڿ��ٿ������������������ȫ�����س�����������mybatis������أ����Զ�������������Խ��Խ�ܻ�ӭ��ǰ�������ݿ�ĵ��Ӳ���̫���Ҫ��mapper�����������ı�֮���ϵ��ӳ�䣬��Ҫд���е�sql������䣬��֮��������ũ���ӵĿռ�ǳ�����Ҫ���������ļ���ӳ���ļ����飡
+	··Spring: Spring真的是一个非常棒的容器，海纳百川，对于Spring有注解和xml两种配置方式，mybatis的配置文件中可以通过
+	<context:component-scan base-package="包"/>把SqlSessionFactory及所有的类作为bean交给Spring管理，然后以注解的方式注入到dao,Spring MVC通过扫描；
 
-		3��Spring: Spring�����һ���ǳ��������������ɰٴ�������Spring��ע���xml�������÷�ʽ��mybatis�������ļ��п���ͨ��
-		<context:component-scan base-package="��"/>��SqlSessionFactory�����е�����Ϊbean����Spring������Ȼ����ע��ķ�ʽע�뵽dao,Spring MVCͨ��ɨ�裻
+	··Spring MVC: MVC模式的业务逻辑层是现在开发几乎必用的模式，优点不多说；
 
-		4)Spring MVC: MVCģʽ��ҵ���߼��������ڿ����������õ�ģʽ���ŵ㲻��˵��
+	··JSP:前端使用JSP配合JSTL以及EL表达式。
 
-		5JSP:ǰ��ʹ��JSP���JSTL�Լ�EL����ʽ��
-
-
-		����˵����Ϊ����Java������������SSM��ܼ��󷽱������ǿ�������������ǿ�����Ч�ʡ����У�����һ��ʹ��MVCģʽ�ܹ����ǵ�Web��Ŀ����������
-		��Ϊ��Ӧ�ģ�spring��������MVC��M�����ڹ���beanģ�͵ȵȣ�
-		springmvc��������C�㣬�������ǵ�action�ȵȣ�
-		��mybatis�����������ݲ��������ؼ�¼��ܡ�
+	简单来说，作为我们Java开发者来讲，SSM框架极大方便了我们开发，提高了我们开发的效率。其中，我们一般使用MVC模式架构我们的Web项目或者其他。
+	作为对应的，spring则是我们MVC中M层用于管理bean模型等等，
+				springmvc则是我们C层，管理我们的action等等，
+				mybatis则是我们数据操作层的相关记录框架。
 
 
 
 
---SSM���Ϲ��̣�
-							��һ��������dao��
-								mybatis��spring���ϣ�ͨ��spring����mapper�ӿڡ�
-								ʹ��mapper��ɨ�����Զ�ɨ��mapper�ӿ���spring�н���ע�ᡣ
+·SSM整合过程：
+	第一步：整合dao层
+		mybatis和spring整合，通过spring管理mapper接口。
+		使用mapper的扫描器自动扫描mapper接口在spring中进行注册。
 
-							�ڶ���������service��
-								ͨ��spring���� service�ӿڡ�
-								ʹ�����÷�ʽ��service�ӿ�������spring�����ļ��С�
-								ʵ��������ơ�
+	第二步：整合service层
+		通过spring管理 service接口。
+		使用配置方式将service接口配置在spring配置文件中。
+		实现事务控制。
 
-							������������springmvc
-								����springmvc��spring��ģ�飬����Ҫ���ϡ�
-
-
-
---ϸ��ע�⣺											 
-		---classpath��ζ��src��
-		---���� WebContent ��һ��Ŀ¼�����ҳ�棬�û����֪��ĳ�� jsp ҳ�����ֱ�ӷ��ʡ����ǣ�ͨ�������Ϊ�˱�֤ҳ��İ�ȫ������һ����������� WebContent ��һ��Ŀ¼��ֻ��һ������ҳ�棨index.jsp����Ϊ��ת������վ��ص�ҳ����� WEB-INF �ļ����±�����������Ϊ���� WEB-INF �ļ����µ�ҳ��û�а취ͨ����ַ��ֱ�ӷ��ʣ�ֻ��ͨ����̨����ת����ӵķ��ʣ����Ծ���Ҫ���� SpingMVC ��ͨ��controller�����ƣ���������Ӧ��ҳ�档
-
-		����web-inf����ֻ��ͨ����̨���ܷ��ʣ�Ҫôaction��Ҫô��web.xml���ã���servlet�����ò�ࡣ
-
-		---����HTTP����value = "/editItems",method = RequestMethod.GET�����������ǵ�����"/editItems"�����ˣ��������Ǳ��õ���ʹ��@RequestMappingע������http����ķ���������㽫�����method = RequestMethod.GET��Ϊmethod = RequestMethod.POST��Ȼ����ҳ�����ٵ���޸�����ʱ�ͻᱨ����Ҳ���Խ�ע���еĲ�����Ϊmethod = {RequestMethod.GET,RequestMethod.POST}��ʾ����ȿ���ΪPOST�����ֿ���ΪGET����
-
-		---��װ��ѻ�������ת���ɶ������͡�
-		---Javabean���ã�һ���࣬ÿ�����Զ�����getter��setter�������ⲿ���ã���Ҫ������������������Ͳ������ݿ⣩��
-
-		---��Ŀ������SpringMVC���������������Ϊhttp://localhost:8080/SpringMVC/login.jspʱ��${pageContext.request.contextPath}��<%=request.getContextPath()%>ȡ�����ľ���/SpringMVC,����/�������ĺ������http://localhost:8080������������Ŀ��Ӧ������д${pageContext.request.contextPath}/login.jsp��
-
-		---ʹ����ע�����������ú����ǾͿ���ע�͵�������ӳ�����봦�����������ˡ�
-
-		---conf/web.xml�����Լ�����webӦ���µ�web.xml��ʲô����?
-			�򵥵�˵�����web.xml�е����ûḲ�ǵ�conf/web.xml�����ã�������web.xml��ȱ��ĳЩ������ʹ��conf/web.xml�е����á�
-
-		---����:������������Ⱥ�������²���ʹ�����Դ󲿷����������ʹ��UUID����������
+	第三步：整合springmvc
+		由于springmvc是spring的模块，不需要整合。
 
 
 
+·细节注意：											 
+	··classpath意味着src。
+	··对于 WebContent 这一层目录下面的页面，用户如果知道某个 jsp 页面可以直接访问。但是，通常情况下为了保证页面的安全，我们一般的做法是在 WebContent 这一层目录下只留一个引导页面（index.jsp）作为跳转，把网站相关的页面放入 WEB-INF 文件夹下保护起来。因为放在 WEB-INF 文件夹下的页面没有办法通过地址栏直接访问，只能通过后台的跳转来间接的访问，所以就需要请求 SpingMVC （通过controller来控制）来返回相应的页面。
 
---Spring��mybatis���Ϻ�
+	放在web-inf下面只能通过后台才能访问，要么action，要么在web.xml配置，跟servlet的配置差不多。
 
-			1��Spring�����ļ�����Ҫ���õ�����:
+	··限制HTTP请求：value = "/editItems",method = RequestMethod.GET参数而不再是单单的"/editItems"参数了，这里我们便用到了使用@RequestMapping注解限制http请求的方法。如果你将这里的method = RequestMethod.GET改为method = RequestMethod.POST，然后在页面中再点击修改链接时就会报错。也可以将注解中的参数改为method = {RequestMethod.GET,RequestMethod.POST}表示请求既可以为POST请求又可以为GET请求。
 
-							˼·��1.��spring����SqlSessionFactory��
-									  2.��spring����mapper�����dao��
-											ʹ��spring��mybatis���Ͽ���mapper������ԭʼdao�ӿڣ�
-											�Զ����������Զ�����sqlsession��
-									  3.��spring��������Դ(�����ݿ����ӳ�)��
+	··包装类把基本类型转换成对象类型。
+	··Javabean作用：一个类，每个属性都加了getter和setter，来供外部调用；主要负责处理事务（数据运算和操作数据库）。
 
+	··项目名称是SpringMVC，在浏览器中输入为http://localhost:8080/SpringMVC/login.jsp时，${pageContext.request.contextPath}或<%=request.getContextPath()%>取出来的就是/SpringMVC,而”/”代表的含义就是http://localhost:8080。所以我们项目中应该这样写${pageContext.request.contextPath}/login.jsp。
 
-							���Ϻ�
-										1.mybatis�����ļ��е�<mappers>��ǩ�����ȥ������Ϊ������spring�����ļ��н��ж�mapper������;
-										2.�������ñ�ǩ<typeAliases>Ҳ����ȥ������Ϊ����Ҳ������spring�����ļ��ж�pojoȫ�޶��������ı����������á�
+	··使用了注解驱动的配置后，我们就可以注释掉处理器映射器与处理器适配器了。
 
-							spring�����ļ�����Ҫ���õ�������:
-										1.����Դ(�õ���dbcp���ӳأ����ݿ����������д��src·���µ�db.properties�ļ���)����db�����ļ�+���ӳء�
-										2.SqlSessionFactory����ע������Դ+����mybatisȫ�������ļ�·����
-												SSM����У���Ҫָ��mybatis��.mapper�ļ���λ��
-										3.mapper��dao����mapperɨ������mapper�ӿ��Զ�������������spring������
-													3.1�����Ͽ���ԭʼdao�ӿ�
-													3.2��ʹ��MapperFactoryBean
-													3.3��ʹ��MapperScannerConfigurer(ɨ��mapper)
+	··conf/web.xml和我自己建的web应用下的web.xml有什么区别?
+		简单的说，你的web.xml中的配置会覆盖掉conf/web.xml的配置，如果你的web.xml中缺少某些配置则使用conf/web.xml中的配置。
 
-										4��spring����ʽ��������������á�����Դ+aop����+֪ͨ+������Ϊ��
-
-					<context:annotation-config> �� <context:component-scan>������
-					<context:annotation-config> �����ڼ�����Щ�Ѿ���spring������ע�����bean��������ͨ��xml�ķ�ʽ����ͨ��package sanning�ķ�ʽ�������ע�⡣
-					<context:component-scan>���˾���<context:annotation-config>�Ĺ���֮�⣬<context:component-scan>��������ָ����package��ɨ���Լ�ע��javabean ��
-
-
-			2��mybatis�����ļ������ݣ�
-				1.ȫ�����ã�
-				2.�������ã�
-				3.���---��ҳ�����
+	··限制:主键自增长在群集环境下不好使，所以大部分情况下我们使用UUID来作主键。
 
 
 
---ʹ�ÿ�ܺͲ��ÿ�ܵ�����
+
+·Spring和mybatis整合后：
+
+	1、Spring配置文件中需要配置的内容:
+
+					思路：1.让spring管理SqlSessionFactory；
+						  2.让spring管理mapper对象和dao；
+								使用spring和mybatis整合开发mapper代理及原始dao接口；
+								自动开启事务，自动管理sqlsession；
+						  3.让spring管理数据源(即数据库连接池)；
+
+
+					整合后：
+								1.mybatis配置文件中的<mappers>标签便可以去掉，因为我们在spring配置文件中进行对mapper的配置;
+								2.别名配置标签<typeAliases>也可以去掉，因为我们也可以在spring配置文件中对pojo全限定性类名的别名进行配置。
+
+					spring配置文件中需要配置的内容有:
+								1.数据源(用的是dbcp连接池，数据库的连接配置写在src路径下的db.properties文件中)。【db配置文件+连接池】
+								2.SqlSessionFactory。【注入数据源+配置mybatis全局配置文件路径】
+										SSM框架中：还要指定mybatis：.mapper文件的位置
+								3.mapper或dao。【mapper扫描器，mapper接口自动创建代理对象到spring容器】
+											3.1、整合开发原始dao接口
+											3.2、使用MapperFactoryBean
+											3.3、使用MapperScannerConfigurer(扫描mapper)
+
+								4、spring声明式事务管理器的配置【数据源+aop切面+通知+传播行为】
+
+			<context:annotation-config> 和 <context:component-scan>的区别：
+			<context:annotation-config> 是用于激活那些已经在spring容器里注册过的bean（无论是通过xml的方式还是通过package sanning的方式）上面的注解。
+			<context:component-scan>除了具有<context:annotation-config>的功能之外，<context:component-scan>还可以在指定的package下扫描以及注册javabean 。
+
+
+	2、mybatis配置文件的内容：
+		1.全局配置；
+		2.别名配置；
+		3.插件··分页插件；
 
 
 
 
 
 
---mybatis��hibernate����
 
 
 
-
-
+ 
