@@ -77,8 +77,9 @@ MySQL：
 
 	MySql中 delimiter 详解：其实就是告诉MySQL解释器，该段命令是否已经结束了，mysql是否可以执行了。默认情况下，delimiter是分号;。
 
+
+
 ·约束：
-	
 	··AUTO_INCREMENT：
 		1.自动编号，且必须与主键组合使用；带有自增(AUTO_INCREMENT)的表,插入数据时,自增的字段写null或者DEFAULT；
 		2.默认情况下，起始值为1，每次的增量为1；
@@ -111,7 +112,6 @@ MySQL：
 
 
 
-
 ·数据表的结构：
 	··针对字段：
 		1.增加：ALTER TABLE tb_name ADD column_name 数据类型 ……        【还可以指定列的位置，FIRST, AFTER ……】
@@ -136,11 +136,11 @@ MySQL：
 		默认约束：……ALTER 字段名 SET DEFAULT 默认值；
 						 删除：……ALTER 字段名 DROP DEFAULT;
 
+
+
 ·数据库查询分类：
 	··单表查询：
-
 	··连接查询：
-
 		···等值连接查询：=；
 			从集合论角度看：等值连接是内连接的子集；
 			等值连接和内连接，效果是相同的，执行效率应该也是一样的。
@@ -148,8 +148,7 @@ MySQL：
 
 		···自然连接查询：目标列中重复的属性去掉；（在SQL语句中只需手动设置你要查询的字段就行）
 
-		···自身连接查询：一个表与其自己进行连接；想象有2张表，一张主表，一张副表，使用内连接；
-
+		···自身连接查询：一个表与其自己进行连接；想象有2张表，一张主表，一张副表，使用内连接；(一般存在先行码)
 
 		···内连接：仅显示满足条件的纪录；JOIN=CROSS JOIN=INNER JOIN；
 
@@ -167,7 +166,6 @@ MySQL：
 			1.左外连接：left (outer) join。显示左表，显示右表满足条件的；
 			2.右外连接：right (outer) join。显示右表，显示左表满足条件的；
 			3.全外连接：显示左表和右表全部的记录。MySQL目前不支持此种方式，可以用其他方式替代解决。
-
 
 	··嵌套查询：
 		···注意点：
@@ -198,6 +196,7 @@ MySQL：
 				2）不返回任何数据，只产生true或者false；
 				3）当子查询返回行数时，exists返回true；
 				4）目标列表达式通常用*，因为带exists的子查询只返回真或者假，给出列名无实际意义；
+				5）使用exists时，内外要建立联系；
 
 			>IN和EXISTS区别：
 				in在查询的时候，首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。所以相对内表比较小的时候，in的速度较快。
@@ -209,18 +208,17 @@ MySQL：
 		>能用连接查询就不要使用嵌套查询；
 		>使用聚集函数实现子查询比直接用ANY或ALL查询效率高；
 
-
 	··集合查询：
 		···并操作：UNION；
 		···交操作：INTERSECT；
 		···差操作：EXCEPT；
 
-
 	··基于派生表的查询：
 		···子查询出现在FROM字句中，select查询的结果也是一张表，可以作为出现在from子句后面作为派生表进行查询。
 
 
-· Mysql 通用函数：
+
+· Mysql通用函数：
 	1.字符函数：
 		CONCAT()	字符连接	 模糊查询：concat('%',#{0},'%') 这是mysql的写法。select * from   category_  where name like concat('%',#{0},'%')
 		CONCAT_WS()		使用指定分隔符进行字符连接
@@ -256,9 +254,10 @@ MySQL：
 		NOW()：年月日时分秒
 		CURRENT_DATE()：年月日
 		CURRENT_TIME()：时分秒
-		DATE_ADD(''，INTERVAL 差值数)：日期增加或者减少
+		
+		DATE_ADD(date,INTERVAL expr type)：向日期添加指定的时间间隔。date参数是合法的日期表达式。expr参数是您希望添加的时间间隔。type 参数可以是DAY/MONTH……
 
-		DATE_FORMAT()：格式化，一个格式变成另一个格式
+		DATE_FORMAT(date,format)：date参数是合法的日期。format规定日期/时间的输出格式。
 
 		DATEDIFF(A,B):
 			··确定2个日期之间的差异，通常用于计算年龄。比如：select datediff(now(),'20120512')；
@@ -338,7 +337,8 @@ MySQL：
 		··当同时含有 where 子句、group by 子句 、having 子句及聚集函数时，执行顺序如下：
 				执行 where 子句查找符合条件的数据；
 				使用 group by 子句对数据进行分组；
-				对 group by 子句形成的组运行聚集函数计算每一组的值；最后用 having 子句去掉不符合条件的组。
+				对 group by 子句形成的组运行聚集函数计算每一组的值；
+				最后用 having 子句去掉不符合条件的组。
 
 
 
@@ -377,6 +377,8 @@ MySQL：
 	c3p0:
 	1.通过ComboPooledDataSource()构造方法创建数据源对象；
 	2.通过读取配置文件(c3p0.xml)创建数据源对象；
+
+
 
 ·drop、truncate 和 delete 的区别：
 	··内容和范围：
@@ -424,6 +426,9 @@ MySQL：
 		查询第20条到第30条的数据的sql是：select * from table limit 20,10;  ->对应我们的需求就是查询第三页的数据：select * from table limit (3-1)*10,10;
 
 	··总结：分页sql格式是：select * from table limit (start-1)*pageSize,pageSize; 其中start是页码，pageSize是每页显示的条数。
+
+
+
 
 ·mysql 如何把查询到的结果插入到另一个表中？
 

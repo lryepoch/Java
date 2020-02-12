@@ -88,53 +88,124 @@ INSERT INTO `student` VALUES ('s010', 'sss', '2019-10-30');
 
 
 ·查询挂科数目超过3门的学生全部信息：
-（查什么：学生全部信息
-挂科：score<60
-数目超过3门：即每人都要超过3门，所以对sno进行分组，并使用聚集函数count(*)
-使用exists：内外要建立联系，所以a.sno=b.sno
+（1.查什么：学生全部信息
+2.挂科：score<60
+3.数目超过3门：即每人都要超过3门，所以对sno进行分组，并使用聚集函数count(*)
+4.使用exists：内外要建立联系，所以a.sno=b.sno
 ）
-SELECT a.sno,a.sname
-FROM student a
-WHERE EXISTS(
-	SELECT *
-	FROM sc b
-	WHERE score<60 AND a.sno=b.sno
-	GROUP BY b.sno
-	HAVING COUNT(*)>3
+select a.sno,a.sname
+from student a
+where exists(
+	select *
+	from sc b
+	where score<60 and a.sno=b.sno
+	group by b.sno
+	having count(*)>3
 )
->查询分类.嵌套查询.子查询.带有exists的子查询：
+>查询分类：嵌套查询.子查询.带有exists的子查询：
+
 
 
 ·列出选修了C001课程的学生的学号、姓名
 select sno,sname
 from student
-where sno in (select sno from sc where cno='c001')
+where sno in (select sno 
+				from sc where cno='c001')
+
 
 
 ·选出学号为s003的同学所选课程中的成绩大于他平均成绩的课程的课程号
 select cno
 from sc
-where score > (select avg(score) from sc where sno='s003')
+where score > (select avg(score) 
+				 from sc where sno='s003')
 and sno='s003'
+
 
 
 ·查询选课人数最多的课程号
 select cno
 from sc
 group by cno
-having count(*)>=all(select count(*) from sc group by cno)
+having count(*)>=all(select count(*) 
+						from sc group by cno)
+
 
 
 ·列出选修了c001课程的学生的学号、姓名
 select sno,sname
 from student a
-where exists(select * from sc b where a.sno=b.sno and cno='c001')
+where exists(select * 
+				from sc b 
+				where a.sno=b.sno and cno='c001')
+
 
 
 ·查询选了所有课程的学生
+(1.查什么：学生信息
+2.总共有多少门课程
+3.对学生分组，谁的选课表记录等于总的课程数
+4.根据学号查询出学生信息
+)
+select sno,sname 
+from student
+where sno in (select sno
+				from sc
+				group by sno
+				having count(*) =(select count(*)
+									from course))
+
+or
+select a.sno,a.sname 
+from student a 
+where exists(select *
+				from sc b 
+				where a.sno = b.sno        ##where一定要排在group by的前面##
+				group by sno
+				having count(*) =(select count(*)
+									from course))
 
 
 ·找出被所有学生选了的课程的课程号和课程名
+select cno,cname 
+from course
+where cno in (select cno
+				from sc
+				group by cno
+				having count(*) =(select count(*)
+									from student))
 
 
-·求学分获得8分以上学生的学号,平均分以及总学分
+·求学分获得8分以上学生的学号,平均分以及总学分（只有成绩大于等于60才可以取得学分）
+（1.查出每个学生获得的学分
+2.筛选出学分大于8的学生
+3.再次计算2中学生的学号，平均分，总学分）
+
+select sno,avg(score),sum(credit)
+from sc,course
+where sc.cno=course.cno and score>=60
+group by sno
+having sum(credit)>8
+
+
+
+·查询本周过生日的学生
+select *
+from student
+where WEEK(DATE_FORMAT(NOW(),'%Y%m%d')) = WEEK(birthday)
+
+·查询下周过生日的学生
+select *
+from student
+where WEEK(DATE_FORMAT(NOW(),'%Y%m%d'))+1 = WEEK(birthday)
+
+
+·查询本月过生日的学生
+select * 
+from student 
+where MONTH(DATE_FORMAT(NOW(),'%Y%m%d')) =MONTH(birthday)
+
+·查询下月过生日的学生
+select * 
+from student 
+where MONTH(DATE_FORMAT(NOW(),'%Y%m%d'))+1 =MONTH(birthday)
