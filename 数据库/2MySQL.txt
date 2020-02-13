@@ -239,11 +239,11 @@ MySQL：
 	2.数值运算符与函数：
 		CEIL()：进一取整/向上取整
 		DIV：整数除法
-		FLOOR():舍一取整/向下取整
-		MOD:取余数（取模）
-		POWER():幂运算
-		ROUND(，):四舍五入
-		TRUNCATE():数字截取，不会四舍五入。
+		FLOOR(): 舍一取整/向下取整
+		MOD: 取余数（取模）
+		POWER(): 幂运算
+		ROUND(，): 四舍五入
+		TRUNCATE(): 数字截取，不会四舍五入。
 
 	3.比较运算符与函数：
 		[NOT] BETWEEN ……AND……

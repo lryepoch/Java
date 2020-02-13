@@ -86,6 +86,7 @@ INSERT INTO `student` VALUES ('s009', 'aaa', '2019-12-31');
 INSERT INTO `student` VALUES ('s010', 'sss', '2019-10-30');
 
 
+===============================
 
 ·查询挂科数目超过3门的学生全部信息：
 （1.查什么：学生全部信息
@@ -209,3 +210,9 @@ where MONTH(DATE_FORMAT(NOW(),'%Y%m%d')) =MONTH(birthday)
 select * 
 from student 
 where MONTH(DATE_FORMAT(NOW(),'%Y%m%d'))+1 =MONTH(birthday)
+
+
+·查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩(没成绩的显示为 null )
+select s.sno,sname,count(cno) as '选课总数', sum(score) as '总成绩'
+from student s left join sc on s.sno=sc.sno
+group by sc.sno 
