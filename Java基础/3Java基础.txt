@@ -437,6 +437,12 @@
 
 	    3.实例对象.getClass()     说明：对类进行静态初始化、非静态初始化；返回引用运行时真正所指的对象(因为:子对象的引用可能会赋给父对象的引用变量中)
 
+  ··根据类的反射获取该类字段：
+    ···getFields()：获取该类的所有public字段，包括父类中的字段；
+    ···getDeclaredFields()：获取该类所有的字段，不包括父类中的字段；
+
+  ··同样类似的还有getConstructors()和getDeclaredConstructors()、getMethods()和getDeclaredMethods()；
+
 
 
 
