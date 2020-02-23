@@ -52,3 +52,8 @@
 
 ·subject.login(token)这个方法是去判断用户密码是否正确的，我知道他会调用AuthorizingRealm子类里面的doGetAuthenticationInfo方法去校验。
 	但是我想知道login是如何走到这个方法的，并且AuthorizingRealm子类是如何配置成shiro的校验类的？
+
+
+
+
+·输入输出流的操作：
