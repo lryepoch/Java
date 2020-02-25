@@ -4,7 +4,7 @@ SpringMVC注解：
 
 ·@RequestParam注解：接收请求参数。
 	@RequestParam是位列Controller层，作用是为获取前端参数，方式主要有两种，一种是request.getParameter("name")，另外一种是用注解@RequestParam直接获取，解决的是前后端参数不一致的问题。
-	(@RequestParam（value/name="id"，required=false，defaultValue=1）Integer id)【required默认是true，不传值会抛出异常。当设置为false时，不传id时不会出错，以defaultValue值显示】
+	(@RequestParam（value/name="id"，required=false，defaultValue=1）Integer id)【required默认是true，@RequestParam(required=true)表示当前参数必须传入，不传值会抛出异常。当设置为false时，不传id时不会出错，以defaultValue值显示】
 
 ·@PathVariable
 	这个注解能够识别URL里面的一个模板。
