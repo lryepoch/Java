@@ -18,7 +18,8 @@
 
 ·常见分页功能的实现方式：
 	··插件；
-		[mybatis]pagehelper，[jpa]Pageable；
+		[mybatis]pagehelper，[jpa]Pageable；pageHelper不支持一对多结果嵌套；
+
 	··自行封装；
 		定义一个Page<T>，有currentPage/pageSize/total/recordList/pageNum/,根据sql语句的limit currentRecord,pageSize;对需要的字段拼接出来；
 
@@ -74,9 +75,17 @@
 							@RequestParam + form-data：键值对
 							@RequestParam + x-www-form-urlencoded      将表单数据编码为(name1=value1&name2=value2…)
 
+	··传入页码，每页记录条数这属于发起get请求；
+
 	··传入一个对象【post】：1种
 						Body：row(application/json)->json
 
 
 
 ·根据一张表的id删除两张有共同型号的表的数据时，要建立两张表之间的联系，即：where a表.共同字段=b表.共同字段；
+
+
+·截取字符串用的是subString()，截取集合用的是subList()；
+
+
+·输入一个数组参数，最后要总体删除。需要先将数组转换成集合：new ArrayList<>(Arrays.asList(ids))
