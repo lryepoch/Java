@@ -414,3 +414,8 @@ MyBatis：
 		&apos;     '
 
 		&quot;     "
+
+
+
+
+·mapper.xml的增加、更新、删除没有resultMap\resultType属性，但是：返回值可以是void/int/long/boolean。
