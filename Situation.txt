@@ -70,7 +70,7 @@
 
 ·postman的使用：
 	··传入一个参数【get】：3种
-						(1)Params：输入传入参数的key和value；
+						(1)Params：输入传入参数的key和value；（可以带参数，但必须捆绑在链接上）
 						(2)Body：
 							@RequestParam + form-data：键值对
 							@RequestParam + x-www-form-urlencoded      将表单数据编码为(name1=value1&name2=value2…)
@@ -89,3 +89,6 @@
 
 
 ·输入一个数组参数，最后要总体删除。需要先将数组转换成集合：new ArrayList<>(Arrays.asList(ids))
+
+
+·mybatis mapper接口传递一个集合。默认参数名为list；如果更改为其他的参数名，需要添加@Param注解。
