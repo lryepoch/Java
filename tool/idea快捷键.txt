@@ -4,16 +4,16 @@
 多行注释：ctrl+shift+/
 一键格式化代码：ctrl+alt+L
 
-查找/替换当前：ctrl+f
-查找(全局)：ctrl+h
-查找文件：shift+shift
+查找当前：ctrl+f
+替换当前：ctrl+r
+查找全局文件：shift+shift
 
 生成try-catch等(surround with)：alt+shift+z
 生成构造器get/set/toString：alt+insert
 
 删除一行：ctrl+d
 打开最近修改的文件：ctrl+E
-返回方法类型：ctrl+alt+v
+返回方法的结果类型：ctrl+alt+v
 
 当前方法被哪个类调用：
 当前属性被哪个类定义：

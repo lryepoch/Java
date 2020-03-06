@@ -210,6 +210,9 @@ MySQL：
 
 	··集合查询：
 		···并操作：UNION；
+			····UNION 内部的 SELECT 语句必须拥有相同数量的列。列也必须拥有相似的数据类型。同时，每条 SELECT 语句中的列的顺序必须相同；
+			····UNION操作符默认选取不同的值。如果允许重复的值，请使用UNION ALL；
+			····UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名；
 		···交操作：INTERSECT；
 		···差操作：EXCEPT；
 
@@ -364,7 +367,7 @@ MySQL：
 
 
 
-·dbcp/c3p0 都是数据库连接池来的：
+·dbcp/c3p0都是数据库连接池来的：
 	db.properties和c3p0.xml都是配置数据库连接池的配置文件；
 
 	创建数据源对象方法：在static静态代码块里面实现初始化数据源；
@@ -402,14 +405,14 @@ MySQL：
 
 
 
-·MYSQL_pconnect 和 MYSQL_connect 有什么区别？
+·MYSQL_pconnect和MYSQL_connect有什么区别？
 	前者是打开一个持久的数据库连接，这意味着数据库不是每次页面加载时都打开一个新的连接，所以不能用MYSQL_close（）来关闭一个持久的连接。
 	后者在每次页面被加载时打开连接，这个连接可以使用MYSQL_close来关闭。
 
 
 
 
-·limit 的使用：
+·limit的使用：
 	··解析：
 		使用LIMIT语句+ORDER BY语句可以实现查找开头或者结尾开始的特定几条记录。
 		LIMIT m,n : 表示从第m+1条开始，取n条数据；【2个参数的单位都是"条"】
@@ -430,10 +433,9 @@ MySQL：
 
 
 
-·mysql 如何把查询到的结果插入到另一个表中？
+·mysql如何把查询到的结果插入到另一个表中？
 
 	··如果表存在：
-
 		1、如果两张张表（导出表和目标表）的字段一致，并且希望插入全部数据，可以用这种方法：
 
 		INSERT INTO  目标表  SELECT  * FROM  来源表 ;
@@ -441,7 +443,6 @@ MySQL：
 		例如，要将 articles 表插入到 newArticles 表中，则可以通过如下SQL语句实现：
 
 		INSERT INTO  newArticles  SELECT  * FROM  articles ;
-
 
 		2、如果只希望导入指定字段，可以用这种方法：
 
@@ -456,7 +457,7 @@ MySQL：
 
 
 
-·SQL中 date 与 datetime 的区别：
+·SQL中date与datetime的区别：
 
 	NOW()函数返回当前系统的日期和时间。
 
@@ -465,11 +466,11 @@ MySQL：
 		datetime类型:可用于需要同时包含日期和时间信息的值。
 
 	··区别2：
-		date：MySQL 以 'YYYY-MM-DD' 格式检索与显示date值；
-		datetime:MySQL 以 'YYYY-MM-DD HH:mm:ss'格式检索与显示 DATETIME 类型。
+		date：MySQL以'YYYY-MM-DD'格式检索与显示date值；
+		datetime:MySQL以'YYYY-MM-DD HH:mm:ss'格式检索与显示 DATETIME 类型。
 
 	··区别3：
-		date类型：支持的范围是 '1000-01-01' 到'9999-12-31'；
-		datetime类型:支持的范围是'1000-01-01 00:00:00' 到 '9999-12-31 23:59:59'。
+		date类型：支持的范围是'1000-01-01'到'9999-12-31'；
+		datetime类型：支持的范围是'1000-01-01 00:00:00'到'9999-12-31 23:59:59'。
 
 

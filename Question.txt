@@ -40,9 +40,8 @@
 
 
 ·@RequestMapping()默认值？
-@RequestMapping(value="/")
+ @RequestMapping(value="/")
  method 不写的话，默认GET、POST都支持，根据前端方式自动适应
-
 
 
 
@@ -55,10 +54,7 @@
 
 
 
-
-·输入输出流的操作：
-
+HttpUtil的使用；
 
 
-
-·json数组转换成普通list集合；
+自定义注解；
