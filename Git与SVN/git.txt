@@ -13,7 +13,7 @@
 
 　　··查看配置信息，包括用户名和邮箱：$ git config --list
 									  $ git config user.name              #查看用户名
-									  $ git config user.email			   #查看邮箱
+									  $ git config user.email			  #查看邮箱
 
 
 ----------------------------------
