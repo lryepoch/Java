@@ -3,13 +3,15 @@ MySQL：
 ·MySQL入门：
 	命令行操作：
 	··安装MySQL:
-	··启动和停止MySQL服务：net start/stop mysql具体名称
+	··启动和停止MySQL服务：net start/stop mysql具体名称（如何确定？解决：打开本地服务，查看mysql服务名称）
 		或者在计算机管理上启动和停止；
 
-	··cmd下清屏命令cls；
+		或 mysqladmin -u root shutdown（在设置了密码的情况下的命令为 mysqladmin -u root -p shutdown）；
 
-	以下操作注意：如果您的MySQL没有安装在C盘下，先使用DOS命令进入MySQL的安装目录下的bin目录中。
-	方法如下：输入G，进入G盘。在输入cd G:\phpstudy\mysql\bin 进入到MySQL的bin目录下，才可以输入 mysql -hlocalhost -uroot -p 然后按回车键。
+
+	··cmd下清屏命令cls；
+		以下操作注意：如果您的MySQL没有安装在C盘下，先使用DOS命令进入MySQL的安装目录下的bin目录中。
+		方法如下：输入G，进入G盘。在输入cd G:\phpstudy\mysql\bin 进入到MySQL的bin目录下，才可以输入 mysql -hlocalhost -uroot -p 然后按回车键。
 
 	··登录数据库：在doc窗口。
 		命令格式：mysql -h 主机地址  -P 3306 -u 用户名 -p（指的是密码）
@@ -386,7 +388,7 @@ MySQL：
 ·drop、truncate 和 delete 的区别：
 	··内容和范围：
 		drop           删除整个表(包括结构和数据)；
-		truncate     只删除数据，只能对表操作并且只能删除整张表的数据，不可使用where条件；
+		truncate     只删除数据，只能对表操作并且只能删除整张表的数据，不可使用where条件，
 		                  且对于外键（foreignkey ）约束引用的表，不能使用 truncate table；
 		delete        只删除数据，可以删除table和view并且可以删除部分数据，因其可以使用where条件；
 
@@ -402,7 +404,11 @@ MySQL：
 		drop和truncate为DDL语句，会隐式自动提交，即操作立即生效，且原数据不放到rollback segment中，不能回滚，不会触发触发器；
 		delete是DML语句，需要手动提交才会永久保存，原数据放到rollback segment中，可以回滚。
 
+　　··truncate要点:   1）不会返回删除的记录数；
+　　　　　　　　　    2）重建自动增长的主键 ；
+　　　　　　　　　    3）删除表，再新建表。
 
+	··merge可以同时对数据表进行赠加和修改操作；
 
 
 ·MYSQL_pconnect和MYSQL_connect有什么区别？
