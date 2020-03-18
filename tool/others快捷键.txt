@@ -17,7 +17,10 @@ net start/stop XXX：启动/停止XXX服务；
 
 
 
+-----------------------------
+Windows：
 
+截屏：ctrl+alt+A
 
 
 
