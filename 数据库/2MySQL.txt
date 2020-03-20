@@ -212,9 +212,20 @@ MySQL：
 
 	··集合查询：
 		···并操作：UNION；
-			····UNION 内部的 SELECT 语句必须拥有相同数量的列。列也必须拥有相似的数据类型。同时，每条 SELECT 语句中的列的顺序必须相同；
-			····UNION操作符默认选取不同的值。如果允许重复的值，请使用UNION ALL；
-			····UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名；
+			····UNION内部的SELECT语句：必须拥有相同数量的列；列必须拥有相似的数据类型；列的顺序必须相同；
+			····UNION 结果集中的列名总是等于UNION中第一个SELECT语句中的列名；
+
+			····Union：对两个结果集进行并集操作，不包括重复行，同时进行默认规则的排序；
+			····Union All：对两个结果集进行并集操作，包括重复行，不进行排序；
+
+							带where条件的union：
+							SELECT *
+							FROM 
+							(SELECT * FROM ttcibd001_2
+							UNION
+							SELECT * FROM ttcibd001_7) AS A
+							WHERE item = "30723993"
+
 		···交操作：INTERSECT；
 		···差操作：EXCEPT；
 
