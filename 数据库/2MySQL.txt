@@ -363,11 +363,11 @@ MySQL：
 
 		··preparedStatement：继承自Statement，参数化查询，可以预编译sql语句，性能更好，防止sql注入；
 
-			     ···sql注入：即使得where条件恒为真，无须账号密码也能获取到数据库的数据，甚至可以删除数据库；
+			···sql注入：即使得where条件恒为真，无须账号密码也能获取到数据库的数据，甚至可以删除数据库；
 
-			     ···解决办法之一：使用preparedStatement，因为preparedStatement是参数化查询的，数据库不会将参数作为sql指令的一部分来处理，而是在数据库完成编译		后，才套用参数运行，因此就算参数中含有破坏性的指令也不会被数据库编译；局限性：不允许一个占位符（？）有多个值，在执行有in字句查询时会变得棘手。
+			···解决办法之一：使用preparedStatement，因为preparedStatement是参数化查询的，数据库不会将参数作为sql指令的一部分来处理，而是在数据库完成编译		后，才套用参数运行，因此就算参数中含有破坏性的指令也不会被数据库编译；局限性：不允许一个占位符（？）有多个值，在执行有in字句查询时会变得棘手。
 
-			     ···之二是组合SQL字符串的时候，先对所传入的参数做字符取代，将单引号字符取代为连续2个单引号字符，这在SQL数据库中会被视为字符串中的一个单引号字符；
+			···之二是组合SQL字符串的时候，先对所传入的参数做字符取代，将单引号字符取代为连续2个单引号字符，这在SQL数据库中会被视为字符串中的一个单引号字符；
 
 		··callableStatement：继承自preparedStatement，调用存储过程；准备一个CallableStatement的方法是：CallableStatement Connection.prepareCall();
 											
@@ -393,6 +393,7 @@ MySQL：
 	c3p0:
 	1.通过ComboPooledDataSource()构造方法创建数据源对象；
 	2.通过读取配置文件(c3p0.xml)创建数据源对象；
+
 
 
 
@@ -431,10 +432,10 @@ MySQL：
 
 ·limit的使用：
 	··解析：
-		使用LIMIT语句+ORDER BY语句可以实现查找开头或者结尾开始的特定几条记录。
-		LIMIT m,n : 表示从第m+1条开始，取n条数据；【2个参数的单位都是"条"】
-		LIMIT n ： 表示从第1条开始，取n条数据，缩写是limit 0,n ；【参数n的单位是"条"】
-		本题LIMIT 2,1 表示从第3条数据开始，取一条数据，即入职员工时间排名第三的员工。
+		使用 limit 语句 + order by 语句可以实现查找开头或者结尾开始的特定几条记录。
+		limit m,n : 表示从第m+1条开始，取n条数据；【2个参数的单位都是"条"】
+		limit n ： 表示从第1条开始，取n条数据，详细写是limit 0,n ；【参数n的单位是"条"】
+		本题limit 2,1 表示从第3条数据开始，取一条数据，即入职员工时间排名第三的员工。
 
 	··分页需求：
 		客户端通过传递start(页码)，pageSize(每页显示的条数)两个参数去分页查询数据库表中的数据，那我们知道MySql数据库提供了分页的函数limit m,n，但是该函数的用法和我们的需求不一样，所以就需要我们根据实际情况去改写适合我们自己的分页语句，具体的分析如下：
@@ -444,8 +445,9 @@ MySQL：
 		查询第1条到第10条的数据的sql是：select * from table limit 0,10;   ->对应我们的需求就是查询第一页的数据：select * from table limit (1-1)*10,10;
 		查询第10条到第20条的数据的sql是：select * from table limit 10,10;  ->对应我们的需求就是查询第二页的数据：select * from table limit (2-1)*10,10;
 		查询第20条到第30条的数据的sql是：select * from table limit 20,10;  ->对应我们的需求就是查询第三页的数据：select * from table limit (3-1)*10,10;
+		查询第x条到第y条的数据的sql是：select * from table limit n,10;  ->对应我们的需求就是查询第n页的数据：select * from table limit (n-1)*10,10;
 
-	··总结：分页sql格式是：select * from table limit (start-1)*pageSize,pageSize; 其中start是页码，pageSize是每页显示的条数。
+	··总结：分页sql格式是：select * from table limit (start-1)*pageSize, pageSize; 其中start是页码，pageSize是每页显示的条数。
 
 
 
