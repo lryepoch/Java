@@ -47,4 +47,7 @@
 
 
 
-
+·springboot异常处理：
+	··定义一个返回值的数据结构；
+	··定义全局异常处理器@ControllerAdvice，里面定义了异常捕抓器@ExceptionHandler，可以捕抓自定义异常类（GlobalException）、参数检测不合格（MethodArgumentNotValidException）、其他异常类（Exception）；
+	··定义一个错误码枚举类；
