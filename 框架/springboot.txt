@@ -47,7 +47,28 @@
 
 
 
-·springboot异常处理：
-	··定义一个返回值的数据结构；
-	··定义全局异常处理器@ControllerAdvice，里面定义了异常捕抓器@ExceptionHandler，可以捕抓自定义异常类（GlobalException）、参数检测不合格（MethodArgumentNotValidException）、其他异常类（Exception）；
-	··定义一个错误码枚举类；
+·springboot异常处理：【status/code/message/data】
+
+	Springboot异常的处理，可以通过一下几种方法：
+	1、通过自定义BasicErrorController 错误处理，这个是处理是基于状态码的。
+		··在启动器里面，添加EmbeddedServletContainerCustomizer，然后在里面注册处理相应状态码的界面；
+		··定义错误处理控制器，这个控制器和普通控制器类似，主要是用来处理状态码对应的错误的视图；
+
+	2、使用@ControllerAdvice来进行统一异常处理，@ExceptionHandler(value = Exception.class)来指定捕获的异常 ；
+
+		··定义一个返回值的数据结构；
+		··定义全局异常处理器@ControllerAdvice，里面定义了异常捕抓器@ExceptionHandler，可以捕抓参数检测不合格（MethodArgumentNotValidException）、其他Exception类及其子异常类、自定义异常类（GlobalException）；
+		··定义一个错误码枚举类；
+			常见状态码：200-OK-响应成功
+						400-Bad Request-请求出现语法错误，一般请求参数不对
+						401-Unauthorized-访问被拒绝
+						403-Forbidden-资源不可用
+						404-Not Found-无法找到指定位置的资源
+						500-Internal server error-服务器内部错误
+
+		··编译异常需要提前捕获或者抛出，编译异常处理完成之后程序继续往下执行，而运行异常会被全局异常处理器所捕获处理；
+		
+		··自定义异常：继承Exception/RuntimeException；定义成员code/message；构造方法；
+						系统中需要手动throw new Exception(…);
+
+		··controller层处理异常，service层中使用spring事务，处理异常之后需要再次抛出。如果service处理了异常，那么事务就不会回滚。
