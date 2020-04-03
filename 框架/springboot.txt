@@ -48,7 +48,7 @@
 
 
 ·springboot异常处理：【status/code/message/data】
-
+	
 	Springboot异常的处理，可以通过一下几种方法：
 	1、通过自定义BasicErrorController 错误处理，这个是处理是基于状态码的。
 		··在启动器里面，添加EmbeddedServletContainerCustomizer，然后在里面注册处理相应状态码的界面；
@@ -72,3 +72,10 @@
 						系统中需要手动throw new Exception(…);
 
 		··controller层处理异常，service层中使用spring事务，处理异常之后需要再次抛出。如果service处理了异常，那么事务就不会回滚。
+
+
+
+·单元测试：
+	@RunWith(SpringRunner.class)
+	@SpringBootTest(classes = Application.class)
+	test方法加上@Test注解
