@@ -79,3 +79,10 @@
 	@RunWith(SpringRunner.class)
 	@SpringBootTest(classes = Application.class)
 	test方法加上@Test注解
+
+
+
+
+·打包：
+	··多模块打包：在parent的pom下执行deploy，这样就会自动将父pom以及子module都发布到仓库；
+	··将子module的parent去掉，不要依赖不在仓库中的pom，将子module提升为一个独立的maven项目单独发布；

@@ -64,13 +64,14 @@ linux：一切皆文件
 
 	··进程：
 
-		ps												#显示当前进程的状态
+		ps										#显示当前进程的状态
+		ps -a                              #查看已经运行的进程
 		ps aux               						 #查看所有进程
 		ps aux|grep java 						#查看java进程
 
 		ps –ef|grep tomcat 					#查看所有有关tomcat的进程
 
-		kill 进程号						          #结束进程
+		kill PID[进程号]						          #结束进程
 		kill -9 进程号  						#强制杀死进程
 
 
@@ -95,3 +96,65 @@ linux：一切皆文件
 	··netstat -tunlp|grep 端口号                #用于查看指定端口号的进程情况，如查看22端口的情况，netstat -tunlp|grep 22
 
 
+------------------------
+·文件操作：
+	安装lrzsz：# yum -y install lrzsz
+	这样就可以正常使用rz、sz命令，上传、下载数据；
+
+	上传文件：# rz filename
+
+	下载文件：# sz filename
+
+
+
+
+·vi可以分为三种状态，分别：
+	命令模式（command mode）：控制屏幕光标的移动；字符、字或行的删除；移动复制某区段及进入Insert mode下或者到last line mode。
+	插入模式（Insert mode）：只有在Insert mode下，才可以做文字输入，按「ESC」键可回到命令行模式。
+	底行模式（last line mode）：将文件保存或退出vi，也可以设置编辑环境，如寻找字符串、列出行号等。不过一般使用时把vi简化成两个模式，就是将底行模式（last line mode）也算入命令行模式command mode）。
+
+
+
+·命令行模式（command mode）功能键：
+	1、插入模式
+		按「i」切换进入插入模式「insert mode」，按“i”进入插入模式后是从光标当前位置开始输入文件；
+		按「a」进入插入模式后，是从目前光标所在位置的下一个位置开始输入文字；
+		按「o」进入插入模式后，是插入新的一行，从行首开始输入文字。
+
+	2、从插入模式切换为命令行模式
+	按「ESC」键。
+
+	3、移动光标
+	vi可以直接用键盘上的光标来上下左右移动，但正规的vi是用小写英文字母「h」、「j」、「k」、「l」，分别控制光标左、下、上、右移一格。
+
+
+
+
+·vi保存命令：
+	按ESC键跳到命令模式，然后：
+	:w 保存文件但不退出vi
+	:w file 将修改另外保存到file中，不退出vi
+	:w! 强制保存，不退出vi
+	:wq 保存文件并退出vi
+	:wq! 强制保存文件，并退出vi
+	:q 不保存文件，退出vi
+	:q! 不保存文件，强制退出vi
+	:e! 放弃所有修改，从上次保存文件开始再编辑。
+
+
+
+·Linux 运行jar包命令：
+	··java -jar XXX.jar 				特点：当前ssh窗口被锁定，可按CTRL + C打断程序运行，或直接关闭窗口，程序退出
+	··java -jar XXX.jar & 			&代表在后台运行。特定：当前ssh窗口不被锁定，但是当窗口关闭时，程序中止运行。
+
+	··nohup java -jar XXX.jar &		nohup意思是不挂断运行命令,当账户退出或终端关闭时,程序仍然运行。当用nohup命令执行作业时，缺省情况下该作业的所有输出被重定向到nohup.out的文件中，除非另外指定了输出文件。
+
+	··nohup java -jar XXX.jar >hup.out &  
+	command >out.file是将command的输出重定向到out.file文件，即输出内容不打印到屏幕上，而是输出到out.file文件中。
+
+	通过jobs命令查看后台运行任务：jobs
+	这会列出所有后台执行的作业，并且每个作业前面都有个编号。如果想将某个作业调回前台控制，只需要 fg + 编号即可。fg 23 
+
+
+·Linux 使用java -jar启动会自动停止问题：因为“java -jar xxx.jar”并没有以守护进程形式在linux后台自动运行；
+	解决方案：守护进程运行“java -jar xxx.jar”，如下：nohup java -jar xxx.jar&
