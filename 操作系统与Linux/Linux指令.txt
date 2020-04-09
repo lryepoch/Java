@@ -55,7 +55,8 @@ linux：一切皆文件
 		rm 文件名称           #删除文件
 		rm –i mydirectory/*   :（删除mydirectory目录下的所有文件，-i表示删前询问）			
 		rm -f 文件名           #删除不为空的文件											
-
+		rm -rf var/usr/epd     #强制删除文件夹
+		rm -f var/usr/epd/test.html     #强制删除文件，这里不用加r，因为绝对文件路径就是test.html了
 
 		cp：复制文件。    cp myfile* ./mydirectory     （将当前目录下myfile开头的文件复制到当前目录的子目录mydirectory）
 
@@ -70,6 +71,7 @@ linux：一切皆文件
 		ps aux|grep java 						#查看java进程
 
 		ps –ef|grep tomcat 					#查看所有有关tomcat的进程
+		netstat -lnp | grep 8090            #查看指定端口是否在运行
 
 		kill PID[进程号]						          #结束进程
 		kill -9 进程号  						#强制杀死进程
