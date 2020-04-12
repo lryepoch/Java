@@ -77,7 +77,7 @@
 		git init
 		git remote add origin git@10.2.7.13:260408/plm.git     (本地关联远程库)
 		git add .
-		git commit -m "Initial commit"
+		git commit -m "initial commit"
 		git push -u origin master
 
 		··=================
@@ -137,9 +137,9 @@
 
 	··查看分支合并图：$ git log --graph [--pretty=oneline --abbrev-commit]
 
-	··强制拉取并覆盖本地代码：git fetch --all
-							git reset --hard origin/master
-							git pull
+	··强制拉取并覆盖本地代码（放弃本地的修改，用远程的库的内容）：git fetch --all
+															git reset --hard origin/master
+															git pull
 
 
 
