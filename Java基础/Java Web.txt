@@ -157,6 +157,10 @@
 
 		4.请求到服务端时，将根据请求中的sessionId查找session，如果可以获取到则返回，否则返回null或者返回新构建的session，老的session依旧存在，请参考API。 
 
+		cookie保存在客户端，session保存在服务器端；
+		cookie目的可以跟踪会话，也可以保存用户喜好或者用户名密码；
+		session用来跟踪会话；
+
 
 	··request.getSession()一般是被用来存储当前用户对象到session中，或者从session中获取当前用户对象。 
 

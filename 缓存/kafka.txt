@@ -1,0 +1,9 @@
+
+为了提高一个队列(topic)的吞吐量，Kafka会把topic进行分区(Partition)；
+那么Partition中的数据是一样的吗？
+
+
+一台Kafka服务器叫做Broker，Kafka集群就是多台Kafka服务器；
+
+
+一个topic会分为多个partition，实际上partition会分布在不同的broker中；

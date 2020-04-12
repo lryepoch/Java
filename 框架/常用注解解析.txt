@@ -173,6 +173,12 @@ springboot：
 
 
 
+·打印日志：
+	··@Slf4j：log.info();
+	··Logger logger = LoggerFactory.getLogger(this.getClass());
+	  logger.info();
+
+
 
 
 

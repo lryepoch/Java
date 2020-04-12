@@ -13,7 +13,7 @@
 
 　　··查看配置信息，包括用户名和邮箱：$ git config --list
 									  $ git config user.name              #查看用户名
-									  $ git config user.email			   #查看邮箱
+									  $ git config user.email			  #查看邮箱
 
 
 ----------------------------------
@@ -325,9 +325,10 @@
 		git remote –v 					##查看当前项目的远程git地址，确定地址是否正确
 
 
+		git push -u origin master -f    ##强制提交到远程仓库；
 
 ---------------------------------------
-·问题：
+·场景：
 
 	··新建一个分支，如何把代码迁移到这个新建分支上？	checkout
 
@@ -344,3 +345,23 @@
 		查看reflog，找到最后一次commitid，$ git reflog --date=iso     【不用git log？git log是用来记录当前分支的commit log，分支都删除了，找不到commit log了】
 		切出分支，$	git checkout -b recovery_branch_name commit_id
 		切出分支后，本地有分支了，再push到远程仓库就可以了，$ git push  origin recovery_branch_name 
+
+
+	··如何在不提交当前分支的情况下切换到其它分支进行操作？
+		···当你执行$ git checkout master 命令的时候，将提示出错；
+
+		···当前的分支dev，最初也是从master分支上衍生出来的。而此时你要再从该分支上切换到其主分支。那么你需要先把该dev分支上的改动提交后才能切换，但是该dev分支上还没有完成全部的修改，你不想提交。那么此时你就要选择 stash 它们（你在当前分支上改动的却没有提交commit的内容）；
+
+		···当前分支上执行$ git stash 命令。将当前分支存起来，id为xxx；
+		···再执行$ git status命令，显示没有东西需要提交，这个时候你就可以切换到master分支上；
+
+		···执行$ git checkout dev 切换到 dev 分支，这个时候执行 git status 命令仍旧显示没有东西需要提交。毕竟我们前边已经成功将dev上未提交的改动给“隐藏“了，这时，用 $ git stash list  命令去查看我们“存储”的列表；
+
+		···发现id为 xxx 的储藏项目在列表中，我们需要将其恢复，有两个办法：
+			1、用$ git stash apply 命令恢复，但是恢复后，stash内容并不删除，这时候再执行$ git stash list 命令，id为 xxx 的储藏项目还会在列表中，你需要用 $ git stash drop 来删除；
+			注意： 如果有一个分支上多个 stash，如果需要恢复指定的 stash ，可以在命令尾部加id，如  $ git stash apply stash@{0}，同样删除指定stash项目则执行，如 $ git stash drop stash@{1}；
+			
+			2、用$ git stash pop命令，恢复的同时把stash存储列表的内容也删了。这时候再执行$ git stash list命令，id为 xxx 的储藏项目不会在列表中。
+			此时再查看$ cat <filename> 会发现之前的改动还存在，且执行 $ git status 就会继续显示该分支上有改动未提交。
+
+

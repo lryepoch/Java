@@ -3,13 +3,15 @@ MySQL：
 ·MySQL入门：
 	命令行操作：
 	··安装MySQL:
-	··启动和停止MySQL服务：net start/stop mysql具体名称
+	··启动和停止MySQL服务：net start/stop mysql具体名称（如何确定？解决：打开本地服务，查看mysql服务名称）
 		或者在计算机管理上启动和停止；
 
-	··cmd下清屏命令cls；
+		或 mysqladmin -u root shutdown（在设置了密码的情况下的命令为 mysqladmin -u root -p shutdown）；
 
-	以下操作注意：如果您的MySQL没有安装在C盘下，先使用DOS命令进入MySQL的安装目录下的bin目录中。
-	方法如下：输入G，进入G盘。在输入cd G:\phpstudy\mysql\bin 进入到MySQL的bin目录下，才可以输入 mysql -hlocalhost -uroot -p 然后按回车键。
+
+	··cmd下清屏命令cls；
+		以下操作注意：如果您的MySQL没有安装在C盘下，先使用DOS命令进入MySQL的安装目录下的bin目录中。
+		方法如下：输入G，进入G盘。在输入cd G:\phpstudy\mysql\bin 进入到MySQL的bin目录下，才可以输入 mysql -hlocalhost -uroot -p 然后按回车键。
 
 	··登录数据库：在doc窗口。
 		命令格式：mysql -h 主机地址  -P 3306 -u 用户名 -p（指的是密码）
@@ -210,9 +212,20 @@ MySQL：
 
 	··集合查询：
 		···并操作：UNION；
-			····UNION 内部的 SELECT 语句必须拥有相同数量的列。列也必须拥有相似的数据类型。同时，每条 SELECT 语句中的列的顺序必须相同；
-			····UNION操作符默认选取不同的值。如果允许重复的值，请使用UNION ALL；
-			····UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名；
+			····UNION内部的SELECT语句：必须拥有相同数量的列；列必须拥有相似的数据类型；列的顺序必须相同；
+			····UNION 结果集中的列名总是等于UNION中第一个SELECT语句中的列名；
+
+			····Union：对两个结果集进行并集操作，不包括重复行，同时进行默认规则的排序；
+			····Union All：对两个结果集进行并集操作，包括重复行，不进行排序；
+
+							带where条件的union：
+							SELECT *
+							FROM 
+							(SELECT * FROM ttcibd001_2
+							UNION
+							SELECT * FROM ttcibd001_7) AS A
+							WHERE item = "30723993"
+
 		···交操作：INTERSECT；
 		···差操作：EXCEPT；
 
@@ -350,11 +363,11 @@ MySQL：
 
 		··preparedStatement：继承自Statement，参数化查询，可以预编译sql语句，性能更好，防止sql注入；
 
-			     ···sql注入：即使得where条件恒为真，无须账号密码也能获取到数据库的数据，甚至可以删除数据库；
+			···sql注入：即使得where条件恒为真，无须账号密码也能获取到数据库的数据，甚至可以删除数据库；
 
-			     ···解决办法之一：使用preparedStatement，因为preparedStatement是参数化查询的，数据库不会将参数作为sql指令的一部分来处理，而是在数据库完成编译		后，才套用参数运行，因此就算参数中含有破坏性的指令也不会被数据库编译；局限性：不允许一个占位符（？）有多个值，在执行有in字句查询时会变得棘手。
+			···解决办法之一：使用preparedStatement，因为preparedStatement是参数化查询的，数据库不会将参数作为sql指令的一部分来处理，而是在数据库完成编译		后，才套用参数运行，因此就算参数中含有破坏性的指令也不会被数据库编译；局限性：不允许一个占位符（？）有多个值，在执行有in字句查询时会变得棘手。
 
-			     ···之二是组合SQL字符串的时候，先对所传入的参数做字符取代，将单引号字符取代为连续2个单引号字符，这在SQL数据库中会被视为字符串中的一个单引号字符；
+			···之二是组合SQL字符串的时候，先对所传入的参数做字符取代，将单引号字符取代为连续2个单引号字符，这在SQL数据库中会被视为字符串中的一个单引号字符；
 
 		··callableStatement：继承自preparedStatement，调用存储过程；准备一个CallableStatement的方法是：CallableStatement Connection.prepareCall();
 											
@@ -383,10 +396,11 @@ MySQL：
 
 
 
+
 ·drop、truncate 和 delete 的区别：
 	··内容和范围：
 		drop           删除整个表(包括结构和数据)；
-		truncate     只删除数据，只能对表操作并且只能删除整张表的数据，不可使用where条件；
+		truncate     只删除数据，只能对表操作并且只能删除整张表的数据，不可使用where条件，
 		                  且对于外键（foreignkey ）约束引用的表，不能使用 truncate table；
 		delete        只删除数据，可以删除table和view并且可以删除部分数据，因其可以使用where条件；
 
@@ -402,7 +416,11 @@ MySQL：
 		drop和truncate为DDL语句，会隐式自动提交，即操作立即生效，且原数据不放到rollback segment中，不能回滚，不会触发触发器；
 		delete是DML语句，需要手动提交才会永久保存，原数据放到rollback segment中，可以回滚。
 
+　　··truncate要点:   1）不会返回删除的记录数；
+　　　　　　　　　    2）重建自动增长的主键 ；
+　　　　　　　　　    3）删除表，再新建表。
 
+	··merge可以同时对数据表进行赠加和修改操作；
 
 
 ·MYSQL_pconnect和MYSQL_connect有什么区别？
@@ -414,10 +432,10 @@ MySQL：
 
 ·limit的使用：
 	··解析：
-		使用LIMIT语句+ORDER BY语句可以实现查找开头或者结尾开始的特定几条记录。
-		LIMIT m,n : 表示从第m+1条开始，取n条数据；【2个参数的单位都是"条"】
-		LIMIT n ： 表示从第1条开始，取n条数据，缩写是limit 0,n ；【参数n的单位是"条"】
-		本题LIMIT 2,1 表示从第3条数据开始，取一条数据，即入职员工时间排名第三的员工。
+		使用 limit 语句 + order by 语句可以实现查找开头或者结尾开始的特定几条记录。
+		limit m,n : 表示从第m+1条开始，取n条数据；【2个参数的单位都是"条"】
+		limit n ： 表示从第1条开始，取n条数据，详细写是limit 0,n ；【参数n的单位是"条"】
+		本题limit 2,1 表示从第3条数据开始，取一条数据，即入职员工时间排名第三的员工。
 
 	··分页需求：
 		客户端通过传递start(页码)，pageSize(每页显示的条数)两个参数去分页查询数据库表中的数据，那我们知道MySql数据库提供了分页的函数limit m,n，但是该函数的用法和我们的需求不一样，所以就需要我们根据实际情况去改写适合我们自己的分页语句，具体的分析如下：
@@ -427,8 +445,9 @@ MySQL：
 		查询第1条到第10条的数据的sql是：select * from table limit 0,10;   ->对应我们的需求就是查询第一页的数据：select * from table limit (1-1)*10,10;
 		查询第10条到第20条的数据的sql是：select * from table limit 10,10;  ->对应我们的需求就是查询第二页的数据：select * from table limit (2-1)*10,10;
 		查询第20条到第30条的数据的sql是：select * from table limit 20,10;  ->对应我们的需求就是查询第三页的数据：select * from table limit (3-1)*10,10;
+		查询第x条到第y条的数据的sql是：select * from table limit n,10;  ->对应我们的需求就是查询第n页的数据：select * from table limit (n-1)*10,10;
 
-	··总结：分页sql格式是：select * from table limit (start-1)*pageSize,pageSize; 其中start是页码，pageSize是每页显示的条数。
+	··总结：分页sql格式是：select * from table limit (start-1)*pageSize, pageSize; 其中start是页码，pageSize是每页显示的条数。
 
 
 

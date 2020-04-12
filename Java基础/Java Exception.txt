@@ -1,5 +1,5 @@
 
-·e.printStackTrace(); 会打印出方法的调用痕迹，如此例，会打印出异常开始于TestException的第16行，这样就便于定位和分析到底哪里出了异常
+·e.printStackTrace(); 会打印出方法的调用痕迹，如此例，会打印出异常开始于TestException的第16行，这样就便于定位和分析到底哪里出了异常；
 
 
 
@@ -11,85 +11,98 @@
 		    System.out.println("日期格式解析错误");
 		    e.printStackTrace();
 		}
-	多异常捕捉办法2:是把多个异常，放在一个catch里统一捕捉：catch (FileNotFoundException | ParseException e) {
+	多异常捕捉办法2:是把多个异常，放在一个catch里统一捕捉：catch (FileNotFoundException | ParseException e) {}
 
 
 
 ·throws :
 	考虑如下情况：
-	主方法调用method1
-	method1调用method2
-	method2中打开文件
+	主方法调用method1，
+	method1调用method2，
+	method2中打开文件，
 
-	method2中需要进行异常处理，但是method2不打算处理，而是把这个异常通过throw抛出去，
-	那么method1就会接到该异常。 处理办法也是两种，要么是try catch处理掉，要么也是throw抛出去。
-	method1选择本地try catch住 一旦try catch住了，就相当于把这个异常消化掉了，主方法在调用method1的时候，就不需要进行异常处理了.
-
-
-
-·throw和throws的区别：
-	throws与throw这两个关键字接近，不过意义不一样，有如下区别：
-	1. throws 出现在方法声明上，而throw通常都出现在方法体内。
-	2. throws表示出现异常的一种可能性，并不一定会发生这些异常；throw则是抛出了异常，执行throw则一定抛出了某个异常对象。Throwable是类，Exception和Error都继承了该类。	
-
-	throw和throws有什么区别？
-	参考答案
-	1、Throw用于方法内部，Throws用于方法声明上
-	2、Throw后跟异常对象，Throws后跟异常类型
-	3、Throw后只能跟一个异常对象，Throws后可以一次声明多种异常类型
+	method2中需要进行异常处理，但是method2不打算处理，而是把这个异常通过throw抛出去，那么method1就会接到该异常。 
+	method1处理办法也是两种，要么是try catch处理掉，要么也是throw抛出去。
+	method1选择本地try catch，一旦try catch住了，就相当于把这个异常消化掉了。
+	主方法在调用method1的时候，就不需要进行异常处理了。
 
 
 
-·异常分为可查异常和不可查异常，不可查异常又分为运行时异常和错误。
-	Java异常都继承自类Throwable，Throwable子类有Error和Exception，其中Exception又分为运行时异常和编译时异常。编译时异常是未雨绸缪性质的异常，是防范，需要显示处理。运行时异常是程序员问题造成，并不强制进行显示处理。
-	运行异常，可以通过java虚拟机来自行处理。非运行异常，我们应该捕获或者抛出。非运行异常==可查异常，需要try……catch……捕获或者throw抛出。
 
-	还是需要理解Try...catch...finally与直接throw的区别：try catch是直接处理，处理完成之后程序继续往下执行，throw则是将异常抛给它的上一级处理，程序便不往下执行了。本题的catch语句块里面，打印完1之后，又抛出了一个RuntimeException，程序并没有处理它，而是直接抛出，因此执行完finally语句块之后，程序终止了。。
+·throws和throw的区别：
+	··throws与throw这两个关键字接近，不过意义不一样，有如下区别：
+		1.throws出现在方法声明上，而throw通常都出现在方法体内。
+		2.throws表示出现异常的一种可能性，并不一定会发生这些异常；throw则是抛出了异常，执行throw则一定抛出了某个异常对象。Throwable是类，Exception和Error都继承了该类。	
 
-	首先所有异常都是Exception的子类。比如用Exception，因为所有异常都是Exception的子类，如果你把Exception放在前边捕获,后边的catch将永远不会执行 
+	··throw和throws有什么区别？
+		1.Throw用于方法内部，Throws用于方法声明上；
+		2.Throw后跟异常对象，Throws后跟异常类型；
+		3.Throw后只能跟一个异常对象，Throws后可以一次声明多种异常类型；
 
 
 
-·自定义异常：继承Exception要么捕捉。
+
+·理解try catch finally与直接throw 的区别：
+	··try catch是直接处理，处理完成之后程序继续往下执行。
+	··throw则是将异常抛给它的上一级处理，程序便不再往下执行。
+	··本题的catch语句块里面，打印完1之后，又抛出了一个RuntimeException，程序并没有处理它，而是直接抛出，因此执行完finally语句块之后，程序终止。
+
+
+
+·try catch finally 执行顺序：
+	仅仅在下面4种情况下不会执行finally语句：
+	··如果在try或catch语句中执行了System.exit(0)；
+	··在执行finally之前jvm崩溃了；
+	··try语句中执行死循环；
+	··电源断电；
+
+
+
+
+·异常分为可查异常和不可查异常。
+	··可查异常只有非运行时异常(编译异常)【RuntimeException以外的其他异常】【CheckedException】，需要try……catch……捕获或者throw抛出。
+	··不可查异常又分为运行时异常【RuntimeException】和错误【Error】。
+
+	Java异常都继承自类Throwable，Throwable的子类有Exception和Error，其中Exception又分为运行时异常【RuntimeException】和编译异常【RuntimeException以外的其他异常】。
+	运行时异常是程序员问题造成，并不强制进行显示处理，JVM会自行处理。编译异常需要显示处理，应该捕获或者抛出。
+
+	··只要是Throwable的子类实例都可以捕获。如果不对运行时异常进行处理，那么出现运行时异常之后，要么是线程中止，要么是主程序终止。如果不想终止，则必须扑捉所有的运行时异常，决不让这个处理线程退出。不应该由于异常数据而影响下面对正常数据的处理。
+
+	··异常处理的目标之一就是为了把程序从异常中恢复出来。
+
+
+
+·自定义异常：要么继承Exception。
+	··继承RuntimeException：构造方法(状态码、状态信息)；
+	··继承Exception：构造方法(状态码、状态信息)；
+
+
+·异常的处理：
+	··try catch是直接处理，处理完成之后程序继续往下执行，
+	··throw则是将异常抛给它的上一级处理，程序便不往下执行了，使用throws继续向上抛出异常，
+	··try catch一般在最上层使用，底层的都使用throws向上抛出。如果即在最上层做try catch，又在底层方法做try catch，程序会变的很混乱。一般可预见的错误，比如空指针，
+		你完全可以在最上层比如controller层进行判断下，不要让null进入底层方法引起不必要的麻烦，你也省的给底层和上层方法都加预防空指针异常的判断。
 
 
 
 ·常见的Java异常有哪些？
-
 		算术异常类：ArithmeticExecption
-
 		空指针异常类：NullPointerException
-
 		类型强制转换异常：ClassCastException
-
 		数组负下标异常：NegativeArrayException
-
 		数组下标越界异常：ArrayIndexOutOfBoundsException
-
 		违背安全原则异常：SecturityException
-
 		文件已结束异常：EOFException
-
 		文件未找到异常：FileNotFoundException
-
 		字符串转换为数字异常：NumberFormatException
-
 		操作数据库异常：SQLException
-
 		输入输出异常：IOException
-
 		方法未找到异常：NoSuchMethodException
 
 
 
 
-·try catch finally 执行顺序：
-	仅仅在下面4中情况下不会执行finally语句 :
 
-	①.如果在try 或catch语句中执行了System.exit(0)。
 
-	②.在执行finally之前jvm崩溃了。
 
-	③.try语句中执行死循环。
 
-	④.电源断电。
