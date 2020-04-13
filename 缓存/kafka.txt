@@ -1,9 +1,30 @@
 
-为了提高一个队列(topic)的吞吐量，Kafka会把topic进行分区(Partition)；
+为了提高一个队列(topic)的吞吐量，kafka会把topic进行分区(Partition)；
 那么Partition中的数据是一样的吗？
 
 
-一台Kafka服务器叫做Broker，Kafka集群就是多台Kafka服务器；
+一台kafka服务器叫做broker，kafka集群就是多台kafka服务器；
 
 
-一个topic会分为多个partition，实际上partition会分布在不同的broker中；
+一个broker可以容纳多个topic；一个topic会分为多个partition，实际上partition会分布在不同的broker中；
+
+
+kafka通过zookeeper管理集群，在每台服务器上先安装zookeeper；
+
+
+简单的几个名词： 
+Producer ：消息生产者，向broker发消息的客户端。 
+
+Consumer ：消息消费者，向broker取消息的客户端。
+
+Topic ：一个队列，主题。
+
+Message：消息是kafka处理的对象，在kafka中，消息是被发布到broker的topic中。而consumer也是从相应的topic中拿数据。也就是说，message是按topic存储的。
+
+Consumer Group ：将topic消息的广播发给consumer的手段。一个topic可以有多个CG。
+
+Broker ：一台kafka服务器就是一个broker。一个集群由多个broker组成。一个broker可以容纳多个topic。 
+
+Partition：为了实现扩展性，一个非常大的topic可以分布到多个broker（即服务器）上，一个topic可以分为多个partition，每个partition是一个有序的队列。partition中的每条消息都会被分配一个有序的id（offset）。kafka只保证按一个partition中的顺序将消息发给consumer，不保证一个topic的整体（多个partition间）的顺序。 
+
+Offset：kafka的存储文件都是按照offset.kafka来命名，用offset做名字的好处是方便查找。例如你想找位于2049的位置，只要找到2048.kafka的文件即可。当然the first offset就是00000000000.kafka。
