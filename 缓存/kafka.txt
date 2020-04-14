@@ -1,30 +1,82 @@
 
-为了提高一个队列(topic)的吞吐量，kafka会把topic进行分区(Partition)；
-那么Partition中的数据是一样的吗？
+·kafka通过zookeeper管理集群，在每台服务器上先安装zookeeper；
 
 
-一台kafka服务器叫做broker，kafka集群就是多台kafka服务器；
+·简单的几个名词： 
+	Producer ：消息生产者，向broker发消息的客户端。 
+
+	Consumer ：消息消费者，向broker取消息的客户端。
+
+	Topic ：一个队列，主题；
+			为了提高一个队列(topic)的吞吐量，kafka会把topic进行分区(Partition)；
+			Topic是Kafka数据写入操作的基本单元，可以指定副本；
+			一个Topic包含一个或多个Partition，建Topic的时候可以手动指定Partition个数，个数与服务器个数相当；
+			每条消息属于且仅属于一个Topic；
+			Producer发布数据时，必须指定将该消息发布到哪个Topic；
+			Consumer订阅消息时，也必须指定订阅哪个Topic的信息；
 
 
-一个broker可以容纳多个topic；一个topic会分为多个partition，实际上partition会分布在不同的broker中；
+	Message：消息是kafka处理的对象，在kafka中，消息是被发布到broker的topic中。而consumer也是从相应的topic中拿数据。也就是说，message是按topic存储的。
+
+	Consumer Group ：将topic消息的广播发给consumer的手段。一个topic可以有多个CG。
+
+	Broker ：一台kafka服务器就是一个broker。一个集群由多个broker组成。一个broker可以容纳多个topic。一个topic会分为多个partition，实际上partition会分布在不同的broker中；
+
+	Partition：为了实现扩展性，一个非常大的topic可以分布到多个broker（即服务器）上，一个topic可以分为多个partition，每个partition是一个有序的队列。partition中的每条消息都会被分配一个有序的id（offset）。kafka只保证按一个partition中的顺序将消息发给consumer，不保证一个topic的整体（多个partition间）的顺序。 
+
+	Offset：kafka的存储文件都是按照offset.kafka来命名，用offset做名字的好处是方便查找。例如你想找位于2049的位置，只要找到2048.kafka的文件即可。当然the first offset就是00000000000.kafka。
 
 
-kafka通过zookeeper管理集群，在每台服务器上先安装zookeeper；
 
 
-简单的几个名词： 
-Producer ：消息生产者，向broker发消息的客户端。 
+·kafka producer发送数据：
+	··ProducerRecord含义：发送给kafka broker的key/value值队；
+	··消息格式：每个消息是一个ProducerRecord对象，必须指定消息所属的Topic和消息值Value，此外还可以指定消息所属的Partition以及消息的Key；
+	··acks=0---生产者成功写入消息之前不会等待任何来自服务器的成功响应；吞吐最高；
+		acks=1---只要集群的首领节点收到消息，生产者就会收到一个来自服务器的成功响应；
+		acks=all---只有所有参与的节点全部收到消息时，生产者才会收到一个来自服务器的成功响应；保证消息不丢失，但延迟最大；
 
-Consumer ：消息消费者，向broker取消息的客户端。
+	1.序列化ProducerRecord有多个构造器，这里使用了三个参数的，topic、key、value；
 
-Topic ：一个队列，主题。
+	2.如果ProducerRecord中指定了Partition，则Partitioner不做任何事情；否则，Partitioner根据消息的key得到一个Partition。这时生产者就知道向哪个Topic下的哪个Partition发送这条消息；
 
-Message：消息是kafka处理的对象，在kafka中，消息是被发布到broker的topic中。而consumer也是从相应的topic中拿数据。也就是说，message是按topic存储的。
+	3.消息被添加到相应的batch中，独立的线程将这些batch发送到Broker上；
 
-Consumer Group ：将topic消息的广播发给consumer的手段。一个topic可以有多个CG。
+	4.broker收到消息会返回一个响应。如果消息成功写入Kafka，则返回RecordMetaData对象，该对象包含了Topic信息、Patition信息、消息在Partition中的Offset信息；若失败，返回一个错误；
 
-Broker ：一台kafka服务器就是一个broker。一个集群由多个broker组成。一个broker可以容纳多个topic。 
+	··Kafka发送消息主要有三种方式：1.发送并忘记 2.同步发送 3.异步发送+回调函数；
 
-Partition：为了实现扩展性，一个非常大的topic可以分布到多个broker（即服务器）上，一个topic可以分为多个partition，每个partition是一个有序的队列。partition中的每条消息都会被分配一个有序的id（offset）。kafka只保证按一个partition中的顺序将消息发给consumer，不保证一个topic的整体（多个partition间）的顺序。 
 
-Offset：kafka的存储文件都是按照offset.kafka来命名，用offset做名字的好处是方便查找。例如你想找位于2049的位置，只要找到2048.kafka的文件即可。当然the first offset就是00000000000.kafka。
+
+·Kafka consumer消费数据：
+	方式：
+	1.指定多主题消费；
+	consumer.subscribe(Arrays.asList("t4","t5"));
+
+	2.指定分区消费；
+	ArrayList<TopicPartition> list = new ArrayList<TopicPartition>();
+    TopicPartition tp = new TopicPartition("t1", 0);
+    TopicPartition tp2 = new TopicPartition("t4", 0);
+    TopicPartition tp3 = new TopicPartition("t4", 1);
+    TopicPartition tp4 = new TopicPartition("t4", 2);
+    list.add(tp);
+    list.add(tp2);
+    list.add(tp3);
+    list.add(tp4);
+    consumer.assign(list);
+
+	3.手动修改偏移量；
+	consumer.commitSync();                //提交当前消费偏移量
+    consumer.commitSync(Map<TopicPartition, OffsetAndMetadata>)    //提交指定偏移量
+    consumer.assign(Arrays.asList(tp));
+
+	4.seek，修改偏移量搜索指针，顺序读取数据；
+    consumer.assign(Arrays.asList(tp));
+    consumer.seek(tp,0);
+
+
+
+·消息模型分两种：队列和发布-订阅式；
+				如果所有的消费者都在一个组中，那么这个就变成了队列模型；如果消费者在不同的组中，这就成了发布-订阅模型；
+				一个分区里面的数据只会由一个分组中的消费者处理，同分组的其他消费者不会重复处理；
+				消费者组中的消费者数量<=分区数量，如果大于分区数量，多出来的消费者会处于收不到消息的状态，造成不必要的浪费；
