@@ -270,15 +270,24 @@ MySQL：
 		NOW()：年月日时分秒
 		CURRENT_DATE()：年月日
 		CURRENT_TIME()：时分秒
+		current_timestamp(): 年月日时分秒
+
+		YEAR(time):选择年
+		MONTH(time):选择月
+		DAY(time):选择日
+		HOUR(time):选择时
+		MINUTE(time):选择分
+		SECOND(time):选择秒
 		
-		DATE_ADD(date,INTERVAL expr type)：向日期添加指定的时间间隔。date参数是合法的日期表达式。expr参数是您希望添加的时间间隔。type 参数可以是DAY/MONTH……
+		DATE_ADD(date,INTERVAL expr type)：向日期添加指定的时间间隔，变成未来的一个时间点。date参数是合法的日期表达式；expr参数是您希望添加的时间间隔；type参数可以是DAY/MONTH/YEAR；
+		DATE_SUB(date,INTERVAL expr type)：想日期减去指定的时间间隔，变成过去的一个时间点。
 
 		DATE_FORMAT(date,format)：date参数是合法的日期。format规定日期/时间的输出格式。
 
 		DATEDIFF(A,B):
 			··确定2个日期之间的差异，通常用于计算年龄。比如：select datediff(now(),'20120512')；
 
-			··计算两日期时间之间相差的天数，秒数，分钟数，周数，小时数，这里主要分享的是通过MySql内置的函数 timestampdiff() 实现；
+			··计算两日期时间之间相差的秒数、分钟数、小时数、天数、周数，这里主要分享的是通过MySql内置的函数 timestampdiff() 实现；
 
 				···计算两日期之间相差多少周：
 					select timestampdiff(week,'2011-09-30','2015-05-04');
@@ -286,16 +295,20 @@ MySQL：
 				···计算两日期之间相差多少天：
 					select timestampdiff(day,'2011-09-30','2015-05-04');
 
+		TO_DAYS(time)返回一个天数!从年份0开始的天数;
+		eg：查询当前表中昨天的数据：select * from 表名 where to_days(now())-to_days(create_time)<1
+			查询当前表中前天的数据：select * from 表名 where to_days(now())-to_days(create_time)<2 and to_days(now())-to_days(create_time)>1
+
 	5.信息函数：
 		CONNECTION_ID()：连接ID
-		DATEBASE()：当前数据库
+		DATABASE()：当前数据库
 		LAST_INSERT_ID()：最后插入记录的ID
 		USER()：当前用户
 		VERSION（）：当前版本
 
 	6.聚合函数：只用一个返回值
 		AVG()
-		COUTN()
+		COUNT()
 		MAX()
 		MIN()
 		SUM()
@@ -303,7 +316,7 @@ MySQL：
 	7.加密函数：
 		MD5()：信息摘要函数；为了web页面做准备；
 		PASSWORD()：密码算法；
-		为了客户端改密码：set passsword= password(' ');
+		为了客户端改密码：set passsword= password('XXX');
 
 
 
