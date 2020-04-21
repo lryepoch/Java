@@ -74,7 +74,7 @@ linux：一切皆文件
 		ps –ef|grep tomcat 					#查看所有有关tomcat的进程
 		netstat -lnp | grep 8090            #查看指定端口是否在运行
 
-		kill PID[进程号]						          #结束进程
+		kill PID[进程号]						#结束进程
 		kill -9 进程号  						#强制杀死进程
 
 

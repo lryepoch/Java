@@ -146,6 +146,17 @@ Spring：
 		@RequestMapping：映射一个URL到一个类或者一个特定方法上。
 		@Scope：范围注解；默认单例；多例如@Scope（“prototype”）
 
+	·@Configuration 和 @Component 区别：
+		相同点是都是注解在类上的注解，不同点就是@Component注解的范围最广，所有类都可以注解；但是@Configuration注解一般注解在这样的类上：这个类里面有@Value注解的成员变量和@Bean注解的方法，就是一个配置类。
+
+		@Component注解是说这个类需要被组件扫描器扫描到并实例化对象到IOC容器；@Configuration注解是说这个类是一个类似XML文件的配置类，里面用bean标签标记的方法需要被实例化到IOC容器中。在springboot中取消了XML文件并大量使用@Configuration注解的类实现配置。
+
+		@Configuration中所有带@Bean注解的方法都会被动态代理，因此调用该方法返回的都是同一个实例；
+		从定义来看， @Configuration 注解本质上还是 @Component，因此 <context:component-scan/> 或者 @ComponentScan 都能处理@Configuration 注解的类。
+
+		虽然Component注解也会当做配置类，但是并不会为其生成CGLIB代理Class，所以在生成Driver对象时和生成Car对象时调用car()方法执行了两次new操作，所以是不同的对象。
+		当时Configuration注解时，生成当前对象的子类Class，并对方法拦截，第二次调用car()方法时直接从BeanFactory之中获取对象，所以得到的是同一个对象。
+
 
 
 
