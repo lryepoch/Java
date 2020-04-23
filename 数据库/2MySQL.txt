@@ -499,10 +499,10 @@ MySQL：
 
 	··区别2：
 		date：MySQL以'YYYY-MM-DD'格式检索与显示date值；
-		datetime:MySQL以'YYYY-MM-DD HH:mm:ss'格式检索与显示 DATETIME 类型。
+		datetime: MySQL以'YYYY-MM-DD HH:mm:ss'格式检索与显示 DATETIME 类型。
 
 	··区别3：
 		date类型：支持的范围是'1000-01-01'到'9999-12-31'；
-		datetime类型：支持的范围是'1000-01-01 00:00:00'到'9999-12-31 23:59:59'。
+		datetime：支持的范围是'1000-01-01 00:00:00'到'9999-12-31 23:59:59'。
 
 
