@@ -316,7 +316,7 @@ MySQL：
 	7.加密函数：
 		MD5()：信息摘要函数；为了web页面做准备；
 		PASSWORD()：密码算法；
-		为了客户端改密码：set passsword= password('XXX');
+		为了客户端改密码：set passsword= password('XXX')；
 
 
 

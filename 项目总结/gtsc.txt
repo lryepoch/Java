@@ -1,0 +1,31 @@
+
+·Spring Boot读取配置文件：
+	方式一：@Value
+	方式二：Environment
+	  		使用@Autowired引入，然后调用getProperty(String key)即可。
+
+	方式三：实体@Configuration
+
+
+
+·多数据源配置：
+
+
+
+
+
+·jks证书的绝对路径如何优化成相对路径；
+	InputStream resourceAsStream = JksConfig.class.getResourceAsStream("/cm-auto-in_cluster_truststore.jks");
+
+	props.load(new FileInputStream("db.properties")); 是读取当前目录的db.properties文件；
+
+	getClass.getResourceAsStream("db.properties"); 是读取当前类所在位置一起的db.properties文件；
+
+	getClass.getResourceAsStream("/db.properties"); 是读取ClassPath的根的db.properties文件,注意ClassPath如果是多个路径或者jar文件的,只要在任意一个路径目录下或者jar文件里的根下都可以,如果存在于多个路径下的话,按照ClassPath中的先后顺序,使用先找到的,其余忽略；
+
+
+
+
+
+
+---------------------------------
