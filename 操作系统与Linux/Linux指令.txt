@@ -153,7 +153,7 @@ linux：一切皆文件
 	··nohup java -jar XXX.jar &		nohup意思是不挂断运行命令,当账户退出或终端关闭时,程序仍然运行。当用nohup命令执行作业时，缺省情况下该作业的所有输出被重定向到nohup.out的文件中，除非另外指定了输出文件。
 
 	··nohup java -jar XXX.jar >hup.out &  
-	command >out.file是将command的输出重定向到out.file文件，即输出内容不打印到屏幕上，而是输出到out.file文件中。
+	command >out.file是将command的输出重定向到out.file文件，即输出内容不打印到屏幕上，而是输出到hup.out文件中。
 
 	通过jobs命令查看后台运行任务：jobs
 	这会列出所有后台执行的作业，并且每个作业前面都有个编号。如果想将某个作业调回前台控制，只需要 fg + 编号即可。fg 23 

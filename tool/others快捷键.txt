@@ -28,5 +28,14 @@ Windows：
 
 
 
+----------------------------
+hive:
 
+全选：shift + page down
+运行：ctrl + enter
 
+home:行首；
+end:行尾；
+
+page up:开头
+page down:最尾
