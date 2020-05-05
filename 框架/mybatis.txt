@@ -258,6 +258,11 @@ MyBatis：
 		查询总数：
 
 
+·useGeneratedKeys取值范围true、false，默认值是：false。 
+	含义：设置是否使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中；
+		keyProperty 取id的key值；
+		设置完以后我们就可以在前端获取到该自增ID的值：userModel.setId(userDO.getId());
+
 
 
 
