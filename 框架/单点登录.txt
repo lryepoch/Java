@@ -1,0 +1,125 @@
+
+单点登录appId;
+单点登录appkey;
+单点登录获取token的url;		callback/appid/appkey
+单点登录获取用户信息url；	token/appid/appkey/ip
+单点登录退出url;			token/appid/appkey/ip
+单点登录重定向url；
+
+
+
+
+##配置文件
+sso.properties:
+	appId=
+	appKey=
+	getTokenUrl=
+	getUserInfoUrl=
+	logoutUrl=
+
+
+data.properties:
+	indexUrl=
+	noAuthorityUrl=
+
+
+
+
+##工具类LoginUtils.java读取sso.properties
+
+
+
+
+ssoUserInfo包含Token、AppAccount
+
+
+
+##发送get请求：
+String sendGet(String fullurl){
+	in = new BufferedReader(new InputStreamReader(connection.getInputStream(),"utf-8"))	
+}
+##发送get请求返回的String转换成Map：
+Map httpGet(String url){
+	string->map
+}
+
+##获取用户token：
+Map getSsoToken(String url){
+	httpGet(String url)
+}
+##获取用户信息：
+Map getSsoUserInfo(String url){
+	httpGet(String url)
+}
+##退出单点登录：
+Map getSsoOut(String url){
+	httpGet(String url)
+}
+
+
+
+##获取IP地址：
+String getIpAddr(HttpServletRequest request){
+	return string	
+}
+
+
+##判断session是否过期
+checkSession(HttpServletRequest request){
+	request.getSession().getAttribute("ssoUserInfo").get("AppAccount");是否存在
+}
+
+
+##获取用户信息
+getCurrentUserInfo(HttpServletRequest request){
+	request.getSession().getAttribute("ssoUserInfo").get("AppAccount");获取邮箱号
+}
+
+
+##登出接口(获取ip、token)
+logout(HttpServletRequest request){
+	getIpAddr(request)
+	String.format(logoutUrl, token, appid, appkey, ip)
+	session.removeAttribute("ssoUserInfo")
+}
+
+
+
+
+##登录接口
+void logincb(String callback, HttpServletRequest request, HttpServletResponse response){
+	//先获取token
+	tokenUrl->String.format(tokenUrl, callback, appid, appkey)
+	token=getSsoToken(tokenUrl)
+	//没有则重定向到登录页面
+	if(token==null) {
+		sendRedirect(loginUrl)
+	}
+
+	if(token->true){
+		ip = getIpAddr(request)
+		infoUrl->String.format(infoUrl,token("Message"),appid,appkey,ip)
+		//从sso中获取用户信息
+		getSsoUserInfo(infoUrl)
+
+		if(ssoUserInfo->true){
+			//从token中找到邮箱
+			appAccount = get("AppAccount")
+			//根据邮箱从数据库获取用户全部信息
+			user = getUserByAppAccount(appAccount)
+			if(user若无权限){
+				sendRedirect(noAuthorityUrl)
+			}
+			//在session中设置好当前用户信息
+			request.getSession().setAttribute("ssoUserInfo", ssoUserInfo)
+
+			//更新用户信息
+			user.setUserName()
+			user.setJob()
+			updateUser(user)
+
+			saveToken(request,加密？)
+			response.sendRedirect(indexUrl)
+		}
+	}
+}

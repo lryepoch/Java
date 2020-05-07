@@ -9,11 +9,9 @@
 @RequestBody接收请求体中的json数据；不加注解接收URL中的数据并组装为对象：
 
 
-·SET FOREIGN_KEY_CHECKS=0;啥意思？
-在Mysql中取消外键约束
+·SET FOREIGN_KEY_CHECKS=0;啥意思？在Mysql中取消外键约束。
 
-·KEY department_name(department_name) ？
-建立索引
+·KEY department_name(department_name) ？建立索引。
 
 
 ·为什么状态码要定义常量来表示？
@@ -23,14 +21,8 @@
 ·添加或者修改内容时，为什么要在service的实现层把要添加或者修改的属性提取出来？
 根据您的喜好吧，或者业务需要
 
-·根据id进行XXX操作时，为什么method = RequestMethod.GET而非POST?
 
 
-·insert语句使用foreach标签的作用是什么（直接insert不就好了？）；
-当批量插入时需要使用
-
-·更新操作：先删除再添加 与 直接更新有什么区别
-更新操作可以复用添加操作当中的添加操作；
 
 ·mapper.xml文件中parameterType、resultMap、resultType什么时候应该写、应该不写；
 
@@ -50,11 +42,11 @@
 
 
 ·subject.login(token)这个方法是去判断用户密码是否正确的，我知道他会调用AuthorizingRealm子类里面的doGetAuthenticationInfo方法去校验。
-	但是我想知道login是如何走到这个方法的，并且AuthorizingRealm子类是如何配置成shiro的校验类的？
+ 但是我想知道login是如何走到这个方法的，并且AuthorizingRealm子类是如何配置成shiro的校验类的？
 
 
 
-HttpUtil的使用；
+HttpUtil的使用；hutool
 
 
 自定义注解；

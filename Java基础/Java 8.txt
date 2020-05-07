@@ -23,6 +23,9 @@ Optional：
 	··orElse()方法用于返回包裹在 Optional对象中的值，如果该值不为null，则返回；否则返回默认值。该方法的参数类型和值的类型一致。
 	··orElseGet()方法与orElse()方法类似，但参数类型不同。如果Optional对象中的值为 null，则执行参数中的函数。
 
+	orElse在不论optional有没有值的时候都会执行，在optional为空值的情况下orElse和orElseGet都会执行，当optional不为空时，orElseGet不会执行。
+
+
 ·获取值：
 	··get()方法才是最正宗的获取 Optional 对象值的方法，但很遗憾，该方法是有缺陷的，因为假如 Optional 对象的值为 null，该方法会抛出 NoSuchElementException 异常。这完全与我们使用 Optional 类的初衷相悖。
 	··建议 orElseGet() 方法获取 Optional 对象的值。
@@ -32,3 +35,6 @@ Optional：
 
 ·转换值：
 	··map()方法，该方法可以按照一定的规则将原有Optional对象转换为一个新的 Optional对象，原有的Optional对象不会更改。
+
+
+	

@@ -1,4 +1,29 @@
 
-1.如何自己构造一个多层json返回给前端；Map, JSONObject
+·如何自己构造一个多层json返回给前端；Map，JSONArray，JSONObject
+
+·获取项目的工作目录：System.getProperty("user.dir")
+
+·返回日期的正确格式时，需在实体类中日期属性上添加一个注解：@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+
+·同一个对象的实体类之间的继承：1.extends；
+								2.对于Object，在构造方法中对属性赋值；
+								3.对于Map，写一个方法进行convert；
 
 
+·log4j日志的使用；
+
+
+·BeanUtils.copyProperties(Object source, Object target);//类拷贝
+
+
+
+
+·Class.getResourceAsStream()与ClassLoader.getResourceAsStream()的区别：
+
+	··Class.getResourceAsStream() 会指定要加载的资源路径与当前类所在包的路径一致。
+    eg：你写了一个MyTest类在包com.test.mycode 下，那么MyTest.class.getResourceAsStream("name") 会在com.test.mycode包下查找相应的资源。
+	    如果这个name是以 '/' 开头的，那么就会从classpath的根路径下开始查找。
+
+	··ClassLoader.getResourceAsStream()  无论要查找的资源前面是否带'/' 都会从classpath的根路径下查找。
+	
+    所以: MyTest.getClassLoader().getResourceAsStream("name")和MyTest.getClassLoader().getResourceAsStream("name") 的效果是一样的。

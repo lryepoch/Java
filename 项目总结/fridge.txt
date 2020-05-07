@@ -1,33 +1,10 @@
 
-JPA:
-
-Hibernate:
-
 操作excel：
 
-反射：!!!!!!!!!!!!
+反射：https://www.jianshu.com/p/9be58ee20dee
 
-mybatis-plus：
-
-lambda表达式：
-
-Optional:
-
-BigDecimal:
-
-multiply:
-
-FastJSON:
 
 comparator比较器：
-
-
-final修饰变量：
-
-
-WebMvcConfigurer：拦截器的注册类
-HandlerInterceptorAdapter：拦截组件
-拦截组件HandlerInterceptorAdapter可以有多个，需要注册到WebMvcConfigurer里面，在WebMvcConfigurer里面拦截器是按顺序执行的。
 
 
 Token：Token是在服务端产生的。如果前端使用用户名/密码向服务端请求认证，服务端认证成功，那么在服务端会返回Token给前端。前端可以在每次请求的时候带上Token证明自己的合法地位。
@@ -40,12 +17,81 @@ Token：Token是在服务端产生的。如果前端使用用户名/密码向服
 PropertyUtils.copyProperties();
 
 
-日志切面
-
-
-
-枚举类
-
-
-
 -------------------------
+
+·实体类之间的转换：
+	··新建一个工具类用于转换；
+	··在新建类中初始化构造方法；
+
+
+
+·mybatis中如何映射实体类
+	··调用@Param注解
+	··在xml文件中使用parameterType
+
+
+·查：Get	无注解
+·增：Post	@RequestBody
+·改：Post	@RequestBody
+·删：Post	@RequestParam
+
+
+
+·postman的使用：
+	··传入一个参数【get】：3种
+						(1)Params：输入传入参数的key和value；（可以带参数，但必须捆绑在链接上）
+						(2)Body：
+							@RequestParam + form-data：键值对
+							@RequestParam + x-www-form-urlencoded      将表单数据编码为(name1=value1&name2=value2…)
+
+	··传入页码，每页记录条数这属于发起get请求；
+
+	··传入一个对象【post】：1种
+						Body：row(application/json)->json
+
+
+
+·后端数据处理：
+	··接口多次命中数据库
+	··一次性拿数据+递归整理
+
+
+
+·mybatis别名配置：
+	··当实体类中的字段与数据库表中的字段不匹配时（不符合驼峰等），需要使用as来定义别名。
+	··在xml配置文件中自己定义一个resultMap实现别名配置。
+
+
+
+·根据一张表的id删除两张有共同型号的表的数据时，要建立两张表之间的联系，即：where a表.共同字段=b表.共同字段；
+
+
+·截取字符串用的是subString()，截取集合用的是subList()；
+
+
+·输入一个数组参数，最后要总体删除。需要先将数组转换成集合：new ArrayList<>(Arrays.asList(ids))
+
+
+·mybatis mapper接口传递一个集合。默认参数名为list；如果更改为其他的参数名，需要添加@Param注解。
+
+
+
+
+·常见分页功能的实现方式：
+	··插件；
+		[mybatis]pagehelper，[jpa]Pageable；pageHelper不支持一对多结果嵌套；
+
+	··自行封装；
+		定义一个Page<T>，有currentPage/pageSize/total/recordList/pageNum/, 根据sql语句的limit (currentRecord-1)*pageSize,pageSize; 对需要的字段拼接出来；
+
+
+·如何处理图片问题：
+	··存到数据库；存放图片路径；
+	··存到服务器；上传图片到服务器；
+
+
+
+·程序中如何获取实时时间：
+	··数据库字段默认设置为 CURRENT_TIMESTAMP
+	··在sql语句中对时间赋值 now()
+	··在代码中调用 setter()

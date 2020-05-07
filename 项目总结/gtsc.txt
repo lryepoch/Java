@@ -7,7 +7,6 @@
 	方式三：实体@Configuration
 
 
-
 ·多数据源配置：
 
 
@@ -25,7 +24,48 @@
 
 
 
+·枚举类：
+	··可以有两个属性：code，name；
+	··可以根据name得到code；
 
 
 
----------------------------------
+
+·对字符串进行加密：
+	String s1="xxx";
+	MessageDigest md5 = MessageDigest.getInstance("MD5");
+	byte[] bytes = md5.digest(s1.getBytes());
+	String s2 = Base64.getEncoder().encodeToString(bytes);
+
+
+·发起请求：
+	String result = HttpRequest.post(url).addHeaders(map).body(string).execute().body();
+	or
+	HttpRequest request = HttpUtil.createPost(url);
+	String result = request.addHeaders(map).body(string).execute().body();
+	or
+	CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+	HttpGet httpGet = new HttpGet(url);
+	CloseableHttpResponse httpResponse = httpClient.execute(httGet);
+	HttpEntity entity = httpResponse.getEntity();
+	String result = EntityUtils.toString(entity,"utf-8");
+
+
+·对于日期范围的判断，直接有‘>’、‘<’即可；
+
+
+
+
+·一个controller控制多个service；【自定义注解】
+
+
+·全局异常捕获：@ControllerAdvice + @ExceptionHandler
+
+
+
+·定时器：@Scheduled(cron = "秒 分 时 日 月 周")
+
+
+·分页：
+	1.使用分页插件pageHelper，还是要传入currentPage、pageSize；
+	2.数据库分页则根据传入currentPage、pageSize，sql语句中：limit (currentPage-1)*pageSize, pageSize；

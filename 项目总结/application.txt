@@ -1,0 +1,16 @@
+
+·更改权限状态之类的，额外添加一个实体类EnabledDo，属性只包含id以及enabled；
+
+·更改用户状态，为什么需要携带HttpServletRequest request？
+
+·在mapper层使用@Param 参数，可以自定义Java属性对应的SQL语句的字段；
+
+·插入、修改数据时，如果有很多字段可以不用写出所有字段。通过在方法中传递一个实体类，然后在mapping.xml文件中声明parameterType的实体类型即可。
+
+·批量插入,mybatis xml 用到了<foreach>
+
+·原来update语句更新表的时候，是不用写出要更新那个字段的！额额
+
+·create_time和update_time数据类型是datetime，并且设置默认函数是CURRENT_TIMESTAMP
+
+·对于时间范围的选择，按照正常的数字大小判断即可。

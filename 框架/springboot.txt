@@ -86,3 +86,26 @@
 ·打包：
 	··多模块打包：在parent的pom下执行deploy，这样就会自动将父pom以及子module都发布到仓库；
 	··将子module的parent去掉，不要依赖不在仓库中的pom，将子module提升为一个独立的maven项目单独发布；
+
+
+
+
+
+·WebMvcConfigurer：
+
+	··WebMvcConfigurer：拦截器的注册类
+	··HandlerInterceptorAdapter：拦截组件
+							   拦截组件HandlerInterceptorAdapter可以有多个，需要注册到WebMvcConfigurer里面，在WebMvcConfigurer里面拦截器是按顺序执行的。
+
+
+	在Spring Boot 2.0后都是靠重写WebMvcConfigurer的方法来添加自定义拦截器，消息转换器等。
+	在Spring Boot2.0及Spring 5.0前, 该类WebMvcConfigurerAdapter被标记为@Deprecated，已被废弃。
+
+
+
+·HandlerInterceptor:
+
+
+
+
+·HttpSessionListener：
