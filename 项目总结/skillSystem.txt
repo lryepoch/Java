@@ -1,5 +1,83 @@
 
 ·树状菜单：
-	··树形结构实体类；
+	此种方式可以实现多级目录；
+
+	··树形结构实体类；（id、菜单名、链接、是否有图标、子节点集合、是否叶子节点、父节点）
+	public class Menu{
+		private Integer menuId;
+
+		private Integer menuName;
+
+		private Integer parentId;
+
+		private String description;
+
+		private String icon;
+
+		private String url;
+
+		private Boolean enabled;
+
+		private Date createTime;
+
+		private List<Groups> groupsList;
+	}
+	
+	public class MenuTreeNode{
+		private long id;
+		/*菜单名称*/
+		private String text = "";
+		/*对应链接*/
+		private String url = "";
+		/*是否有图标*/
+		private String icon = "";
+		/*子节点*/
+		private List<MenuTreeNode> children;
+		/*是否叶子节点（默认否）*/
+		private boolean isLeaf = false;
+		/*父节点*/
+		private long parent_id;
+	}
+
+	public class WTree{
+		public static List<MenuTreeNode> getMenuTree(List<Menu> menuList, int virtual_root) {
+			MenuTreeNode node = new MenuTreeNode();
+			node.setId(virtual_root);
+			if (menuList!=null && menuList.size()>0) {
+				createNode(menuList, node);
+			}
+			return JsonUtil.convertListValue(node.getChildren(), MenuTreeNode.class);
+		}
+
+		public static void createNode(List<Menu> menuList, MenuTreeNode node){
+			long parentnodeid = node.getId();
+			List<MenuTreeNode> children = new ArrayList<>();
+			MenuTreeNode nd = null;
+			for(Menu menu:menuList){
+				if (!menu.getEnabled()) {
+					continue;
+				}
+				if (menu.getParentId() == parentnodeid) {
+					nd = new MenuTreeNode();
+					nd.setId(menu.getMenuId());
+					nd.setText(menu.getText());
+					nd.setUrl(menu.getUrl());
+					nd.setParent_id(menu.getParentId());
+					nd.setIcon(menu.getIcon());
+
+					createNode(menuList, nd);
+					children.add(nd);
+				}
+			}
+			if (children.size()>0) {
+				node.setChildren(children);
+				node.setLeaf(false);
+			} else {
+				node.setLeaf(true);
+			}
+		}
+	}
+
 	··将原始数据转换成树状结构的工具类（递归）；
+		【相当于service层，先把全部的菜单信息查出来，然后再通过工具类转换成树形结构，返回给controller层】
 	··controller类；

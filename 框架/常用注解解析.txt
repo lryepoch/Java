@@ -190,6 +190,11 @@ springboot：
 	  logger.info();
 
 
+·@ConfigurationProperties(prefix="")：
+	··大量的参数配置在 application.properties 或 application.yml 文件中，通过 @ConfigurationProperties 注解，我们可以方便的获取这些参数值；
+	··可以使用 @Value 注解或着使用 Spring Environment bean 访问这些属性，是这种注入配置方式有时显得很笨重。我们将使用更安全的方式(@ConfigurationProperties )来获取这些属性；
+
+
 
 
 

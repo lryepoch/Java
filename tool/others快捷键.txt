@@ -21,7 +21,7 @@ net start/stop XXX：启动/停止XXX服务；
 Windows：
 
 截屏：ctrl+alt+A
-
+远程桌面连接：mstsc
 
 
 
@@ -31,11 +31,16 @@ Windows：
 ----------------------------
 hive:
 
-全选：shift + page down
-运行：ctrl + enter
+page up:开头
+page down:最尾
 
 home:行首；
 end:行尾；
 
-page up:开头
-page down:最尾
+
+全选：shift + pageup/page down
+		shift + Home/End
+
+运行：ctrl + enter
+
+

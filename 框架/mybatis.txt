@@ -234,14 +234,26 @@ MyBatis：
 
 ·动态sql：使用到了标签。
 		··<if>：条件判断。
-		··<where>:<where>标签会进行自动判断，这是为了弥补<if>标签的缺陷而使用的，所以两者通常一起使用。如果任何条件都不成立，那么就在sql语句里就不会出现where关键字。如果有任何条件成立，会自动去掉多出来的 and 或者 or。
-			将自定义查询条件查询用户列表和查询用户列表总记录数改为动态sql，需要使用where标签和if标签。where中包含if标签。但是这样会有重复，我们要定义sql片段。然后在where中使用include引用sql片段。
+		··<where>：会进行自动判断，这是为了弥补<if>标签的缺陷而使用的，所以两者通常一起使用。
+					如果任何条件都不成立，那么就在sql语句里就不会出现where关键字。
+					如果有任何条件成立，会自动去掉多出来的 and 或者 or。
+				将自定义查询条件查询用户列表和查询用户列表总记录数改为动态sql，需要使用where标签和if标签。where中包含if标签。但是这样会有重复，我们要定义sql片段。然后在where中使用include引用sql片段。
 
 		··<set>：与where标签类似的，在update语句里也会碰到多个字段相关的问题。<set>标签嵌套<if>，,<where>标签放在外面。
-		··trim标签。
-		··Mybatis里面没有else标签，但是可以使用when otherwise标签来达到这样的效果。
-		··foreach标签通常用于in 这样的语法里，用来遍历parameterType中的集合类型。
-		··bind标签就像是再做一次字符串拼接，方便后续使用。
+		··<foreach>标签通常用于in 这样的语法里，用来遍历parameterType中的集合类型。
+		··<bind>标签就像是再做一次字符串拼接，方便后续使用。
+
+		··<trim>：一般用于去除sql语句中多余的and关键字，逗号，或者给sql语句前拼接 “where“、“set“以及“values(“ 等前缀，或者添加“)“等后缀，可用于选择性插入、更新、删除或者条件查询等操作。
+			属性	描述
+			prefix	给sql语句拼接的前缀
+			suffix	给sql语句拼接的后缀
+			prefixOverrides	去除sql语句前面的关键字或者字符，该关键字或者字符由prefixOverrides属性指定，假设该属性指定为"AND"，当sql语句的开头为"AND"，trim标签将会去除该"AND"
+			suffixOverrides	去除sql语句后面的关键字或者字符，该关键字或者字符由suffixOverrides属性指定
+
+
+		··Mybatis里面没有else标签，但是可以使用<when> <otherwise>标签来达到这样的效果。
+
+
 
 
 
@@ -250,12 +262,9 @@ MyBatis：
 		事务管理：<transactionManager type="JDBC"/>
 						在Mysql中，只有当表的类型是INNODB的时候，才支持事务.
 		延迟加载：加在<settings>标签中。
-		分页：
-		PageHelper：
+
 		一级缓存：Mybatis的一级缓存在session上，只要通过session查过的数据，都会放在session上，下一次再查询相同id的数据，都直接冲缓存中取出来，而不用到数据库里去取了。
 		二级缓存：Mybatis二级缓存是SessionFactory，如果两次查询基于同一个SessionFactory，那么就从二级缓存中取数据，而不用到数据库里去取了。
-		c3p0连接池：
-		查询总数：
 
 
 ·useGeneratedKeys取值范围true、false，默认值是：false。 

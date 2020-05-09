@@ -1,5 +1,9 @@
 
-·如何自己构造一个多层json返回给前端；Map，JSONArray，JSONObject
+·如何自己构造一个多层json返回给前端；
+Map，JSONArray，JSONObject；
+List，Map；
+
+
 
 ·获取项目的工作目录：System.getProperty("user.dir")
 
@@ -27,3 +31,24 @@
 	··ClassLoader.getResourceAsStream()  无论要查找的资源前面是否带'/' 都会从classpath的根路径下查找。
 	
     所以: MyTest.getClassLoader().getResourceAsStream("name")和MyTest.getClassLoader().getResourceAsStream("name") 的效果是一样的。
+
+
+
+
+·规范springboot后台返回时间格式：
+
+	1、针对json格式：在配置文件中加以下配置：
+	    spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+	    spring.jackson.time-zone=GMT+8
+
+	2、针对form表单格式，加下面这句配置就可以：
+	 spring.mvc.dateFormat = yyyy-MM-dd HH:mm:ss
+
+	3、也可以在pojo中对特定的date类型属性加了以下配置：
+	    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")    
+
+
+
+
+·mybatis xml传入一个数组时，parameterType="int[]"
