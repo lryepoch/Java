@@ -91,22 +91,57 @@
 
 
 
-·WebMvcConfigurer：
+·WebMvcConfigurer解析：
 
-	··WebMvcConfigurer：拦截器的注册类
+	··WebMvcConfigurer：拦截器的注册类（实现HandlerInterceptor接口的类需要在这里注册，@Configuration）
 	··HandlerInterceptorAdapter：拦截组件
 							   拦截组件HandlerInterceptorAdapter可以有多个，需要注册到WebMvcConfigurer里面，在WebMvcConfigurer里面拦截器是按顺序执行的。
 
-
-	在Spring Boot 2.0后都是靠重写WebMvcConfigurer的方法来添加自定义拦截器，消息转换器等。
-	在Spring Boot2.0及Spring 5.0前, 该类WebMvcConfigurerAdapter被标记为@Deprecated，已被废弃。
-
+		在Spring Boot2.0及Spring 5.0前, 该类WebMvcConfigurerAdapter被标记为@Deprecated，已被废弃。官方推荐直接实现WebMvcConfigurer或者直接继承WebMvcConfigurationSupport，方式一实现WebMvcConfigurer接口（推荐），方式二继承WebMvcConfigurationSupport类。
+		在Spring Boot 2.0后都是靠重写WebMvcConfigurer的方法来添加自定义拦截器，消息转换器等。
 
 
+	··概念：
+		直接点就是web的配置都可以在这类里面进行；
+		采用JavaBean的形式来代替传统的xml配置文件形式进行针对框架个性化定制，可以自定义一些Handler，Interceptor，ViewResolver，MessageConverter。
 
-·HandlerInterceptor:
+
+	··该接口下常用方法：
+		2.1 addInterceptors：拦截器。拦截器主要用途：进行用户登录状态的拦截，日志的拦截等。
+
+		2.2 addViewControllers：页面跳转
+
+		2.3 addResourceHandlers：静态资源。自定义静态资源映射目录。
+
+		2.4 configureDefaultServletHandling：默认静态资源处理器
+
+		2.5 configureViewResolvers：视图解析器
+
+		2.6 configureContentNegotiation：配置内容裁决的一些参数
+
+		2.7 addCorsMappings：跨域
+
+		2.8 configureMessageConverters：信息转换器
+
+
+
+·HandlerInterceptor解析:（这是拦截组件，一个接口）（或者@Component）
+	1. boolean preHandle (HttpServletRequest request, HttpServletResponse response, Object handle)方法：该方法将在请求处理之前进行调用，只有该方法返回true，才会继续执行后续的Interceptor和Controller，当返回值为true 时就会继续调用下一个Interceptor的preHandle 方法，如果已经是最后一个Interceptor的时候就会是调用当前请求的Controller方法； 
+
+	2.void postHandle (HttpServletRequest request, HttpServletResponse response, Object handle, ModelAndView modelAndView)方法：该方法将在请求处理之后，DispatcherServlet进行视图返回渲染之前进行调用，可以在这个方法中对Controller 处理之后的ModelAndView对象进行操作。 
+
+	3.void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handle, Exception ex)方法：该方法也是需要当前对应的Interceptor的preHandle方法的返回值为true时才会执行，该方法将在整个请求结束之后，也就是在DispatcherServlet 渲染了对应的视图之后执行。用于进行资源清理。
 
 
 
 
-·HttpSessionListener：
+
+·HttpSessionListener解析：（@WebListener，这是监听器）
+	# public void sessionCreated(HttpSessionEvent se); 
+	当一个浏览器第一次访问网站的时候，J2EE应用服务器会新建一个HttpSession对象，并触发HttpSession创建事件，如果注册了HttpSessionListener事件监听器，则会调用HttpSessionListener事件监听器的 sessionCreated方法。
+
+	# public void sessionDestroyed(HttpSessionEvent se);
+	1.执行session.invalidate()方法时；
+	2.如果用户长时间没有访问服务器，超过了会话最大超时时间 ，服务器就会自动销毁超时的session。
+
+	应用场景：在线人数的统计；
