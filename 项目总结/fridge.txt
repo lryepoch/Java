@@ -99,6 +99,6 @@ PropertyUtils.copyProperties();
 
 
 ·fridge权限设计：
-	1.设计好数据库的request_url，包括页面和操作url；
+	1.设计好数据库的request_url，包括页面和操作；
 	2.用户单点登录时，找出当前用户可以访问的全部url，更新进权限校验拦截器中；
 	3.当前用户请求相应路径时，判断路径中是否包含其拥有权限的url，如果有，则返回true，拦截通过。

@@ -33,6 +33,14 @@ List，Map；
     所以: MyTest.getClassLoader().getResourceAsStream("name")和MyTest.getClassLoader().getResourceAsStream("name") 的效果是一样的。
 
 
+·SpringBoot项目中，需要获取resources文件的路径：
+1、获取resources文件夹路径
+File directory = new File("xxx/xxx/src/main/resources");
+String reportPath = directory.getCanonicalPath()；
+xxx为你的项目内包的名称，File只会找到项目最外层地址；
+这里需要注意，不能在xxx前面加/，否则只会找到顶层地址；
+
+
 
 
 ·规范springboot后台返回时间格式：

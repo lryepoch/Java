@@ -19,3 +19,23 @@
 ·Application权限设计：
 	1.对类上方的路径进行拦截。判断当前用户请求的路径是否包含它，如果包含，则进一步判断当前用户是否是超级管理员或者管理员。如果是，则可以对当前请求的路径执行下去，如果不是，则返回false，并给出提示“当前用户权限不足”；
 	2.如果是普通用户登录系统，那么他只能操作没有进行拦截的url；
+
+
+
+
+·//设置从request中取得的值或者从数据库中取出的值的编码
+	request.setCharacterEncoding()
+	//设置HTTP响应的编码，同时指定浏览器显示的编码
+	response.setContentType("application/json; chartset=UTF-8");
+	//设置HTTP响应的编码，如果前面使用了response.setContentType()设置了编码，则会覆盖之前的设置
+	response.setCharacterEncoding("UTF-8");
+
+
+
+
+·@SuppressWarnings注解就可以消除这些警告的产生，注解的使用有三种：
+	1. @SuppressWarnings("unchecked")  [^ 抑制单类型的警告]
+	2. @SuppressWarnings("unchecked","rawtypes")  [^ 抑制多类型的警告]
+	3. @SuppressWarnings("all")  [^ 抑制所有类型的警告]
+	***
+	> 通过源码分析可知@SuppressWarnings其注解目标为类、字段、函数、函数入参、构造函数和函数的局部变量。建议把注解放在最近警告发生的位置。
