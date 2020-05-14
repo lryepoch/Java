@@ -37,6 +37,17 @@
 	byte[] bytes = md5.digest(s1.getBytes());
 	String s2 = Base64.getEncoder().encodeToString(bytes);
 
+	Base64
+	可逆性。
+	可以将图片等二进制文件转换为文本文件。
+	可以把非ASCII字符的数据转换成ASCII字符，避免不可见字符。
+
+	MD5
+	不可逆性。
+	任意长度的明文字符串，加密后得到的密文字符串是长度固定的。
+
+
+
 
 ·发起请求：
 	String result = HttpRequest.post(url).addHeaders(map).body(string).execute().body();

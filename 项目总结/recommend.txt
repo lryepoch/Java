@@ -60,3 +60,23 @@ xxx为你的项目内包的名称，File只会找到项目最外层地址；
 
 
 ·mybatis xml传入一个数组时，parameterType="int[]"
+
+
+
+·SQL查询语句中的 limit 与 offset 的区别：
+
+	limit y 分句表示: 读取 y 条数据
+
+	limit x, y 分句表示: 跳过 x 条数据，读取 y 条数据
+
+	limit y offset x 分句表示: 跳过 x 条数据，读取 y 条数据
+
+
+
+·RestTemplate：发起http请求，代码更加简洁
+	HttpHeaders headers = new HttpHeaders();
+	Map map = new HashMap<>();
+	HttpEntity requestBody = new HttpEntity(map,headers);
+	RestTemplate restTemplate = new RestTemplate();
+	ResponseEntity responseEntity = restTemplate.postForEntity(url,requestBody,JSONObject.class);
+	JSONObject responseEntityBody = responseEntity.getBody();

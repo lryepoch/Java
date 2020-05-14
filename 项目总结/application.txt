@@ -39,3 +39,9 @@
 	3. @SuppressWarnings("all")  [^ 抑制所有类型的警告]
 	***
 	> 通过源码分析可知@SuppressWarnings其注解目标为类、字段、函数、函数入参、构造函数和函数的局部变量。建议把注解放在最近警告发生的位置。
+
+
+
+
+·ObjectMapper的使用：数据模型转换框架
+eg：字符串转换成map。JSONObject的API也可以；

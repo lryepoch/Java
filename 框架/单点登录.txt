@@ -28,9 +28,10 @@ void logincb(String callback, HttpServletRequest request, HttpServletResponse re
 	}
 
 	if(token->true){
+		//获取登录用户ip
 		ip = getIpAddr(request)
 		infoUrl->String.format(infoUrl,token("Message"),appid,appkey,ip)
-		//从sso中获取用户信息
+		//获取token后，获取用户信息
 		getSsoUserInfo(infoUrl)
 
 		if(ssoUserInfo->true){
@@ -38,18 +39,26 @@ void logincb(String callback, HttpServletRequest request, HttpServletResponse re
 			appAccount = get("AppAccount")
 			//根据邮箱从数据库获取用户全部信息
 			user = getUserByAppAccount(appAccount)
-			if(user若无权限){
+			if(user信息无效){
+				//跳转到无权限页面
 				sendRedirect(noAuthorityUrl)
 			}
-			//在session中设置好当前用户信息
+			//把当前用户ip加到ssoUserInfo中
+			put("loginIp",ip);
+			//在session中设置好当前用户信息，其他地方需要使用
 			request.getSession().setAttribute("ssoUserInfo", ssoUserInfo)
 
-			//更新用户信息
+			//根据ssoUserInfo，更新数据库中当前用户信息
 			user.setUserName()
+			user.setDepartment()
+			user.setCompany()
 			user.setJob()
 			updateUser(user)
 
+			//登录日志也可在此写入数据库
+
 			saveToken(request,加密？)
+			//登陆成功，跳转到首页地址
 			response.sendRedirect(indexUrl)
 		}
 	}

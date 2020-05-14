@@ -23,7 +23,10 @@ Windows：
 截屏：ctrl+alt+A
 远程桌面连接：mstsc
 
-
+关闭指定端口：
+	查看所有：netstat -ano
+	查看对应端口：netstat -ano|findstr "9004"
+	令行关闭端口：taskkill -PID 进程号 -F
 
 
 
