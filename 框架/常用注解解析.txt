@@ -144,7 +144,7 @@ Spring：
 
 	·其他注解：
 		@RequestMapping：映射一个URL到一个类或者一个特定方法上。
-		@Scope：范围注解；默认单例；多例如@Scope（“prototype”）
+		@Scope：范围注解；默认单例；多例，如@Scope（“prototype”）
 
 	·@Configuration 和 @Component 区别：
 		相同点是都是注解在类上的注解，不同点就是@Component注解的范围最广，所有类都可以注解；但是@Configuration注解一般注解在这样的类上：这个类里面有@Value注解的成员变量和@Bean注解的方法，就是一个配置类。
@@ -199,27 +199,33 @@ springboot：
 
 
 
-实体类属性注解：
+实体类属性校验注解：
 ---------------------------
-注解	     作用类型	                   解释
-@NotNull	 基本类型	                属性不能为null
-@NotEmpty	 集合类	                    集合不能为null，且size大于0
-@NotBlanck	 字符串、字符	            字符类不能为null，且去掉空格之后长度大于0
-@AssertTrue	 Boolean、boolean	        布尔属性必须是true
-@Min	    数字类型（原子和包装）	    限定数字的最小值（整型）
-@Max	    同@Min	                    限定数字的最大值（整型）
-@DecimalMin	同@Min	                限定数字的最小值（字符串，可以是小数）
-@DecimalMax	同@Min	                限定数字的最大值（字符串，可以是小数）
-@Range	    数字类型（原子和包装）	    限定数字范围（长整型）
-@Length	    字符串	                    限定字符串长度
-@Size	    集合	                    限定集合大小
-@Past	    时间、日期	            必须是一个过去的时间或日期
-@Future	    时期、时间	            必须是一个未来的时间或日期
-@Email	    字符串	                必须是一个邮箱格式
-@Pattern	字符串、字符	        正则匹配字符串
-以上注解用到要验证参数的封装类中的属性上：
+@Null  被注释的元素必须为null
+@NotNull  被注释的元素不能为null
+@AssertTrue  该字段只能为true
+@AssertFalse  该字段的值只能为false
+@Min(value)  被注释的元素必须是一个数字，其值必须大于等于指定的最小值
+@Max(value)  被注释的元素必须是一个数字，其值必须小于等于指定的最大值
+@DecimalMin("value")  被注释的元素必须是一个数字，验证小数的最小值
+@DecimalMax("value")  被注释的元素必须是一个数字，验证小数的最大值
+@Size(max,min)  查该字段的size是否在min和max之间，可以是字符串、数组、集合、Map等
+@Digits(integer,fraction) 检查是否是一种数字的整数、分数,小数位数的数字
+@Past  被注释的元素必须是一个过去的日期
+@Future  被注释的元素必须是一个将来的日期
+@Pattern(regexp = "[abc]") 被注释的元素必须符合指定的正则表达式。
+@Email 被注释的元素必须是电子邮件地址
+@Length(max=5,min=1,message="长度在1~5")    检查所属的字段的长度是否在min和max之间,只能用于字符串
+@NotEmpty  被注释的字符串必须非空
+@Range  被注释的元素必须在合适的范围内   
+@CreditCardNumber 对信用卡号进行一个大致的验证
+@NotBlank 不能为空，检查时会将空格忽略
+@NotEmpty 不能为空，这里的空是指空字符串
+
+以上注解在使用时，都可以设置自定义message提示信息。
 
 
+entity类：
 public class Test {
     
     @NotNull(message = "ID不能为空")
@@ -250,5 +256,95 @@ public class Test {
 }
 
 
+controller层：
+public class TestController {
+ 
+	@PostMapping("/a")
+    @ApiOperation(value = "测试", notes = "")
+	public void test(@RequestBody @Valid Test test,BindingResult bindingResult) {
+		System.out.println(test.toString());
+		if (bindingResult.hasErrors()) {
+			throw new 自定义Exception("错误提示码",bindingResult.getFieldError().getDefaultMessage());
+		}
+	}
+}
 
 
+总结：@Valid和BindingResult配套使用，@Valid用在参数前，BindingResult作为校验结果绑定返回。
+
+		bindingResult.hasErrors()判断是否校验通过，校验未通过，bindingResult.getFieldError().getDefaultMessage()获取在Test的属性设置的自定义message，如果没有设置，则返回默认值"javax.validation.constraints.XXX.message"。
+
+		注意：在实体类使用校验注解时，controller一定要使用bindingResult处理校验结果，且实体类作为查询参数时，避免被其他方法使用，不然有的地方需要限制，有的没有，不需要限制的方法会报错。
+
+
+
+lombok：
+----------------------------
+	@Accessors：Accessor的中文含义是存取器，@Accessors用于配置getter和setter方法的生成结果，下面介绍三个属性：
+
+	··fluent的中文含义是流畅的，设置为true，则getter和setter方法的方法名都是基础属性名，且setter方法返回当前对象。如下
+
+		@Data
+		@Accessors(fluent = true)
+		public class User {
+		    private Long id;
+		    private String name;
+		    
+		    // 生成的getter和setter方法如下，方法体略
+		    public Long id() {}
+		    public User id(Long id) {}
+		    public String name() {}
+		    public User name(String name) {}
+		}
+
+	··chain的中文含义是链式的，设置为true，则setter方法返回当前对象。如下
+
+		@Data
+		@Accessors(chain = true)
+		public class User {
+		    private Long id;
+		    private String name;
+		    
+		    // 生成的setter方法如下，方法体略
+		    public User setId(Long id) {}
+		    public User setName(String name) {}
+		}
+
+	··prefix的中文含义是前缀，用于生成getter和setter方法的字段名会忽视属性的指定前缀（遵守驼峰命名）。如下
+
+		@Data
+		@Accessors(prefix = "p")
+		class User {
+			private Long pId;
+			private String pName;
+			
+			// 生成的getter和setter方法如下，方法体略
+			public Long getId() {}
+			public void setId(Long id) {}
+			public String getName() {}
+			public void setName(String name) {}
+		}
+
+
+
+
+
+·自定义注解：
+
+
+
+
+
+
+
+
+
+
+
+·@PostConstruct注解好多人以为是Spring提供的。其实是Java自己的注解。
+
+Java中该注解的说明：@PostConstruct该注解被用来修饰一个非静态的void（）方法。被@PostConstruct修饰的方法会在服务器加载Servlet的时候运行，并且只会被服务器执行一次。PostConstruct在构造函数之后执行，init（）方法之前执行。
+
+通常我们会是在Spring框架中使用到@PostConstruct注解 该注解的方法在整个Bean初始化中的执行顺序：
+
+Constructor(构造方法) -> @Autowired(依赖注入) -> @PostConstruct(注释的方法)

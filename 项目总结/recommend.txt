@@ -80,3 +80,43 @@ xxx为你的项目内包的名称，File只会找到项目最外层地址；
 	RestTemplate restTemplate = new RestTemplate();
 	ResponseEntity responseEntity = restTemplate.postForEntity(url,requestBody,JSONObject.class);
 	JSONObject responseEntityBody = responseEntity.getBody();
+
+
+
+
+
+·HandlerMethod：
+HandlerMethod它作为Spring MVC的非公开API，可能绝大多数小伙伴都对它比较陌生，但我相信你对它又不是那么的生疏，因为你可能没用过但肯定见过。
+比如Spring MVC的拦截器HandlerInterceptor的拦截方法的第三个入参Object handler，虽然它是Object类型，但其实绝大部分情况下我们都会当作HandlerMethod来使用；
+
+
+
+
+
+
+· A.isAnnotationPresent(B.class)；意思就是：注释B是否在此A上。如果在则返回true；不在则返回false。
+
+
+
+
+
+·权限管理：
+	1.定义一个注解，把注解添加到需要权限才能访问的方法上；
+	2.
+
+
+
+
+
+
+·加密：
+	//加密方式(MD5加密)
+	String hashAlgorithmName = "MD5";
+	//盐：为了即使相同的密码不同的盐加密后的结果也不同
+	ByteSource byteSalt = ByteSource.Util.bytes(salt);
+	//密码
+	Object source = "qwe!2345";
+	//加密次数
+	int hashIterations = 1024;
+
+	String newData = new SimpleHash(hashAlgorithmName, source, byteSalt, hashIterations).toHex();
