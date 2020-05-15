@@ -101,8 +101,10 @@ HandlerMethod它作为Spring MVC的非公开API，可能绝大多数小伙伴都
 
 
 ·权限管理：
-	1.定义一个注解，把注解添加到需要权限才能访问的方法上；
-	2.
+	1.定义一个注解，把注解@Administrator添加到需要权限才能访问的方法上；
+	2.HandlerInterceptor中判断：(HandlerMethod)object.getMethod().isAnnotationPresent(Administrator.class)，若为true则进入下一步；
+	3.从request中获取用户信息进一步判断当前用户的状态以及角色；
+
 
 
 
