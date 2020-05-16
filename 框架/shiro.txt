@@ -12,7 +12,9 @@
 ·整体架构：
 
 	subject：主体，可以是用户也可以是程序，主体要访问系统，系统需要对主体进行认证、授权。
-					主体，代表了当前“用户”，这个用户不一定是一个具体的人，与当前应用交互的任何东西都是Subject，如网络爬虫，机器人等；即一个抽象概念；所有Subject都绑定到SecurityManager，与Subject的所有交互都会委托给SecurityManager；可以把Subject认为是一个门面；SecurityManager才是实际的执行者；
+					主体，代表了当前“用户”，这个用户不一定是一个具体的人，与当前应用交互的任何东西都是Subject，如网络爬虫，机器人等；即一个抽象概念；
+					所有Subject都绑定到SecurityManager，与Subject的所有交互都会委托给SecurityManager；
+					可以把Subject认为是一个门面；SecurityManager才是实际的执行者；
 
 	securityManager：安全管理器，主体进行认证和授权都是通过securityManager进行。所有与安全有关的操作都会与SecurityManager交互；且它管理着所有Subject；可以看出它是Shiro的核心，它								负责与后边介绍的其他组件进行交互，如果学习过SpringMVC，你可以把它看成DispatcherServlet前端控制器；
 
@@ -64,7 +66,7 @@
 
 
 	认证过程：
-	1、首先调用Subject.login(token)进行登录，其会自动委托给SecurityManager，调用之前必须通过SecurityUtils. setSecurityManager()设置。
+	1、首先调用Subject.login(token)进行登录，其会自动委托给SecurityManager，调用之前必须通过SecurityUtils.setSecurityManager()设置。
 
 	2、SecurityManager负责真正的身份验证逻辑；它会委托给Authenticator进行身份验证。
 
@@ -101,6 +103,29 @@
 	5、ModularRealmAuthorizer调用PermissionResolver进行权限串比对
 
 	6、如果比对后，isPermitted中"permission串"在realm查询到权限数据中，说明用户访问permission串有权限，否则 没有权限，抛出异常。
+
+
+	Shiro支持三种方式的授权： 
+	1.编程式：通过写if/else授权代码块完成： 
+	Subject subject = SecurityUtils.getSubject();  
+	if(subject.hasRole(“admin”)) {  
+	    //有权限  
+	} else {  
+	    //无权限  
+	}   
+	
+	2.注解式：通过在执行的Java方法上放置相应的注解完成： 
+	@RequiresRoles("admin")  
+	public void hello() {  
+	    //有权限  
+	}   
+	没有权限将抛出相应的异常；
+
+	3.JSP/GSP标签：在JSP/GSP页面通过相应的标签完成：
+	<shiro:hasRole name="admin">  
+	<!— 有权限 —>  
+	</shiro:hasRole>   
+
 
 
 

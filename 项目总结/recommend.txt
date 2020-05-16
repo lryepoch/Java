@@ -114,6 +114,7 @@ HandlerMethod它作为Spring MVC的非公开API，可能绝大多数小伙伴都
 ·加密：
 	//加密方式(MD5加密)
 	String hashAlgorithmName = "MD5";
+	String salt = "goodj";
 	//盐：为了即使相同的密码不同的盐加密后的结果也不同
 	ByteSource byteSalt = ByteSource.Util.bytes(salt);
 	//密码
