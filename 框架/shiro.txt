@@ -107,24 +107,26 @@
 
 	Shiro支持三种方式的授权： 
 	1.编程式：通过写if/else授权代码块完成： 
-	Subject subject = SecurityUtils.getSubject();  
-	if(subject.hasRole(“admin”)) {  
-	    //有权限  
-	} else {  
-	    //无权限  
-	}   
+		Subject subject = SecurityUtils.getSubject();  
+		if(subject.hasRole(“admin”)) {  
+		    //有权限  
+		} else {  
+		    //无权限  
+		}   
 	
 	2.注解式：通过在执行的Java方法上放置相应的注解完成： 
-	@RequiresRoles("admin")  
-	public void hello() {  
-	    //有权限  
-	}   
-	没有权限将抛出相应的异常；
+		//@RequiresPermissions("userInfo:del")
+		
+		@RequiresRoles("admin")  
+		public void hello() {  
+		    //有权限  
+		}   
+		没有权限将抛出相应的异常；
 
 	3.JSP/GSP标签：在JSP/GSP页面通过相应的标签完成：
-	<shiro:hasRole name="admin">  
-	<!— 有权限 —>  
-	</shiro:hasRole>   
+		<shiro:hasRole name="admin">  
+		<!— 有权限 —>  
+		</shiro:hasRole>   
 
 
 
@@ -138,13 +140,50 @@
 		这个加密后的字符串就存在数据库里了，下次用户再登陆，输入密码 123， 同样用md5加密后，再和这个字符串一比较，就知道密码是否正确了。
 		如此这样，既能保证用户密码校验的功能，又能保证不暴露密码。
 	
+	··典型的加密算法是 MD5 和 SHA1；
 
+	··在密码学中，是指通过在密码任意固定位置插入特定的字符串，让散列后的结果和使用原始密码的散列结果不相符，这种过程称之为“加盐”。
 	··盐：
 		虽然每次123经过md5加密之后都是202CB962AC59075B964B07152D234B70，但是我加上盐，即123+随机数，那么md5值就不一样了。
 		这个随机数，就是盐。
 		这个随机数也会在数据库里保存下来，每个不同的用户，随机数也是不一样的。
 		
 		再就是加密次数，加密一次是202CB962AC59075B964B07152D234B70。加密两次，就是另一个数了。而黑客即便是拿到了加密后的密码，如果不知道到底加密了多少次，也是很难办的。
+
+
+
+·springboot中集成shiro：（@Configuration+@Bean）
+	
+	ShiroFilter
+	|
+	Advisor
+	|
+	|__SecurityManager
+	|	|__Realm
+	|	|	|__CredentialsMatcher
+	|	|	|__自定义的密码比较器
+	|	|
+	|	|__CacheManager
+	|	|__SessionManager
+	|	|
+	|	|__RememberMeManager
+	|		|__SimpleCookie		
+	|
+	ExceptionResolver	//异常处理器
+	|
+	LifecycleBeanPostProcessor	//生命周期的初始化、销毁
+
+
+
+
+
+
+·	通常企业开发中将资源和权限表合并为一张权限表，如下：
+
+	资源（资源名称、访问地址）
+
+	权限（权限名称、资源id）
+
 
 
 
