@@ -61,3 +61,10 @@ HttpUtil的使用；hutool
 上传
 下载
 显示
+
+
+
+
+·idea SpringMVC jsp跳转controller的链接会丢失项目名称的问题：
+
+action这个加了“/ ” servlet 会根据这个，将user认为是项目名，去找user项目下的这个页面，当然无法跳转显示，只要去掉“/”，写成 action=“user/register”即可。

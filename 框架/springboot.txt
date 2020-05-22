@@ -46,6 +46,40 @@
 
 
 
+·static和templates两个文件夹下的文件：
+
+	static：此文件下都是静态资源文件，最主要的一个特点，可以通过浏览器地址栏，直接访问；
+
+	        ··在该文件夹下创建index.html，该页面会被默认为访问的首页，即在地址栏中输入http://localhost:8080可以直接访问该页面，不用其他配置。
+
+	        ··如果该文件下还有其他静态文件夹，需要在application.properties中配置，否则该文件下的静态文件不能被引用或者访问。
+				spring.mvc.static-path-pattern=/static/**  
+
+	template：模板文件夹，该文件下的页面不能通过地址栏地址直接访问，需要经过Controller类来访问，需要在application.properties中配置对应的模板引擎：   
+
+	         #配置模板引擎
+	          spring.thymeleaf.prefix=classpath:/templates/
+	          spring.mvc.view.prefix=classpath:/templates/
+	          spring.mvc.view.suffix=.html（注：此处填写自己页面对应的后缀名，我的是html页面）
+
+	静态页面的return默认是跳转到/static/目录下，当在pom.xml中引入了thymeleaf组件，动态跳转会覆盖默认的静态跳转，默认就会跳转到/templates/下，注意看两者return代码也有区别，动态没有html后缀。
+
+
+	
+
+··因为springboot项目默认是不支持jsp的，需要我们自己配置jar包依赖：
+	    <dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<version>8.5.20</version>
+		</dependency>
+ 
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+
+
 
 ·springboot异常处理：【status/code/message/data】
 	
