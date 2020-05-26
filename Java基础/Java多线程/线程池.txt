@@ -1,0 +1,73 @@
+
+--------------------------
+·ThreadPoolExecutor的构造方法：
+	public ThreadPoolExecutor(int corePoolSize,
+	                              int maximumPoolSize,
+	                              long keepAliveTime,
+	                              TimeUnit unit,
+	                              BlockingQueue<Runnable> workQueue,
+	                              ThreadFactory threadFactory,
+	                              RejectedExecutionHandler handler) {
+	        if (corePoolSize < 0 ||
+	            maximumPoolSize <= 0 ||
+	            maximumPoolSize < corePoolSize ||
+	            keepAliveTime < 0)
+	            throw new IllegalArgumentException();
+	        if (workQueue == null || threadFactory == null || handler == null)
+	            throw new NullPointerException();
+
+	        this.acc = System.getSecurityManager() == null ?
+	                null :
+	                AccessController.getContext();
+	        this.corePoolSize = corePoolSize;
+	        this.maximumPoolSize = maximumPoolSize;
+	        this.workQueue = workQueue;
+	        this.keepAliveTime = unit.toNanos(keepAliveTime);
+	        this.threadFactory = threadFactory;
+	        this.handler = handler;
+	    }
+
+
+·参数解析：
+	1.corePoolSize：核心数指的是，当线程池创建了这么多的线程之后，会保留的不会被回收的线程数，超过corePoolSize的线程在一定时间之后就会被回收；
+
+	2.maximumPoolSize：池里面能有的最大的线程数量；
+
+	3.keepAliveTime、TimeUnit：keepAliveTime就是存活时间，TimeUnit是时间单位，来表明keepAliveTime的数字是秒啊还是毫秒啊等等。
+	这两个参数就是当我们线程池存在的线程数量超过corePoolSize时，如果有个线程已经空闲了keepAliveTime这么长的时间，那么这个空闲线程就要被回收了；
+
+	4.workQueue：工作队列、阻塞队列；存储的是线程需要执行的任务；
+	··主要分为以下几种类型：
+		直接提交的队列：SynchronousQueue队列，它是一个没有容量的队列，前面我有对其进行讲解，当线程池进行入队offer操作的时候，本身是无容量的，所以直接返回false，并没有保存下来，而是直接提交给线程来进行执行，如果没有空余的线程则执行拒绝策略。
+
+
+		有界的任务队列：可以使用ArrayBlockingQueue队列，因为它内部是基于数组来进行实现的，初始化时必须指定容量参数，当使用有界任务队列时，当有任务进行提交时，线程池的线程数量小于corePoolSize则创建新的线程来执行任务，当线程池的线程数量大于corePoolSize的时候，则将提交的任务放入到队列中，当提交的任务塞满队列后，如果线程池的线程数量没有超过maximumPoolSize，则创建新的线程执行任务，如果超过了maximumPoolSize则执行拒绝策略。
+
+
+		无界的任务队列：可以使用LinkedBlockingQueue队列，它内部是基于链表的形式，默认队列的长度是Integer.MAX_VALUE，也可以指定队列的长度，当队列满时进行阻塞操作，当然线程池中采用的是offer方法并不会阻塞线程，当队列满时则返回false，入队成功则则返回true，当使用LinkedBlockingQueue队列时，有任务提交到线程池时，如果线程池的数量小于corePoolSize，线程池会产生新的线程来执行任务，当线程池的线程数量大于corePoolSize时，则将提交的任务放入到队列中，等待执行任务的线程执行完之后进行消费队列中的任务，若后续仍有新的任务提交，而没有空闲的线程时，它会不断往队列中入队提交的任务，直到资源耗尽。
+
+
+		优先任务队列：t有限任务队列是带有执行优先级的队列，他可以使用PriorityBlockingQueue队列，可以控制任务的执行先后顺序，它是一个无界队列，该队列可以根据任务自身的优先级顺序先后执行，在确保性能的同时，也能有很好的质量保证。
+
+
+	5.threadFactory：线程工厂，定义如何创建线程；
+
+	6.handler：拒绝策略，当线程池中所有的线程都在执行任务，并且工作队列(是有界队列)也排满了，那再有任务提交就会执行拒绝策略；
+
+		··四种拒绝策略：
+		1、ThreadPoolExecutor.AbortPolicy()
+		是默认的拒绝策略，会抛出 RejectedExcecutionException。
+
+		2、ThreadPoolExecutor.CallerRunsPolicy()
+		让提交任务的线程自己去执行这个任务。好像这样做挺有道理的..我没空你自己搞去
+
+		3、ThreadPoolExecutor.DiscardOldestPolicy()
+		丢弃最老的任务，也就是工作队列里最前面的任务，丢弃了之后把新任务加入到工作队列中...真的不公平啊
+
+		4、ThreadPoolExecutor.DiscardPolicy()
+		直接丢弃任务，并且不抛出任何异常...假装没看到系列
+
+		除了这四种还可以自定义拒绝策略，建议自定义拒绝策略。因为更加的友好，可以设置成服务降级啊等操作。
+
+
+·Java并发包还提供了Executors,可以快速创建线程池，但是不推荐使用Executors。因为Executors创建线程池都是默认使用无界队列LinkedBlockingQueue，在高负载的情况下容易OOM。所以建议使用有界队列。

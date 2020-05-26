@@ -1,10 +1,14 @@
-Java多线程学习笔记全一线程的创建和启动java使用Thread类代表线程所有的线程对象都必须是Thread类或其子类的实例。每条线程
-的作用是完成一定的任务实际上就是执行一段程序流一段顺序流的代码。Java使用run方法
-来封装这样一段程序。1.继承Thread类创建线程类/**继承Thread来创建线程类*/
+Java多线程学习笔记全
+一线程的创建和启动
+java使用Thread类代表线程所有的线程对象都必须是Thread类或其子类的实例。
+每条线程的作用是完成一定的任务实际上就是执行一段程序流一段顺序流的代码。
+Java使用run方法来封装这样一段程序。
+
+1.继承Thread类创建线程类/**继承Thread来创建线程类*/
 publicclassFirstThreadextendsThread{
-privateinti;
+private int i;
 //重写run方法run方法的方法体就是线程执行体
-publicvoidrun(){
+public void run(){
 for(;i<10;i++){
 System.out.println(this.getName()+":"+i);
 }
