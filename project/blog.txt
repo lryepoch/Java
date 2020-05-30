@@ -1,0 +1,153 @@
+
+·使用timestamp：
+	Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+
+
+·数据库插入数据还可以： 
+
+	INSERT INTO 表名 SET 列名1 = 列值1,列名2=列值2,...;
+
+	不过用INSERT INTO SET这种方式，不能批量增加数据，批量增加的话用这种（示例）；
+	INSERT INTO products (p_title,p_price) VALUES ('苹果','5元'),('荔枝','10元'),('红枣','8元');
+
+
+
+·有时候在开发中需要向表中插入自增ID，这个时候领域模型如果想要获取该ID的值，就需要在相应的mapper文件中添加useGeneratedKeys="true" keyProperty="id"。
+
+	useGeneratedKeys 取值范围true、false 默认值是：false。 含义：设置是否使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中；
+
+	主要是在主键是自增的情况下，添加成功后可以直接使用主键值，其中keyProperty的值是对象的属性值不是数据库表中的字段名；
+
+	设置完以后我们就可以在前端获取到该自增ID的值：userModel.setId(userDO.getId());
+
+
+
+·@JsonIgnore注解：
+	在实体类向前台返回数据时用来忽略不想传递给前台的属性或接口；
+	可以在对应属性上加上注解JsonIgnore或者，可以在User类上加上注解@JsonIgnoreProperties(value = "{password}")；
+
+
+
+
+
+
+·权限控制（本项目中的实现）：
+	1.直接在spring security的配置类中定义好需要拦截哪些url即可；可不用在数据库中创建权限表；
+	2.反观shiro，需要在数据库中定义权限表；然后在代码中通过注解或者自定义拦截器，框架帮助我们进行权限的校验；
+
+
+
+
+
+·java实现map和object互转的三种方法详解
+/**  
+ * 1.使用org.apache.commons.beanutils进行转换  
+ */   
+class A {   
+       
+    public static Object mapToObject(Map<String, Object> map, Class<?> beanClass) throws Exception {     
+        if (map == null)   
+            return null;   
+   
+        Object obj = beanClass.newInstance();   
+   
+        org.apache.commons.beanutils.BeanUtils.populate(obj, map);   
+   
+        return obj;   
+    }     
+       
+    public static Map<?, ?> objectToMap(Object obj) {   
+        if(obj == null)   
+            return null;    
+   
+        return new org.apache.commons.beanutils.BeanMap(obj);   
+    }     
+       
+}   
+   
+/**  
+ * 2.使用Introspector进行转换  
+ */   
+class B {   
+   
+    public static Object mapToObject(Map<String, Object> map, Class<?> beanClass) throws Exception {     
+        if (map == null)    
+            return null;     
+   
+        Object obj = beanClass.newInstance();   
+   
+        BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());     
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();     
+        for (PropertyDescriptor property : propertyDescriptors) {   
+            Method setter = property.getWriteMethod();     
+            if (setter != null) {   
+                setter.invoke(obj, map.get(property.getName()));    
+            }   
+        }   
+   
+        return obj;   
+    }     
+       
+    public static Map<String, Object> objectToMap(Object obj) throws Exception {     
+        if(obj == null)
+            return null;
+   
+        Map<String, Object> map = new HashMap<String, Object>();    
+   
+        BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());     
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();     
+        for (PropertyDescriptor property : propertyDescriptors) {     
+            String key = property.getName();     
+            if (key.compareToIgnoreCase("class") == 0) {    
+                continue;   
+            }   
+            Method getter = property.getReadMethod();   
+            Object value = getter!=null ? getter.invoke(obj) : null;   
+            map.put(key, value);   
+        }     
+   
+        return map;   
+    }     
+       
+}   
+   
+/**  
+ * 3.使用reflect进行转换		
+ */   
+class C {   
+   
+    public static Object mapToObject(Map<String, Object> map, Class<?> beanClass) throws Exception {     
+        if (map == null)   
+            return null;     
+   
+        Object obj = beanClass.newInstance();   
+   
+        Field[] fields = obj.getClass().getDeclaredFields();    
+        for (Field field : fields) {     
+            int mod = field.getModifiers();     
+            if(Modifier.isStatic(mod) || Modifier.isFinal(mod)){     
+                continue;     
+            }     
+            field.setAccessible(true);     
+            field.set(obj, map.get(field.getName()));    
+        }    
+        return obj;     
+    }     
+   
+    public static Map<String, Object> objectToMap(Object obj) throws Exception {     
+        if(obj == null){     
+            return null;     
+        }    
+   
+        Map<String, Object> map = new HashMap<String, Object>();     
+   
+        Field[] declaredFields = obj.getClass().getDeclaredFields();     
+        for (Field field : declaredFields) {     
+            field.setAccessible(true);   
+            map.put(field.getName(), field.get(obj));   
+        }     
+   
+        return map;   
+    }    
+}  
