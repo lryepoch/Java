@@ -27,6 +27,6 @@
 	c.  String支持，转化后依然为null。
 
 	5.BeanUtils的高级功能org.apache.commons.beanutils.Converter接口可以自定义类型转化，也可以对部分类型数据的null值进行特殊处理，如
-	ConvertUtils.register(new DateConverter(null), java.util.Date.class);但是PropertyUtils没有。
+	ConvertUtils.register(new DateConverter(null), java.util.Date.class)；但是PropertyUtils没有。
 
 	另外：值得注意的是，在测试过程中发现，commons-beanutils-1.8.0.jar版本中的BeanUtils类，支持Byte到Integer或int的转化。说明实际使用过程中，我们还是要多看源码，多做测试，并且注意版本号升级带来的微小变化。
