@@ -22,7 +22,7 @@
 
 
 	Broker ：一台kafka服务器就是一个broker。一个集群由多个broker组成；
-			一个broker可以容纳多个topic，一个topic会分为多个partition，实际上partition会分布在不同的broker中；即同一个topic会在分布在多个不同的broker上，由此得知：Kafka是天然分布式的；
+			一个broker可以容纳多个topic，一个topic会分为多个partition，实际上partition会分布在不同的broker中；即同一份topic会分布在多个不同的broker上，由此得知：Kafka是天然分布式的；
 			已发布的消息保存在一组服务器中，称之为Kafka集群。集群中的每一个服务器都是一个代理（Broker）；
 			消费者可以订阅一个或多个主题（topic），并从Broker拉数据，从而消费这些已发布的消息；
 
