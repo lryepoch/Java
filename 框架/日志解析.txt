@@ -1,8 +1,22 @@
 
 ·优化日志：
 	1.更换性能更高的日志框架；
-		java项目中最常用的三大日志框架是logback，log4j，log4j2。其中logback是springboot的默认框架；
+		java项目中最常用的三大日志框架是logback，log4j，log4j2。其中logback是springboot的默认框架，天然支持SLF4J；
 		目前性能表现最好的日志框架是log4j2；
+		<!-- 忽略自带的日志框架. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		spring-boot-starter 中包含了 spring-boot-starter-logging，该依赖内容就是 Spring Boot 默认的日志框架 logback。
+
 
 
 	2.使用异步日志或者延时刷盘的日志配置；
@@ -10,3 +24,266 @@
 
 		Log4j2的异步日志的使用又可以分为全异步和混合异步，所谓全异步就是所有的日志都以异步方式输出；混合异步就是只有指定的代码文件用异步方式输出，其他日志使用同步方式输出；前者能够获得更高的性能，也是官方推荐的方式，后者具有更好的灵活性，可以进行针对性配置。
 		
+
+
+·日志输出级别 ：TRACE < DEBUG < INFO < WARN < ERROR < FATAL
+
+
+
+
+·日志发展史：
+	log4j[Ceki][Logger、Appender、Level等概念]
+	|
+	|j.u.l(jdk1.4)[在Java1.5以后性能和可用性才有所提升][直接放弃使用，设计简单，不足以支撑开发应用系统]
+	|	|
+		|commons-logging[对Log4j和j.u.l的配置问题兼容的并不好][]
+			|
+			|SLF4J[Ceki][只要使用SLF4J提供的接口][logback天然支持]
+				|
+				|logback[Ceki][log4j的升级版][LogBack 的日志记录数据流是从 Class 或 Package 流到 Logger，再从Logger到Appender，最后从Appender到具体的输出终端]
+	|
+	|log4j2[][性能强悍，设计过于复杂，很多开源框架不支持，很容易踩坑。不推荐使用]
+
+
+ 
+·常见日志框架：
+	日志门面：JCL/SLF4J/jboss-logging
+	日志实现：log4j/log4j2/logback/JUL
+
+
+
+-------------------------
+·logback配置文件：
+
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration> 
+       
+    <property name="logback.logdir" value="./logs"/>
+
+    <!-- 属性文件:在properties文件中找到对应的配置项 -->
+    <springProperty scope="context" name="logback.appName" source="gree.log.app-name"/>
+
+
+    <!-- 自定义输出日志 -->
+    <appender name="custom" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--如果只是想要 Info 级别的日志，只是过滤 info 还是会输出 Error 日志，因为 Error 的级别高，
+             所以我们使用下面的策略，可以避免输出 Error 的日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!--过滤 Error-->
+            <level>ERROR</level>
+            <!--匹配到就禁止-->
+            <onMatch>DENY</onMatch>
+            <!--没有匹配到就允许-->
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+
+        <!--日志名称，如果没有File 属性，那么只会使用FileNamePattern的文件路径规则
+            如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
+            的日志改名为今天的日期。即，<File> 的日志都是当天的。
+        -->
+        <File>${logback.logdir}/coustom-info.${logback.appName}.log</File>
+        <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
+            <FileNamePattern>${logback.logdir}/coustom-info.${logback.appName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--只保留最近7天的日志-->
+            <maxHistory>7</maxHistory>
+            <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
+            <!--<totalSizeCap>1GB</totalSizeCap>-->
+        </rollingPolicy>
+
+ 	<!--日志输出编码格式化-->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} [%thread] %-5level %X{log_type} %logger{36} %line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!--如果只是想要 Info 级别的日志，只是过滤 info 还是会输出 Error 日志，因为 Error 的级别高，
+            所以我们使用下面的策略，可以避免输出 Error 的日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!--过滤 Error-->
+            <level>ERROR</level>
+            <!--匹配到就禁止-->
+            <onMatch>DENY</onMatch>
+            <!--没有匹配到就允许-->
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+
+
+        <!--日志名称，如果没有File 属性，那么只会使用FileNamePattern的文件路径规则
+            如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
+            的日志改名为今天的日期。即，<File> 的日志都是当天的。
+        -->
+        <File>${logback.logdir}/info.${logback.appName}.log</File>
+        <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
+            <FileNamePattern>${logback.logdir}/info.${logback.appName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--只保留最近90天的日志-->
+            <maxHistory>7</maxHistory>
+            <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
+            <!--<totalSizeCap>1GB</totalSizeCap>-->
+        </rollingPolicy>
+
+
+ 		<!--日志输出编码格式化-->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} [%thread] %-5level %X{log_type} %logger{36} %line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!--如果只是想要 Error 级别的日志，那么需要过滤一下，默认是 info 级别的，ThresholdFilter-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>Error</level>
+        </filter>
+
+        <!--日志名称，如果没有File 属性，那么只会使用FileNamePattern的文件路径规则
+            如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
+            的日志改名为今天的日期。即，<File> 的日志都是当天的。
+        -->
+        <File>${logback.logdir}/error.${logback.appName}.log</File>
+        <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
+            <FileNamePattern>${logback.logdir}/error.${logback.appName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--只保留最近7天的日志-->
+            <maxHistory>7</maxHistory>
+            <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
+            <!--<totalSizeCap>1GB</totalSizeCap>-->
+        </rollingPolicy>
+        <!--日志输出编码格式化-->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} - [Thread:%thread] - [level: %-5level] - [%class : %method : %line] - %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+
+	<!-- 默认的控制台日志输出，一般生产环境都是后台启动，这个没太大作用 -->
+ 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">       
+        <encoder charset="UTF-8"> <!-- encoder 可以指定字符集，对于中文输出有意义 -->
+            <pattern>%highlight(%d{yyyy-MM-dd HH:mm:ss.SSSS}) - [Thread:%thread] - [level: %yellow(%-5level)] - [%highlight(%class : %method : %line)] - %msg %n</pattern>
+        </encoder>
+    </appender>
+     
+    <!--指定最基础的日志输出级别-->
+    <root level="INFO">
+        <!--appender将会添加到这个loger-->
+        <appender-ref ref="fileInfoLog"/>
+        <appender-ref ref="fileErrorLog"/>
+        <!--<appender-ref ref="custom"/>-->
+
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
+
+	--------------------
+	··实际上我们不希望我的业务日志中会包括这些启动信息。所以这个时候我们就需要通过logger标签来搞事情：让root指向控制台输出；logger负责打印包com.glmapper.spring.boot.controller下的日志。
+
+	<logger name="com.glmapper.spring.boot.controller" level="${logging.level}"
+	        additivity="false">
+	    <appender-ref ref="GLMAPPER-LOGGERONE" />
+	</logger>
+
+	<root level="${logging.level}">
+	    <appender-ref ref="STDOUT"/>
+	</root>
+
+
+	··logger/appender/root之间的关系：
+		···在最前面介绍中提到，root是根logger，所以他两是一回事；只不过root中不能有name和additivity属性，是有一个level。
+		···appender是一个日志打印的组件，这里组件里面定义了打印过滤的条件、打印输出方式、滚动策略、编码方式、打印格式等等。但是它仅仅是一个打印组件，如果我们不使用一个logger或者root的appender-ref指定某个具体的appender时，它就没有什么意义。
+		···因此appender让我们的应用知道怎么打、打印到哪里、打印成什么样；而logger则是告诉应用哪些可以这么打（如某个类、某个包）。
+
+
+
+------------------------
+·log4j2配置文件：
+
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+    <appenders>
+        <!--  输出控制台的配置 -->
+        <Console name="console" target="SYSTEM_OUT">
+            <!--  控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+            <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!--  这个都知道是输出日志的格式 -->
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </Console>
+
+        <!--配置自定义日志，按天输出-->
+        <RollingFile name="recommend" fileName="/recommend/recommend.log" filePattern="/recommend/recommend-%d{yyyy-MM-dd}.log" >
+            <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+            <Policies>
+                <!-- 每1天更新一次，此处查阅网上和官方示例中，都是以小时出现，我测试是以天为单位。（官方文档中说明按item类型是否是小时，但没找到在哪里设置item类型）另有其他各类型策略，请参阅官方文档 -->
+                <TimeBasedTriggeringPolicy modulate="true"
+                    interval="1"/>
+                <!-- 此处为每个文件大小策略限制，使用它一般会在文件中filePattern采用%i模式 -->
+                <!-- <SizeBasedTriggeringPolicy size="128KB" /> -->
+            </Policies>
+            <!-- 最多备份30天以内的日志，此处为策略限制，Delete中可以按自己需要用正则表达式编写 -->
+            <!-- DefaultRolloverStrategy字段中加入max=“30”经测试是配合SizeBasedTriggeringPolicy限制%i的存在数量，并没有发现是网上流传的是最多保存多少个文件的限制，也或许是我写的有问题 -->
+            <DefaultRolloverStrategy>
+                <Delete basePath="/recommend" maxDepth="1">
+                    <IfFileName glob="recommend-*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+		<!-- 把系统所有的error全部打到这个文件里  -->
+        <!--配置自定义日志，按天输出-->
+        <RollingFile name="error" fileName="/recommend/recommendError.log" filePattern="/recommend/recommendError-%d{yyyy-MM-dd}.log" >
+            <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+            <Policies>
+                <!-- 每1天更新一次，此处查阅网上和官方示例中，都是以小时出现，我测试是以天为单位。（官方文档中说明按item类型是否是小时，但没找到在哪里设置item类型）另有其他各类型策略，请参阅官方文档 -->
+                <TimeBasedTriggeringPolicy modulate="true"
+                                           interval="1"/>
+                <!-- 此处为每个文件大小策略限制，使用它一般会在文件中filePattern采用%i模式 -->
+                <!-- <SizeBasedTriggeringPolicy size="128KB" /> -->
+            </Policies>
+            <!-- 最多备份30天以内的日志，此处为策略限制，Delete中可以按自己需要用正则表达式编写 -->
+            <!-- DefaultRolloverStrategy字段中加入max=“30”经测试是配合SizeBasedTriggeringPolicy限制%i的存在数量，并没有发现是网上流传的是最多保存多少个文件的限制，也或许是我写的有问题 -->
+            <DefaultRolloverStrategy>
+                <Delete basePath="/recommend" maxDepth="1">
+                    <IfFileName glob="recommendError-*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+<!--        <File name="error" fileName="/recommend/recommendError.log">-->
+<!--            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>-->
+<!--            <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>-->
+<!--        </File>-->
+    </appenders>
+
+    <!-- 然后定义logger，只有定义了logger并引入的appender，appender才会生效 -->
+    <loggers>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <logger name="org.springframework" level="ERROR"></logger>
+        <logger name="org.mybatis" level="ERROR"></logger>
+        <logger name="org.hibernate" level="ERROR"></logger>
+
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="error" />
+        </root>
+
+        <!-- additivity="true" 的意思是会在控制台也输入一份-->
+        <logger name="recommend" level="info" additivity="true">
+            <appender-ref ref="recommend"/>
+        </logger>
+    </loggers>
+</configuration>
+
+
+

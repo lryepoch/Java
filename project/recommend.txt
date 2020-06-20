@@ -111,11 +111,11 @@ HandlerMethod它作为Spring MVC的非公开API，可能绝大多数小伙伴都
 
 
 
-·加密：
+·加密(注册用户保存到数据库的时候使用)：
 	//加密方式(MD5加密)
 	String hashAlgorithmName = "MD5";
-	String salt = "goodj";
 	//盐：为了即使相同的密码不同的盐加密后的结果也不同
+	String salt = "goodj";
 	ByteSource byteSalt = ByteSource.Util.bytes(salt);
 	//密码
 	Object source = "qwe!2345";

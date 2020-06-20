@@ -52,6 +52,28 @@ Spring系列：spring3.x与jdk1.7兼容，而spring4.x与jdk1.8兼容！！！
 											4.反射。(IOC的原理就是通过反射来创建对象)
 
 
+·BeanFactory和ApplicationContext之间的关系：
+	··BeanFactory和ApplicationContext是Spring的两大核心接口，而其中ApplicationContext是BeanFactory的子接口。它们都可以当做Spring的容器，Spring容器是生成Bean实例的工厂，并管理容器中的Bean。在基于Spring的Java EE应用中，所有的组件都被当成Bean处理，包括数据源，Hibernate的SessionFactory、事务管理器等。
+
+	··生活中我们一般会把生产产品的地方称为工厂，而在这里bean对象的地方官方取名为BeanFactory，直译Bean工厂（com.springframework.beans.factory.BeanFactory），我们一般称BeanFactory为IoC容器，而称ApplicationContext为应用上下文。
+
+	··Spring的核心是容器，而容器并不唯一，框架本身就提供了很多个容器的实现，大概分为两种类型：
+	一种是不常用的BeanFactory，这是最简单的容器，只能提供基本的DI功能；
+	一种就是继承了BeanFactory后派生而来的ApplicationContext(应用上下文)，它能提供更多企业级的服务，例如解析配置文本信息等等，这也是ApplicationContext实例对象最常见的应用场景。
+
+
+
+·spring三大装配机制：(优先性：3>2>1)
+	1.在xml中进行显示配置；
+	2.在Java中通过java注解进行显示配置；【@Configuration+@Bean】
+	3.隐式的bean发现机制和自动装配；【@Component+@ComponentScan】
+
+
+
+
+
+
+
 
 ·DI：
 
@@ -225,7 +247,7 @@ Spring系列：spring3.x与jdk1.7兼容，而spring4.x与jdk1.8兼容！！！
 
 		Spring事务管理功能，方式：编程式事务和声明式事务；
 
-			编程式事务是嵌在业务代码中的，而声明式事务是基于xml文件配置；
+			编程式事务是嵌在业务代码中的[手动commit或者rollback]，而声明式事务是基于xml文件或者注解；
 
 			声明式事务处理完全看成一个具体的AOP应用；Spring设计出发点是支持POJO的开发，这点在实现事务处理也一样；
 			声明式事务管理建立在AOP之上的。
@@ -262,7 +284,7 @@ Spring系列：spring3.x与jdk1.7兼容，而spring4.x与jdk1.8兼容！！！
 					3）事务具体运行状态：TransactionStatus；一组方法；
 		
 		
-		  详解：1) 事务管理器：用于执行具体的事务操作。
+		详解：1) 事务管理器：用于执行具体的事务操作。
 							Public interface PlatformTransactionManager{
 
 								   TransactionStatus getTransaction(TransactionDefinition definition)  throws TransactionException;
@@ -304,6 +326,40 @@ Spring系列：spring3.x与jdk1.7兼容，而spring4.x与jdk1.8兼容！！！
 								>有关SPRING的事务传播特性：https://www.nowcoder.com/test/question/done?tid=17404962&qid=14942#summary
 
 
+
+·spring事务回滚：
+
+1 Spring事务回滚机制是这样的：当所拦截的方法有指定异常抛出，事务才会自动进行回滚！
+
+  我们需要注意的地方有四点： 如果你在开发当中引入Spring进行事务管理，但是事务没能正常的自动回滚，可以对照下面四点，缺一不可！
+
+     ··被拦截方法	注解式：方法或者方法所在类被@Transactional注解；
+
+                    拦截配置式：<tx:method />应该包含对该方法，名称格式的定义， 且方法需要在expression定义的范围内；
+
+     ··异常    该方法的执行过程必须出现异常，这样事务管理器才能被触发，并对此做出处理；
+		
+     ··指定异常    默认配置下，事务只会对Error与RuntimeException及其子类这些unChecked异常，做出回滚。一般的，Exception是Checked异常不会发生回滚（如果一般Exception想回滚要做出配置）；
+	 
+	 ··异常抛出    即方法中出现的指定异常，只有在被事务管理器捕捉到以后，事务才会据此进行事务回滚；
+
+
+
+2 在实际开发中，有时并没有异常发生，但是由于事务结果未满足具体业务需求，所以我们不得不手动回滚事务！
+	··手动抛出异常（如果你没有配置一般异常事务回滚，请抛出运行时异常）；
+	··编程式实现手动回滚；
+
+
+
+
+·@Transactional失效场景：
+	··@Transactional 应用在非 public 修饰的方法上；
+	··@Transactional 注解属性 propagation 设置错误；
+	··@Transactional 注解属性 rollbackFor 设置错误；
+	··同一个类中方法调用，导致@Transactional失效；
+	··异常被你的 catch“吃了”导致@Transactional失效；
+	··数据库引擎不支持事务；
+	··在Controller层配置了事务，此时需要处理BEAN加载顺序才能实现事务；
 
 
 

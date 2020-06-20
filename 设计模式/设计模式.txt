@@ -245,7 +245,9 @@ UML四种关系：
 								private static class SingletonH{
 									private static final Singleton singleton=new Singleton();
 								}
+
 								public static final Singleton getInstance(){
+									//静态内部类调用其成员属性
 									return SingletonH.singleton;
 								}
 							}

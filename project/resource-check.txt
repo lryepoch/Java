@@ -1,37 +1,31 @@
 
-·@Valid 和 BindingResult 是一 一对应的，如果有多个@Valid，那么每个@Valid后面都需要添加BindingResult用于接收bean中的校验信息；
-
+·@Valid 和 BindingResult 是一一对应的，如果有多个@Valid，那么每个@Valid后面都需要添加BindingResult用于接收bean中的校验信息；
 	能否通过注解判断属性的数据类型？
 
 
-·【开宗明义】
-
+·实体转换器：
 	1.无论是org.springframework.beans或者org.apache.commons.beanutils，与get/set方式相比，都存在性能问题。
-
 	2.效率由高到底：get/set 》PropertyUtils 》BeanUtils。
-
 	3.PropertyUtils和BeanUtils两个工具类都是对bean之间存在属性名相同的属性进行处理，无论是源bean或者是目标bean中多出来的属性均不处理。
-
 	4.具体来说：
-
-	BeanUtils.copyProperties()可以在一定范围内进行类型转换，同时还要注意一些不能转换时候，会将默认null值转化成0;
-
-	Property.copyProperties()则是严格的类型转化，必须类型和属性名完全一致才转化。
-
-	对于null的处理：PropertyUtils支持为null的场景；BeanUtils对部分属性不支持null，具体如下：
-
-	a.  java.util.Date类型不支持,但是它的自雷java.sql.Date是被支持的。java.util.Date直接copy会报异常；
-
-	b.  Boolean，Integer，Long等不支持，会将null转化为0；
-
-	c.  String支持，转化后依然为null。
+		BeanUtils.copyProperties()可以在一定范围内进行类型转换，同时还要注意一些不能转换时候，会将默认null值转化成0;
+		Property.copyProperties()则是严格的类型转化，必须类型和属性名完全一致才转化。
+		对于null的处理：PropertyUtils支持为null的场景；BeanUtils对部分属性不支持null，具体如下：
+			a.  java.util.Date类型不支持,但是它的自雷java.sql.Date是被支持的。java.util.Date直接copy会报异常；
+			b.  Boolean，Integer，Long等不支持，会将null转化为0；
+			c.  String支持，转化后依然为null。
 
 	5.BeanUtils的高级功能org.apache.commons.beanutils.Converter接口可以自定义类型转化，也可以对部分类型数据的null值进行特殊处理，如
 	ConvertUtils.register(new DateConverter(null), java.util.Date.class)；但是PropertyUtils没有。
 
 	另外：值得注意的是，在测试过程中发现，commons-beanutils-1.8.0.jar版本中的BeanUtils类，支持Byte到Integer或int的转化。说明实际使用过程中，我们还是要多看源码，多做测试，并且注意版本号升级带来的微小变化。
 
+	BeanUtils.copyProperties(dest,orgi)实际是调用了PropertyUtils.copyProperties(dest,orgi)这个方法来实现的；
+	这个方法的效率是非常低的，通过查看源代码：发现属性之间的copy主要用到了java.beans包里面的相关类和方法；
+	对于原对象首先获取BeanInfo类型的对象，如：Introspector.getBeanInfo(a.class)，这个BeanInfo类型的实例包含了所有的Class类对象的信息。如果有父类将首先加载获取父类的信息。
+	通过BeanInfo对象，可以获得PropertyDescriptor[]的数组。通过这个数组，可以获得原对象的所有属性以及属性的值。
 
+	在BeanUtils.copyProperties()方法中，首先循环获得原对象的一个属性和属性对应的值。然后根据这个属性循环目的对象（dest）的属性。找出两个属性一致的那个属性。然后通过PropertyDescriptor对象中，获得WriteMethod的一个Method 类型对象。最好通过反射写入属性的值到目标对象对应的属性。假如：原来对象有10个属性。目标对象有10个属性。则在整个copy方法中。需要执行至少10×10比较。少于10×10次的赋值。效率将非常低下。
 
 
 
@@ -39,27 +33,21 @@
 /**  
  * 1.使用org.apache.commons.beanutils进行转换  
  */   
-class A {   
-       
-    public static Object mapToObject(Map<String, Object> map, Class<?> beanClass) throws Exception {     
+class A {
+    public static Object mapToObject(Map<String, Object> map, Class<?> beanClass) throws Exception { 
         if (map == null)   
             return null;   
-   
         Object obj = beanClass.newInstance();   
-   
         org.apache.commons.beanutils.BeanUtils.populate(obj, map);   
-   
         return obj;   
-    }     
-       
+    }
+    
     public static Map<?, ?> objectToMap(Object obj) {   
         if(obj == null)   
             return null;    
-   
         return new org.apache.commons.beanutils.BeanMap(obj);   
-    }     
-       
-}   
+    }
+}
    
 /**  
  * 2.使用Introspector进行转换  
@@ -141,8 +129,56 @@ class C {
         for (Field field : declaredFields) {     
             field.setAccessible(true);   
             map.put(field.getName(), field.get(obj));   
-        }     
-   
+        }
         return map;   
     }    
 }  
+
+
+
+·HandlerMethod：
+	HandlerMethod handlerMethod = (HandlerMethod)object;
+	Method method = handlerMethod.getMethod();
+
+	//@Administrator注解有label以及description这两个属性
+	if(method.isAnnotationPresent(Administrator.class)){
+		Administrator administrator = method.getAnnotation(Administrator.class);
+		String label = administrator.label();
+		//获取token
+		String email = JWT.decode(token).getAudience().get(0);
+		//查库
+		if(authenticationIntercepotor.managerMapper.selectByLabel(label).getRc().contains(email)){
+			throw new SystemException(ResultEnum.ERR.getCode(), "对不起！您无权操作。");
+		}
+	}
+
+
+
+
+
+
+·手动回滚：@Transactional(rollbackFor = { Exception.class })
+
+在默认不写@Transactional(rollbackFor = Exception.class)，默认回滚RuntimeException
+
+自动回滚：int x = 1/0;或其他异常
+
+
+
+
+
+
+
+
+·mybatis支持的映射方式：
+
+@Select：
+1. 在SQL语句中手动指定别名来匹配；
+2. 使用mybatis的自动下划线驼峰转换；
+3. 使用ResultMap；
+
+
+
+
+
+·JWT:
