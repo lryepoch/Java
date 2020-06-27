@@ -1,7 +1,10 @@
 
-·使用Java 8时，首先做的就是使用lambda表达式替换匿名类；用() -> {}代码块替代了整个匿名类。
+匿名类与lambda表达式：
+---------------------
+·使用Java 8时，首先做的就是使用lambda表达式替换匿名类；用() -> {}代码块代替了整个匿名类。
 
 ·与匿名类概念相比较，Lambda其实就是匿名方法，这是一种把方法作为参数进行传递的编程思想。引入Lambda表达式，会使得代码更加紧凑，而不是各种接口和匿名类到处飞。
+
 
 ·局限性：
 	1.可读性差，与啰嗦的但清晰的匿名类代码结构比较起来，Lambda表达式一旦变得比较长，就难以理解
@@ -28,7 +31,7 @@
 								任务之间是否是独立的？是否会引起任何竞态条件？  
 								结果是否取决于任务的调用顺序？
 
-	··使用stream().forEach(),就是单纯的串行遍历循环和使用for循环得到的效果一样,只是这种方式可以使代码更精简;
+	··使用stream().forEach()就是单纯的串行遍历循环，这跟使用for循环得到的效果一样，只是这种方式可以使代码更精简；
 		stream().forEach(System.out::println)遍历输出。
 
 	··使用parallelStream().forEach()，是并行遍历循环，相当于是使用了多线程处理，这样可以在一定程度上提高执行效率.而程序在运行过程中具体会使用多少个线程进行处理,系统会根据运行服务器的资源占用情况自动进行分配。
@@ -46,7 +49,7 @@
 
 
 
-
+lambda：
 -------------------------
 ·是什么：
 	··箭头函数、匿名函数、闭包
@@ -72,6 +75,7 @@
 	··静态引用：将参数默认传给调用的方法
 	··实例方法引用：通过创建对象调用实例方法
 	··构造方法引用：绑定函数式接口
+
 
 ·stream api
 	··聚合操作：
@@ -113,3 +117,42 @@
 
 		分类：非短路操作：当前的stream对象必须处理完集合中所有数据，才能得到处理结果。forEach/forEachOrdered/toArray/reduce/collect/min/max/count/iterator
 			  短路操作：当前的stream对象在处理过程中，一旦满足某个条件，就可以得到结果。anyMatch/allMatch/noneMatch/findFirst/findAny等
+
+
+
+
+Optional：
+----------------------
+·背景：解决NullPointerException（NPE）；
+
+·创建 Optional 对象：
+	··使用静态方法 empty() 创建一个空的 Optional 对象；
+	··使用静态方法 of() 创建一个非空的 Optional 对象；
+	··使用静态方法 ofNullable() 创建一个即可空又可非空的 Optional 对象：
+	ofNullable()方法内部有一个三元表达式，如果为参数为null，则返回私有常量EMPTY；否则使用 new 关键字创建了一个新的 Optional 对象——不会再抛出 NPE 异常；
+
+·判断值是否存在:
+	··isPresent()判断一个Optional对象是否存在，如果存在，该方法返回true，否则返回 false；
+	··Java11后还可以通过方法isEmpty()判断与isPresent()相反的结果；
+
+·非空表达式：
+	··ifPresent()：使用函数式编程的方式执行一些代码
+	··Java9后还可以通过方法ifPresentOrElse(action, emptyAction)执行两种结果，非空时执行action，空时执行emptyAction。
+
+
+·设置（获取）默认值：
+	··orElse()方法用于返回包裹在 Optional对象中的值，如果该值不为null，则返回；否则返回默认值。该方法的参数类型和值的类型一致。
+	··orElseGet()方法与orElse()方法类似，但参数类型不同。如果Optional对象中的值为 null，则执行参数中的函数。
+
+	orElse在不论optional有没有值的时候都会执行，在optional为空值的情况下orElse和orElseGet都会执行，当optional不为空时，orElseGet不会执行。
+
+
+·获取值：
+	··get()方法才是最正宗的获取 Optional 对象值的方法，但很遗憾，该方法是有缺陷的，因为假如 Optional 对象的值为 null，该方法会抛出 NoSuchElementException 异常。这完全与我们使用 Optional 类的初衷相悖。
+	··建议 orElseGet() 方法获取 Optional 对象的值。
+
+·过滤值：
+	··filter()方法的参数类型为 Predicate（Java 8 新增的一个函数式接口），也就是说可以将一个 Lambda 表达式传递给该方法作为条件，如果表达式的结果为 false，则返回一个 EMPTY 的 Optional 对象，否则返回过滤后的 Optional 对象。
+
+·转换值：
+	··map()方法，该方法可以按照一定的规则将原有Optional对象转换为一个新的Optional对象，原有的Optional对象不会更改。

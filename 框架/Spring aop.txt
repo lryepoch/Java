@@ -5,13 +5,29 @@ Spring Aop：
 ·Advice(通知)： 某个连接点所采用的处理逻辑，也就是向连接点注入的代码，AOP在特定的切入点上执行的增强处理。
 
 ·AspectJ 支持 5 种类型的通知注解：@Aspect 表示声明一个切面
-	@Before，前置增强，方法执行前调用
-	@Around，环绕增强：方法正常执行前后调用
-	@AfterReturning，后置增强：方法正常退出时执行
-	@AfterThrowing，异常抛出增强：方法抛异常时执行
-	@After，final增强：不管是抛出异常或者正常退出都会执行
+	@Before，前置增强，方法执行前调用。参数可为joinPoint、注解类[需要在注解中进行绑定(…… && @annotation(注解类的对象)")]。@Before("log()")。
+	@Around，环绕增强：方法正常执行前后调用。参数可为proceedingJoinPoint、注解类[需要在注解中进行绑定(…… && @annotation(注解类的对象)")]。@Around(value="log()&&@annotation(对象)" )
+	@AfterReturning，后置增强：方法正常退出时执行。参数可为object。@AfterReturning(returning = "object", pointcut = "log()")
+	@AfterThrowing，异常抛出增强：方法抛异常时执行。@AfterThrowing(pointcut = "log()")
+	@After，final增强：不管是抛出异常或者正常退出都会执行。@After("log()")
 
 	详解：https://blog.csdn.net/u010502101/article/details/78823056
+
+	执行顺序：
+			try {
+		    // @Before 执行前通知
+
+		    // 执行目标方法
+
+		    // @Around 执行环绕通知 成功走finall，失败走catch
+			} finally {
+			    // @After 执行后置通知
+
+			    // @AfterReturning 执行返回后通知
+			} catch(e) {
+			    // @AfterThrowing 抛出异常通知
+			}
+
 
 
 ·切入点指示符：
@@ -46,17 +62,86 @@ Spring Aop：
 
 
 ·JoinPoint用法：
-	··JoinPoint对象封装了SpringAop中切面方法的信息,在切面方法中添加JoinPoint参数,就可以获取到封装了该方法信息的JoinPoint对象；
+	··JoinPoint对象封装了SpringAop中切面方法的信息，在切面方法中添加JoinPoint参数，就可以获取到封装了该方法信息的JoinPoint对象；
 
 	··常用API:
-		getSignature():目标方法名、类信息
-		getArgs():参数
-		getTarget():被代理对象
-		getThis():代理对象
+		getSignature()：获取封装了署名信息的对象,在该对象中可以获取到目标方法名,所属类的Class等信息
+		getArgs()：获取传入目标方法的参数对象
+		getTarget()：获取被代理的对象
+		getThis()：获取代理对象
 
 
-·ProceedingJoinPoint对象是JoinPoint的子接口,该对象只用在@Around的切面方法中,添加了以下两个方法：
-	Object proceed() throws Throwable //执行目标方法 
-	Object proceed(Object[] var1) throws Throwable //传入的新的参数去执行目标方法 
+	··ProceedingJoinPoint对象是JoinPoint的子接口,该对象只用在@Around的切面方法中,添加了以下两个方法：
+		Object proceed() throws Throwable //执行目标方法 
+		Object proceed(Object[] var1) throws Throwable //传入的新的参数去执行目标方法
+
+		注：执行完目标方法后再次回到注解的当前位置往下执行；
+
+		切面类中，获取request对象：ServletRequestAttributes attributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
+									HttpServletRequest request = attributes.getRequest();
 
 
+
+
+·自定义注解：
+	··定义：
+		注解是一种元数据形式。即注解是属于java的一种数据类型，和类、接口、数组、枚举类似。
+		注解用来修饰类、方法、变量、参数、包。
+		注解不会对所修饰的代码产生直接的影响。
+		注解其实就是一种标记，可以在程序代码中的关键节点（类、方法、变量、参数、包）上打上这些标记，然后程序在编译时或运行时可以检测到这些标记从而执行一些特殊操作。
+
+		语法格式：
+			1.@interface关键字定义注解。
+			2.注解可以被其它注解修饰（如果我说注解，这也太绕了），最重要的就是元注解。
+			3.注解和接口类似，内部可以定义常量和方法。
+			4.注解定义的方法有一些限制：方法不能有参数；返回值只能是基本类型、字符串、Class、枚举、注解、及以上类型的数组；可以包含默认值。
+
+			5.只能用public或默认(default)这两个访问权修饰，例如，String value()；这里把方法设为defaul默认类型；　 　
+	        6.如果只有一个参数成员，最好把参数名称设为"value"，后加小括号。例：下面的例子Name注解就只有一个参数成员。 
+
+
+
+	··基本语法：在底层实现上，所有定义的注解都会自动继承java.lang.annotation.Annotation接口。
+
+	··常用元注解：
+		@Target	用于描述注解的使用范围
+				注解类型元素，有些元素是没有默认值的，这要求我们在使用的时候必须在标记名后面打上()，并且在()内以“元素名=元素值“的形式挨个填上所有没有默认值的注解类型元素（有默认值的也可以填上重新赋值），中间用“,”号分割；
+
+				ElementType取值：
+	                1.CONSTRUCTOR:用于描述构造器
+	                2.FIELD:用于描述域
+	                3.LOCAL_VARIABLE:用于描述局部变量
+	                4.METHOD:用于描述方法
+	                5.PACKAGE:用于描述包
+	                6.PARAMETER:用于描述参数
+	                7.TYPE:用于描述类、接口(包括注解类型) 或enum声明
+
+
+		@Retention  定义了该Annotation被保留的时间长短。
+					注解的生命周期有三个阶段：
+											RetentionPolicy.SOURCE 源码中保留，编译期可以处理；
+											RetentionPolicy.CLASS Class文件中保留，Class加载时可以处理；
+											RetentionPolicy.RUNTIME 运行时保留，运行中可以处理；
+											默认RetentionPolicy.CLASS值。
+
+
+		@Documented 描述注解可以文档化，是一个标记注解。在生成javadoc的时候，是不包含注释的，但是如果注解被@Documented修饰，则生成的文档就包含该注解。
+
+		@Inherited  标记注解，使用@Inherited修饰的注解作用于一个类，则该注解将被用于该类的子类。@Inherited注解只对那些@Target被定义为ElementType.TYPE的自定义注解起作用。
+
+
+	··反射操作获取注解：
+		1.如果我们要获得的注解是配置在方法上的，那么我们要从Method对象上获取；
+		如果是配置在属性上，就需要从该属性对应的Field对象上去获取；
+		如果是配置在类型上，需要从Class对象上去获取。
+		总之在谁身上，就从谁身上去获取！
+
+		2.isAnnotationPresent(Class<? extends Annotation> annotationClass)方法是专门判断该元素上是否配置有某个指定的注解；
+
+		3.getAnnotation(Class<A> annotationClass)方法是获取该元素上指定的注解。之后再调用该注解的注解类型元素方法就可以获得配置时的值数据；
+
+		4.反射对象上还有一个方法getAnnotations()，该方法可以获得该对象身上配置的所有的注解。它会返回给我们一个注解数组，需要注意的是该数组的类型是Annotation类型，这个Annotation是一个
+		来自于java.lang.annotation包的接口。
+
+
+	··自定义注解的值：

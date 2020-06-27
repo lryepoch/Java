@@ -1,0 +1,13 @@
+
+·基本概念：
+	··mysql8.0支持窗口函数，也称分析函数
+	··使用方法：配合聚合窗口函数一起使用，例如SUM/AVG/COUNT/MAX/MIN等等
+	··关键字：over、partition by
+
+
+
+
+·常用的专用窗口函数：
+	获取数据排名的：ROW_NUMBER()、RAND()、DEBSE_RANK()、PERCENT_RANK()
+	累计分布：CUME_DIST()、NTH_VALUE()、NTILE()
+	获取分组内的第一名或者最后一名：FIRST_VALUE()、LAST_VALUE()、LEAD()、LAG()

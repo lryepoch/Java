@@ -333,43 +333,21 @@ lombok：
 
 
 
+·@PostConstruct注解：好多人以为是Spring提供的。其实是Java自己的注解。
 
-·自定义注解：
-··定义：
-	注解是一种元数据形式。即注解是属于java的一种数据类型，和类、接口、数组、枚举类似。
-	注解用来修饰，类、方法、变量、参数、包。
-	注解不会对所修饰的代码产生直接的影响。
+	··Java中该注解的说明：@PostConstruct注解被用来修饰一个非static的void()方法。被@PostConstruct修饰的方法只会被服务器执行一次。
 
-	注解其实就是一种标记，可以在程序代码中的关键节点（类、方法、变量、参数、包）上打上这些标记，然后程序在编译时或运行时可以检测到这些标记从而执行一些特殊操作。
+	··通常我们会是在Spring框架中使用到@PostConstruct注解。
+	从依赖注入的字面意思就可以知道，要将对象b注入到对象a，那么首先就必须得生成对象a和对象b，才能执行注入。所以，如果一个类A中有个成员变量b被@Autowried注解，那么@Autowired注入是发生在A的构造方法执行完之后的。
+	如果想在A生成对象时完成某些初始化操作，而偏偏这些初始化操作又依赖于依赖注入，那么就无法在构造函数中实现。
+	为此，可以使用@PostConstruct注解一个方法来完成初始化，@PostConstruct注解的方法将会在依赖注入完成后被自动调用。
 
-··基本语法：在底层实现上，所有定义的注解都会自动继承java.lang.annotation.Annotation接口。
+	··该注解的方法在整个Bean初始化中的执行顺序为：Constructor(构造方法) -> @Autowired(依赖注入) -> @PostConstruct(注释的方法)
 
-··常用元注解：
-	@Target		限定某个自定义注解能够被应用在哪些Java元素
-				注解类型元素，有些元素是没有默认值的，这要求我们在使用的时候必须在标记名后面打上()，并且在()内以“元素名=元素值“的形式挨个填上所有没有默认值的注解类型元素（有默认值的也可以填上重新赋值），中间用“,”号分割；
+	··因为当调用构造函数时，bean还没有初始化-即没有注入依赖项。在@PostConstruct方法完全初始化bean，您可以使用依赖项。
 
-	@Retention  注解的生命周期有三个阶段：1、Java源文件阶段；2、编译到class文件阶段；3、运行期阶段。
-	@Documented 被用来指定自定义注解是否能随着被定义的java文件生成到JavaDoc文档当中
-	@Inherited  指定某个自定义注解如果写在了父类的声明部分，那么子类的声明部分也能自动拥有该注解。@Inherited注解只对那些@Target被定义为ElementType.TYPE的自定义注解起作用。
+	··因为这是保证在bean生命周期中只调用一次此方法的契约。一个bean可能会在其内部工作过程中被容器多次实例化(虽然不太可能)，但它保证@PostConstruct只会被调用一次。
 
-··反射操作获取注解：
-	1.如果我们要获得的注解是配置在方法上的，那么我们要从Method对象上获取；如果是配置在属性上，就需要从该属性对应的Field对象上去获取，如果是配置在类型上，需要从Class对象上去获取。总之在谁身上，就从谁身上去获取！
-	2.isAnnotationPresent(Class<? extends Annotation> annotationClass)方法是专门判断该元素上是否配置有某个指定的注解；
-	3.getAnnotation(Class<A> annotationClass)方法是获取该元素上指定的注解。之后再调用该注解的注解类型元素方法就可以获得配置时的值数据；
-	4.反射对象上还有一个方法getAnnotations()，该方法可以获得该对象身上配置的所有的注解。它会返回给我们一个注解数组，需要注意的是该数组的类型是Annotation类型，这个Annotation是一个
-		来自于java.lang.annotation包的接口。
+	··PostConstruct注释用于在执行任何初始化时执行依赖注入后需要执行的方法。必须在类投入服务之前调用此方法。所有支持依赖注入的类都必须支持此注释。
 
-
-
-
-
-
-
-
-
-·@PostConstruct注解好多人以为是Spring提供的。其实是Java自己的注解。
-
-Java中该注解的说明：@PostConstruct该注解被用来修饰一个非静态的void()方法。在项目中主要是在Servlet初始化之前加载一些缓存数据等。
-					PostConstruct在构造函数之后执行，init()方法之前执行。
-
-通常我们会是在Spring框架中使用到@PostConstruct，该注解的方法在整个Bean初始化中的执行顺序为：Constructor(构造方法) -> @Autowired(依赖注入) -> @PostConstruct(注释的方法)
+	但是需要注意：子类实例化过程中会调用父类中的@PostConstruct方法！
