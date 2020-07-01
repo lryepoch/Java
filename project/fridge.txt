@@ -20,8 +20,8 @@ PropertyUtils.copyProperties();
 -------------------------
 
 ·实体类之间的转换：
-	··新建一个工具类用于转换；
-	··在新建类中初始化构造方法；
+	··新建一个工具类用于转换；（BeanUtils.copyProperties(obj1,obj2)&&PropertyUtils.copyProperties(obj1,obj2)）
+	··在新建类中初始化构造方法；（实体之间的转换，集合之间的转换依赖于实体之间的转换）
 
 
 
@@ -101,4 +101,4 @@ PropertyUtils.copyProperties();
 ·fridge权限设计：
 	1.设计好数据库的request_url，包括页面和操作；
 	2.用户单点登录时，找出当前用户可以访问的全部url，更新进权限校验拦截器中；
-	3.当前用户请求相应路径时，判断路径中是否包含其拥有权限的url，如果有，则返回true，拦截通过。
+	3.当前用户请求某个路径时，判断权限校验拦截器中是否包含当前请求的url，如果有，则返回true，拦截通过。

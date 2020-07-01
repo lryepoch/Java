@@ -114,3 +114,33 @@ Map getSsoUserInfo(String url){
 Map getSsoOut(String url){
 	httpGet(String url)
 }
+
+
+
+
+
+
+
+
+
+----------------------
+·概念：多个应用系统中，只需要登录一次，就可以访问其他相互信任的应用系统；
+
+·登录认证机制：
+
+
+·同域下的单点登录：
+	··Cookie：将Cookie的域设置为顶域，这样所有的子域的系统都可以访问到顶域的Cookie。在设置Cookie时，只能设置顶域和自己的域，不能设置其他的域。
+	··Session：共享Session，如：Spring-Session；
+
+
+·不同域下的单点登录：
+	··Cookie：不同域之间的Cookie是不共享的。
+	··具体流程：
+	1.用户访问app系统，app系统是需要登录的，但用户现在没有登录；
+	2.跳转到CAS server，即SSO登录系统，以后图中的CAS Server我们统一叫做SSO系统，SSO系统也没有登录，弹出用户登录页；
+	3.用户填写用户名、密码，SSO系统进行认证后，将登录状态写入SSO的session，浏览器中写入SSO域下的Cookie；
+	4.SSO系统登录完成后会生成一个ST(Service Ticket)，然后跳转到app系统，同时将ST作为参数传递给app系统；
+	5.app系统拿到ST后，从后台向SSO发送请求，验证ST是否有效；
+	6.验证通过后，app系统将登录状态写入session并设置app域下的Cookie；
+	7.至此，跨域单点登录就完成了，当我们再访问app系统时，app就是登录的。

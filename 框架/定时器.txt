@@ -1,0 +1,26 @@
+
+Quartz
+------------------------
+调度器：Scheduler
+任务：JobDetail
+触发器：Trigger，包括SimpleTrigger和CronTrigger。触发器Trigger最基本的功能是指定Job的执行时间，执行间隔，运行次数等。
+
+
+·几个重要参数：
+	··Job和JobDetail：
+		Job是Quartz中的一个接口，接口下只有execute方法，在这个方法中编写业务逻辑。 
+		JobDetail用来绑定Job，为Job实例提供许多属性：name，group，jobClass，jobDataMap
+
+	··JobExecutionContext：
+		JobExecutionContext中包含了Quartz运行时的环境以及Job本身的详细数据信息。 
+
+	··JobDataMap：
+		JobDataMap实现了JDK的Map接口，可以以Key-Value的形式存储数据。 
+
+	··Trigger、SimpleTrigger、CronTrigger：
+		new Trigger().startAt():表示触发器首次被触发的时间;
+		new Trigger().endAt():表示触发器结束触发的时间;
+
+		SimpleTrigger可以实现在一个指定时间段内执行一次作业任务或一个时间段内多次执行作业任务。 
+		CronTrigger功能非常强大，是基于日历的作业调度，而SimpleTrigger是精准指定间隔，所以相比SimpleTrigger，CroTrigger更加常用。CroTrigger是基于Cron表达式的，先了解下Cron表达式： 
+			由7个子表达式组成字符串的，格式如下：[秒] [分] [小时] [日] [月] [周] [年]

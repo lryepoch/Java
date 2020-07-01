@@ -1,13 +1,42 @@
 
 ·基本概念：
-	··mysql8.0支持窗口函数，也称分析函数
-	··使用方法：配合聚合窗口函数一起使用，例如SUM/AVG/COUNT/MAX/MIN等等
-	··关键字：over、partition by
+	··mysql8.0支持窗口函数，也称分析函数；
 
+	··使用方法：配合聚合/窗口函数一起使用，例如SUM/AVG/COUNT/MAX/MIN等等；
+				count() over(partition by ... order by ...)：求分组后的总数。
+			　　max() over(partition by ... order by ...)：求分组后的最大值。
+			　　min() over(partition by ... order by ...)：求分组后的最小值。
+			　　avg() over(partition by ... order by ...)：求分组后的平均值。
+			　　lag() over(partition by ... order by ...)：取出前n行数据。　　
+
+			　　lead() over(partition by ... order by ...)：取出后n行数据。
+			　　ratio_to_report() over(partition by ... order by ...)：Ratio_to_report() 括号中就是分子，over() 括号中就是分母。
+			　　percent_rank() over(partition by ... order by ...)。
+
+	··关键字：over、partition by；
+
+	··WINDOW子句：
+				PRECEDING：往前
+				FOLLOWING：往后
+				CURRENT ROW：当前行
+				UNBOUNDED：起点，UNBOUNDED PRECEDING 表示从前面的起点， UNBOUNDED FOLLOWING：表示到后面的终点
 
 
 
 ·常用的专用窗口函数：
-	获取数据排名的：ROW_NUMBER()、RAND()、DEBSE_RANK()、PERCENT_RANK()
+	获取数据排名的：ROW_NUMBER()、RAND()、DENSE_RANK()、PERCENT_RANK()
 	累计分布：CUME_DIST()、NTH_VALUE()、NTILE()
 	获取分组内的第一名或者最后一名：FIRST_VALUE()、LAST_VALUE()、LEAD()、LAG()
+
+
+
+·分组函数partition by的详解，与order by区别：
+	··partition by关键字是分析性函数的一部分，它和聚合函数（如group by）不同的地方在于它能返回一个分组中的多条记录，而聚合函数一般只有一条反映统计值的记录，
+		partition by用于给结果集分组，如果没有指定那么它把整个结果集作为一个分组。
+
+	··partition by与group by不同之处在于前者返回的是分组里的每一条数据，并且可以对分组数据进行排序操作。后者只能返回聚合之后的组的数据统计值的记录。
+
+	··在执行顺序上，以下是常用sql关键字的优先级：from > where > group by > having > order by；
+		而partition by应用在以上关键字之后，实际上就是在执行完select之后，在所得结果集之上进行partition。
+
+	·· partition by相比较于group by，能够在保留全部数据的基础上，只对其中某些字段做分组排序（类似excel中的操作），而group by则只保留参与分组的字段和聚合函数的结果（类似excel中的pivot）。
