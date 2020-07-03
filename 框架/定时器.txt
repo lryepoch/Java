@@ -1,10 +1,12 @@
 
-Quartz
+Quartz框架：
 ------------------------
 调度器：Scheduler
 任务：JobDetail
 触发器：Trigger，包括SimpleTrigger和CronTrigger。触发器Trigger最基本的功能是指定Job的执行时间，执行间隔，运行次数等。
 
+
+·这是一个功能比较强大的的调度器，可以让你的程序在指定时间执行，也可以按照某一个频度执行，配置起来稍显复杂。
 
 ·几个重要参数：
 	··Job和JobDetail：
@@ -24,3 +26,55 @@ Quartz
 		SimpleTrigger可以实现在一个指定时间段内执行一次作业任务或一个时间段内多次执行作业任务。 
 		CronTrigger功能非常强大，是基于日历的作业调度，而SimpleTrigger是精准指定间隔，所以相比SimpleTrigger，CroTrigger更加常用。CroTrigger是基于Cron表达式的，先了解下Cron表达式： 
 			由7个子表达式组成字符串的，格式如下：[秒] [分] [小时] [日] [月] [周] [年]
+
+
+
+
+
+
+定时器：
+----------------------
+·Timer：这是早期的实现，并不是一个好的设计；
+	··实现任务调度的核心是Timer和TimerTask；
+	··Timer负责设定TimerTask的起始与间隔执行时间；
+	··使用者只需要创建一个TimerTask的继承类，实现自己的run方法，然后将其丢给Timer去执行即可。
+
+	// 运行一个一秒后执行的定时任务
+	Timer timer = new Timer();
+	timer.schedule(new TimerTask() {
+	    @Override
+	    public void run() {
+	        // do sth
+	    }
+	}, 1000);
+
+	缺点：
+		Timer只能被单线程调度；
+		TimerTask中出现的异常会影响到Timer的执行。
+		使用这种方式可以让你的程序按照某一个频度执行，但不能在指定时间运行。一般用的较少。
+
+
+
+·ScheduledExecutorService：
+	// 运行一个一秒后执行的定时任务
+	ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
+	service.scheduleA(new Runnable() {
+	    @Override
+	    public void run() {
+	        //do sth
+	    }
+	}, 1, TimeUnit.SECONDS);
+
+	相比Timer，ScheduledExecutorService解决了同一个定时器调度多个任务的阻塞问题，并且任务异常不会中断ScheduledExecutorService。
+	是基于线程池设计的定时任务类,每个调度任务都会分配到线程池中的一个线程去执行,也就是说,任务是并发执行,互不影响。
+
+
+·HashedWheelTimer：
+
+
+
+·Spring Task：Spring3.0以后自带的task，可以将它看成一个轻量级的Quartz，而且使用起来比Quartz简单许多。
+				@Component+@Scheduled()，主类上使用@EnableScheduling注解。
+
+
+·Quartz：这是一个功能比较强大的的调度器，可以让你的程序在指定时间执行，也可以按照某一个频度执行，配置起来稍显复杂。
