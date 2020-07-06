@@ -73,8 +73,45 @@ Quartz框架：
 
 
 
-·Spring Task：Spring3.0以后自带的task，可以将它看成一个轻量级的Quartz，而且使用起来比Quartz简单许多。
+·Spring Task：
+	··Spring3.0以后自带的task，可以将它看成一个轻量级的Quartz，而且使用起来比Quartz简单许多。
 				@Component+@Scheduled()，主类上使用@EnableScheduling注解。
+				以上是在同一个线程中串行执行的，如果只有一个定时任务，这样做肯定没问题，当定时任务增多，如果一个任务卡死，会导致其他任务也无法执行。
+
+	··使用注解多线程执行：
+		@Configuration  //一个配置类
+		@EnableAsync // 开启异步事件的支持( 在定时任务的类或者方法上添加@Async)
+		public class AsyncConfig {
+
+		    @Value("${schedule.core.pool.size}")
+		    private int corePoolSize;
+
+		    @Value("${schedule.max.pool.size}")
+		    private int maxPoolSize;
+
+		    @Value("${scheudle.queue.capacity}")
+		    private int queueCapacity;
+
+		    @Bean
+		    public Executor taskExecutor() {
+		        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		        executor.setCorePoolSize(corePoolSize);
+		        executor.setMaxPoolSize(maxPoolSize);
+		        executor.setQueueCapacity(queueCapacity);
+		        executor.initialize();
+		        return executor;
+		    }
+		}
+
+		然后在定时任务的类或者方法上添加@Async 。最后重启项目，每一个任务都是在不同的线程中。
+
+
+	··基于接口SchedulingConfigurer的动态定时任务：
+
+
+
+
+
 
 
 ·Quartz：这是一个功能比较强大的的调度器，可以让你的程序在指定时间执行，也可以按照某一个频度执行，配置起来稍显复杂。

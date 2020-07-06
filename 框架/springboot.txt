@@ -108,8 +108,12 @@
 		··自定义异常：继承Exception/RuntimeException；定义成员code/message；构造方法；
 						系统中需要手动throw new Exception(…);
 
-		··controller层处理异常，service层中使用spring事务，处理异常之后需要再次抛出。如果service处理了异常，那么事务就不会回滚。
+		··controller层处理异常，service层中使用spring事务，处理异常之后需要再次抛出。如果service处理了(catch)异常，那么事务就不会回滚。
 
+
+	服务层返回错误信息，大体分为两类：
+									1.ResultModel(code,message)，使用if、else判断。
+									2.抛出自定义exception，异常控制逻辑。
 
 
 

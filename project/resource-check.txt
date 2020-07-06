@@ -136,6 +136,8 @@ class C {
 
 
 
+
+
 ·HandlerMethod：
 	HandlerMethod handlerMethod = (HandlerMethod)object;
 	Method method = handlerMethod.getMethod();
@@ -157,25 +159,25 @@ class C {
 
 
 
-·手动回滚：@Transactional(rollbackFor = { Exception.class })
+·关于事务回滚：
+	··不回滚：当发生异常后，使用了catch捕获了且没有手动回滚。
+	··回滚：
+			1.@Transactional(rollbackFor = { Exception.class })。在默认不写@Transactional(rollbackFor = Exception.class)，默认回滚RuntimeException ；
+			
+			2.方法抛异常；
 
-在默认不写@Transactional(rollbackFor = Exception.class)，默认回滚RuntimeException
-
-自动回滚：int x = 1/0;或其他异常
-
-
-
+			3.try catch捕获异常，手动回滚。这种方法相比于不回滚的那种写法，只是在catch作用域内多加入了一行代码：
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
 
 
 
 
 ·mybatis支持的映射方式：
-
-@Select：
-1. 在SQL语句中手动指定别名来匹配；
-2. 使用mybatis的自动下划线驼峰转换；
-3. 使用ResultMap；
+	@Select：
+	1. 在SQL语句中手动指定别名来匹配；
+	2. 使用mybatis的自动下划线驼峰转换；
+	3. 使用ResultMap；
 
 
 
@@ -206,7 +208,7 @@ class C {
 
 	eg：生成token：String token = JWT.create().withAudience(email).sign(Algorithm.HMAC256(EncryptHelper.encryptData(password)));
 		存入redis：redisTemplate.opsForHash().put("tokens", name, token);
-		
+
 		获取email：String email = JWT.decode(request.getHeader("token")).getAudience().get(0); 
 
 
