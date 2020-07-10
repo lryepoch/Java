@@ -26,7 +26,8 @@
 		
 
 
-·日志输出级别 ：TRACE < DEBUG < INFO < WARN < ERROR < FATAL
+·日志输出级别（6级） ：TRACE < DEBUG < INFO < WARN < ERROR < FATAL
+                        日志输出级别范围可控制， 如代码所示，只输出高于DEBUG级别的，那么TRACE级别的日志自动不输出
 
 
 
@@ -49,6 +50,37 @@
 ·常见日志框架：
 	日志门面：JCL/SLF4J/jboss-logging
 	日志实现：log4j/log4j2/logback/JUL
+
+
+
+
+
+---------------------------
+·log4j.properties配置文件
+
+#设置日志输出的等级为debug,低于debug就不会输出了
+#设置日志输出到两种地方，分别叫做 stdout和 R
+log4j.rootLogger=debug, stdout, R
+
+#第一个地方stdout, 输出到控制台
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
+
+
+#第二个地方R, 以滚动的方式输出到文件，文件名是example.log,文件最大100k, 最多滚动5个文件
+log4j.appender.R=org.apache.log4j.RollingFileAppender
+log4j.appender.R.File=example.log
+log4j.appender.R.MaxFileSize=100KB
+log4j.appender.R.MaxBackupIndex=5
+
+log4j.appender.R.layout=org.apache.log4j.PatternLayout
+log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
+
+
+
+
 
 
 
@@ -82,6 +114,7 @@
             的日志改名为今天的日期。即，<File> 的日志都是当天的。
         -->
         <File>${logback.logdir}/coustom-info.${logback.appName}.log</File>
+
         <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
@@ -119,11 +152,12 @@
             的日志改名为今天的日期。即，<File> 的日志都是当天的。
         -->
         <File>${logback.logdir}/info.${logback.appName}.log</File>
+
         <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
             <FileNamePattern>${logback.logdir}/info.${logback.appName}.%d{yyyy-MM-dd}.log</FileNamePattern>
-            <!--只保留最近90天的日志-->
+            <!--只保留最近7天的日志-->
             <maxHistory>7</maxHistory>
             <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
             <!--<totalSizeCap>1GB</totalSizeCap>-->
@@ -150,6 +184,7 @@
             的日志改名为今天的日期。即，<File> 的日志都是当天的。
         -->
         <File>${logback.logdir}/error.${logback.appName}.log</File>
+
         <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
@@ -159,6 +194,7 @@
             <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
             <!--<totalSizeCap>1GB</totalSizeCap>-->
         </rollingPolicy>
+
         <!--日志输出编码格式化-->
         <encoder>
             <charset>UTF-8</charset>
@@ -198,8 +234,8 @@
 	</root>
 
 
-	··logger/appender/root之间的关系：
-		···在最前面介绍中提到，root是根logger，所以他两是一回事；只不过root中不能有name和additivity属性，是有一个level。
+	··root/logger/appender之间的关系：
+		···在最前面介绍中提到，root是根logger，所以他俩是一回事；只不过root中不能有name和additivity属性，是有一个level。
 		···appender是一个日志打印的组件，这里组件里面定义了打印过滤的条件、打印输出方式、滚动策略、编码方式、打印格式等等。但是它仅仅是一个打印组件，如果我们不使用一个logger或者root的appender-ref指定某个具体的appender时，它就没有什么意义。
 		···因此appender让我们的应用知道怎么打、打印到哪里、打印成什么样；而logger则是告诉应用哪些可以这么打（如某个类、某个包）。
 
@@ -264,10 +300,12 @@
             </DefaultRolloverStrategy>
         </RollingFile>
 
+
 <!--        <File name="error" fileName="/recommend/recommendError.log">-->
 <!--            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>-->
 <!--            <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>-->
 <!--        </File>-->
+
     </appenders>
 
     <!-- 然后定义logger，只有定义了logger并引入的appender，appender才会生效 -->

@@ -19,7 +19,7 @@
 		4、通过修改application.properties，修改访问的端口号和上下文路径；
 
 	··视图：
-		1.Springboot的默认视图支持是Thymeleaf。也可支持jsp。thymeleaf跟JSP一样，就是运行之后，就得到纯HTML了。 
+		1.Springboot的默认视图支持是thymeleaf。也可支持jsp。thymeleaf跟jsp一样，就是运行之后，就得到纯HTML了。 
 		
 		2.区别在于不运行之前，thymeleaf也是纯html。所以thymeleaf不需要 服务端的支持，就能够被以html的方式打开，这样就方便前端人员独立设计与调试。
 		 jsp就不行了，不启动服务器jsp都没法运行出结果来。
