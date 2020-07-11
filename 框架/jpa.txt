@@ -5,14 +5,63 @@
 	findBy...，readBy...， queryBy...，getBy...，注意： ... 代表属性名称。
 
 
-·有些时候spring data jpa提供的查询条件满足不了业务需求的时候，可以使用自定义的sql来进行查询。想要使用自定义sql需要使用@Query注解：
+·配置文件中，ddl-auto 解释：
+			create : 每次运行程序时，都会重新创建表，故而数据会丢失。
+			create-drop：每次运行程序时会先创建表结构，然后待程序结束时清空表。
+			upadte：每次运行程序，没有表时会创建表，如果对象发生改变会更新表结构，原有数据不会清空，只会更新（推荐使用）。
+			validate：运行程序会校验数据与数据库的字段类型是否相同，字段不同会报错。
+			none: 禁用DDL处理。
+
+
+·Repository 的子接口:
+	基础的 Repository提供了最基本的数据访问功能，其几个子接口则扩展了一些功能。它们的继承关系如下：
+
+	Repository：仅仅是一个标识，表明任何继承它的均为仓库接口类.
+	CrudRepository：继承Repository，实现了一组CRUD相关的方法.
+	PagingAndSortingRepository： 继承 CrudRepository，实现了一组分页排序相关的方法.
+	JpaRepository：继承PagingAndSortingRepository，实现一组JPA规范相关的方法.
+
+	自定义的 XxxxRepository 需要继承 JpaRepository，这样的XxxxRepository接口就具备了通用的数据访问控制层的能力.
+	JpaSpecificationExecutor：不属于Repository体系，实现一组JPACriteria 查询相关的方法.
+
+
+
+·自定义sql语句：
+
+	有些时候spring data jpa提供的查询条件满足不了业务需求的时候，可以使用自定义的sql来进行查询。想要使用自定义sql需要使用@Query注解：
+
 	@Query(value="", nativeQuery = true)：
-	··nativeQuery = true时，是可以执行原生sql语句，所谓原生sql，也就是说这段sql拷贝到数据库中，然后把参数值给一下就能运行了；【本地SQL】
+	··nativeQuery = true时（默认为false），是可以执行原生sql语句，所谓原生sql，也就是说这段sql拷贝到数据库中，然后把参数值给一下就能运行了；【本地SQL】
 	··没有nativeQuery = true时，就不是原生sql，而其中的select * from xxx中xxx也不是数据库对应的真正的表名，而是对应的实体名，并且sql中的字段名也不是数据库中真正的字段名，而是实体的字段名。【JPA语法规范的SQL】
 
 	··在SQL上使用占位符的两种方式，第一种是使用":"后加变量的名称，第二种是使用"?"后加方法参数的位置。如果使用":"的话，需要使用@Param注解来指定变量名；如果使用"?"就需要注意参数的位置。
 	··使用JPA语句中SQL语句中直接用实体类代表表名，因为在实体类中使用了@Table注解，将该实体类和表进行了关联。
 
 
-·当自定义sql涉及到删除/修改，插入操作的时候需要加上@Modifying注解。注明当前方法是修改操作。
+·当自定义sql涉及到删除/修改/插入操作的时候需要加上@Modifying注解。注明当前方法是修改操作。
+
+
+·注解：
+	@EntityListeners(AuditingEntityListener.class)			#用于捕获监听信息，当Entity发生持久化和更新操作时
+
+	@ManyToOne		#多对一。由于 @OneToOne（一对一）、@OneToMany（一对多）、@ManyToOne（多对一）、@ManyToMany（多对多）等注解只能确定实体之间几对几的关联关系，它们并不能指定与实体相对应的数据库表中的关联字段，因此，需要与 @JoinColumn 注解来配合使用。
+
+	@JoinColumn(name="role_id")		#用来指定与所操作实体或实体集合相关联的数据库表中的列字段
+
+
+	@MappedSuperclass的用法：
+	1.标注为@MappedSuperclass的类将不是一个完整的实体类，他将不会映射到数据库表，但是他的属性都将映射到其子类的数据库字段中。
+	2.标注为@MappedSuperclass的类不能再标注@Entity或@Table注解，也无需实现序列化接口。
+
+	@GeneratedValue(strategy=GenerationType.IDENTITY)		#主键生成策略
+	–IDENTITY：采用数据库ID自增长的方式来自增主键字段，Oracle 不支持这种方式； 
+	–AUTO： JPA自动选择合适的策略，是默认选项； 
+	–SEQUENCE：通过序列产生主键，通过@SequenceGenerator 注解指定序列名，MySql不支持这种方式；
+	–TABLE：通过表产生主键，框架借由表模拟序列产生主键，使用该策略可以使应用更易于数据库移植；
+
+
+	@CreatedDate、@CreatedBy、@LastModifiedDate、@LastModifiedBy：
+	首先申明实体类，需要在类上加上注解@EntityListeners(AuditingEntityListener.class)，其次在application启动类中加上注解EnableJpaAuditing，同时在需要的字段上加上@CreatedDate、@CreatedBy、@LastModifiedDate、@LastModifiedBy等注解。
+
+	这个时候，在jpa.save方法被调用的时候，时间字段会自动设置并插入数据库，但是CreatedBy和LastModifiedBy并没有赋值，因为需要实现AuditorAware接口来返回你需要插入的值。
 
