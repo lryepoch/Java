@@ -104,63 +104,91 @@ MyBatis：
 	MyBatis所提供的(org.apache.ibatis.annotations.Param)，作为Dao层的注解，作用是用于传递参数，从而可以与SQL中的的字段名相对应，一般在2=<参数个数<=5时使用最佳。
 
 
+·@MapperScan(value = "org.springframework.orm.mapper", sqlSessionFactoryRef = "sqlSessionFactoryBean")
+			value：指定mapper接口类包路径
+			sqlSessionFactoryRef：指定SqlSessionFactoryBean对象名
+
+
+·在SpringBoot中集成MyBatis，可以在mapper接口上添加@Mapper注解，将mapper注入到Spring,但是如果每一给mapper都添加@mapper注解会很麻烦，这时可以使用@MapperScan注解来扫描包。
+
+	经测试发现，@MapperScan注解只会扫描包中的接口，不会扫描类，所以可以在包中写Provider类。
+	@MapperScan("com.demo.mapper")：扫描指定包中的接口
+	@MapperScan("com.demo.*.mapper")：一个*代表任意字符串，但只代表一级包,比如可以扫到com.demo.aaa.mapper,不能扫到com.demo.aaa.bbb.mapper
+	@MapperScan("com.demo.**.mapper")：两个*代表任意个包,比如可以扫到com.demo.aaa.mapper,也可以扫到com.demo.aaa.bbb.mapper
+
+
+
+
+
 
 
 Spring：
 -----------------------------
-	·修饰类：
-		@Componet注解：代表将该对象放入到IOC容器中，括号里面的名字代表该对象在IOC容器中的唯一标识名字，名字任意取。该注解写在代码第一行。
+·修饰类：
+	@Componet注解：代表将该对象放入到IOC容器中，括号里面的名字代表该对象在IOC容器中的唯一标识名字，名字任意取。该注解写在代码第一行。
 
-		@Repository：表示持久层的组件，修改Service层对象添加到IOC容器的注解方式；
-		@Service：表示业务逻辑层的组件，修改Servlet层对象添加到IOC容器的注解方式为；
-		@Controller：表示控制层的组件；
+	@Repository：表示持久层的组件，修改Service层对象添加到IOC容器的注解方式；
+	@Service：表示业务逻辑层的组件，修改Servlet层对象添加到IOC容器的注解方式为；
+	@Controller：表示控制层的组件；
 
-	·属性注入：
-		@Value：设置普通属性的值；
+·属性注入：
+	@Value：设置普通属性的值；
 
-		@Autowired：按照类型（byType）进行装配依赖对象；
-		默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。
-		如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。如下：
+	@Autowired：按照类型（byType）进行装配依赖对象；
+	默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。
+	如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。如下：
 
-		public class TestServiceImpl {
-		    @Autowired
-		    @Qualifier("userDao")
+	public class TestServiceImpl {
+	    @Autowired
+	    @Qualifier("userDao")
 
-		    }
-		-----------------------------
-		@Resource（不带括号的注解），必须要保证该类型只有一个变量，所以一般情况下我们还是优先使用@Resource(name=””)注解。
-		@Resource（name=“”）：用于将该对象依赖的属性从IOC容器中找到并注入，括号里面的name属性值必须跟@Compenent注解里填入的名字相同。
+	    }
+	-----------------------------
+	@Resource（不带括号的注解），必须要保证该类型只有一个变量，所以一般情况下我们还是优先使用@Resource(name=””)注解。
+	@Resource（name=“”）：用于将该对象依赖的属性从IOC容器中找到并注入，括号里面的name属性值必须跟@Compenent注解里填入的名字相同。
 
-		@Resource有两个重要的属性：name和type，Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。
-			如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
+	@Resource有两个重要的属性：name和type，Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。
+		如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
 
-		@Resource装配顺序：
+	@Resource装配顺序：
 
-			①如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常。
+		①如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常。
 
-			②如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常。
+		②如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常。
 
-			③如果指定了type，则从上下文中找到类似匹配的唯一bean进行装配，找不到或是找到多个，都会抛出异常。
+		③如果指定了type，则从上下文中找到类似匹配的唯一bean进行装配，找不到或是找到多个，都会抛出异常。
 
-			④如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配。
+		④如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配。
 
-			@Resource的作用相当于@Autowired，只不过@Autowired按照byType自动注入。
-		--------------------------------
+		@Resource的作用相当于@Autowired，只不过@Autowired按照byType自动注入。
+	--------------------------------
 
-	·其他注解：
-		@RequestMapping：映射一个URL到一个类或者一个特定方法上。
-		@Scope：范围注解；默认单例；多例，如@Scope（“prototype”）
+·其他注解：
+	@Scope：范围注解；默认单例；多例，如@Scope（“prototype”）
+	@Qualifier的意思是合格者，通过这个标示，表明了哪个实现类才是我们所需要的，添加@Qualifier注解，需要注意的是@Qualifier的参数名称为我们之前定义@Service注解的名称之一。
+	
 
-	·@Configuration 和 @Component 区别：
-		相同点是都是注解在类上的注解，不同点就是@Component注解的范围最广，所有类都可以注解；但是@Configuration注解一般注解在这样的类上：这个类里面有@Value注解的成员变量和@Bean注解的方法，就是一个配置类。
+·@Configuration 和 @Component 区别：
+	相同点是都是注解在类上的注解，不同点就是@Component注解的范围最广，所有类都可以注解；但是@Configuration注解一般注解在这样的类上：这个类里面有@Value注解的成员变量和@Bean注解的方法，就是一个配置类。
 
-		@Component注解是说这个类需要被组件扫描器扫描到并实例化对象到IOC容器；@Configuration注解是说这个类是一个类似XML文件的配置类，里面用bean标签标记的方法需要被实例化到IOC容器中。在springboot中取消了XML文件并大量使用@Configuration注解的类实现配置。
+	@Component注解是说这个类需要被组件扫描器扫描到并实例化对象到IOC容器；@Configuration注解是说这个类是一个类似XML文件的配置类，里面用bean标签标记的方法需要被实例化到IOC容器中。在springboot中取消了XML文件并大量使用@Configuration注解的类实现配置。
 
-		@Configuration中所有带@Bean注解的方法都会被动态代理，因此调用该方法返回的都是同一个实例；
-		从定义来看， @Configuration 注解本质上还是 @Component，因此 <context:component-scan/> 或者 @ComponentScan 都能处理@Configuration 注解的类。
+	@Configuration中所有带@Bean注解的方法都会被动态代理，因此调用该方法返回的都是同一个实例；
+	从定义来看， @Configuration 注解本质上还是 @Component，因此 <context:component-scan/> 或者 @ComponentScan 都能处理@Configuration 注解的类。
 
-		虽然Component注解也会当做配置类，但是并不会为其生成CGLIB代理Class，所以在生成Driver对象时和生成Car对象时调用car()方法执行了两次new操作，所以是不同的对象。
-		当时Configuration注解时，生成当前对象的子类Class，并对方法拦截，第二次调用car()方法时直接从BeanFactory之中获取对象，所以得到的是同一个对象。
+	虽然Component注解也会当做配置类，但是并不会为其生成CGLIB代理Class，所以在生成Driver对象时和生成Car对象时调用car()方法执行了两次new操作，所以是不同的对象。
+	当时Configuration注解时，生成当前对象的子类Class，并对方法拦截，第二次调用car()方法时直接从BeanFactory之中获取对象，所以得到的是同一个对象。
+
+·@ConfigurationProperties注解主要用来把properties配置文件转化为bean来使用的，
+	而@EnableConfigurationProperties注解的作用是@ConfigurationProperties注解生效。
+	如果只配置@ConfigurationProperties注解，在IOC容器中是获取不到properties配置文件转化的bean的。
+
+	2、创建一个类ComponentProperties，把配置文件转化为bean来使用。@ConfigurationProperties注解可以把properties文件转化为bean，然后使用@Component注解把该bean注入到IOC容器中。
+
+	3、@ComponentScan注解默认扫描启动类所在的包，该包下的类如果注入到了IOC容器中，那么在该启动类就能获取注入的bean。然后用@EnableConfigurationProperties注解使@ConfigurationProperties注解生效。因此在该启动类中就可以获取刚才application.properties配置文件转化的bean了。另外，只使用@SpringBootApplication一个注解也是可以的，因为@SpringBootApplication注解中已经包含了@ComponentScan和@EnableConfigurationProperties注解。
+
+
+
 
 
 

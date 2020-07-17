@@ -46,8 +46,9 @@
 
 
 ·springboot与redis集成：
-	··springboot配置文件中配置redis；
-	··自定义redis缓存器【redisTemplate】；
+	··导入springboot框架中redis的jar包；
+	··springboot配置文件中配置redis参数；
+	··自定义redis缓存器【redisTemplate】【@Configuration + @Bean】；
 	··使用注解；
 		---------------
 		@Cacheable：支持缓存，当被调用后将返回值缓存起来，保证下次利用同样参数执行该方法时可以直接从缓存中获取结果，而不需要再次执行该方法；
@@ -74,6 +75,22 @@
 
 		Spring Redis默认使用JDK进行序列化和反序列化，因此被缓存对象需要实现java.io.Serializable接口，否则缓存出错。
 		当被缓存对象发生改变时，可以选择更新缓存或者失效缓存，但一般而言，后者优于前者，因为执行速度更快。
+
+
+
+·SpringBoot自动帮我们在容器中生成了一个RedisTemplate和一个StringRedisTemplate。但是，这个RedisTemplate的泛型是<Object,Object>，写代码不方便，需要写好多类型转换的代码；我们需要一个泛型为<	String,Object>形式的RedisTemplate。并且，这个RedisTemplate没有设置数据存在Redis时，key及value的序列化方式。
+  	看到这个@ConditionalOnMissingBean注解后，就知道如果Spring容器中有了RedisTemplate对象了，这个自动配置的RedisTemplate不会实例化。因此我们可以直接自己写个配置类，配置RedisTemplate。
+
+
+
+
+
+
+
+
+
+
+
 
 
 

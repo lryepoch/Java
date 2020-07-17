@@ -2,11 +2,13 @@
 Spring Aop：
 
 ·在Spring中声明AspectJ切面, 只需要在IOC容器中将切面声明为Bean实例。当在Spring IOC容器中初始化AspectJ切面之后, Spring IOC容器就会为那些与AspectJ切面相匹配的Bean创建代理。 
-·Advice(通知)： 某个连接点所采用的处理逻辑，也就是向连接点注入的代码，AOP在特定的切入点上执行的增强处理。
+·Advice(通知)： 某个连接点所采用的处理逻辑，也就是向连接点注入的代码，aop在特定的切入点上执行的增强处理。
 
 ·AspectJ 支持 5 种类型的通知注解：@Aspect 表示声明一个切面
 	@Before，前置增强，方法执行前调用。参数可为joinPoint、注解类[需要在注解中进行绑定(…… && @annotation(注解类的对象)")]。@Before("log()")。
 	@Around，环绕增强：方法正常执行前后调用。参数可为proceedingJoinPoint、注解类[需要在注解中进行绑定(…… && @annotation(注解类的对象)")]。@Around(value="log()&&@annotation(对象)" )
+			简单理解，环绕通知=前置+目标方法执行+后置通知。
+
 	@AfterReturning，后置增强：方法正常退出时执行。参数可为object。@AfterReturning(returning = "object", pointcut = "log()")
 	@AfterThrowing，异常抛出增强：方法抛异常时执行。@AfterThrowing(pointcut = "log()")
 	@After，final增强：不管是抛出异常或者正常退出都会执行。@After("log()")
@@ -130,6 +132,8 @@ Spring Aop：
 		@Inherited  标记注解，使用@Inherited修饰的注解作用于一个类，则该注解将被用于该类的子类。@Inherited注解只对那些@Target被定义为ElementType.TYPE的自定义注解起作用。
 
 
+	··springMVC的HandlerMethod类：HandlerMethod封装了很多属性，在访问请求方法的时候可以方便的访问到方法、方法参数、方法上的注解、所属类等并且对方法参数封装处理，也可以方便的访问到方法参数								的注解等信息。
+	
 	··反射操作获取注解：
 		1.如果我们要获得的注解是配置在方法上的，那么我们要从Method对象上获取；Method method = ((HandlerMethod)object).getMethod();
 		如果是配置在属性上，就需要从该属性对应的Field对象上去获取；
@@ -137,6 +141,12 @@ Spring Aop：
 		总之在谁身上，就从谁身上去获取！
 
 		2.isAnnotationPresent(Class<? extends Annotation> annotationClass)：专门判断该元素上是否配置有某个指定的注解；
+			A.isAnnotationPresent(B.class)；意思就是：注释B是否在此A上。如果在则返回true；不在则返回false。
+			
+			if(A.isAnnotationPresent(B.class)){
+				B b = handlerMethod.getMethod().getAnnotation(B.class);
+				通过对象b可以获取其属性的值……
+			}
 
 		3.getAnnotation(Class<A> annotationClass)：获取该元素上指定的注解。之后再调用该注解的注解类型元素方法就可以获得配置时的值数据；
 

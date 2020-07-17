@@ -75,6 +75,19 @@ PropertyUtils.copyProperties();
 ·mybatis mapper接口传递一个集合。默认参数名为list；如果更改为其他的参数名，需要添加@Param注解。
 
 
+·@Autowired和@Resource之间的区别：
+	@Autowired注解是按类型装配依赖对象，默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它required属性为false。
+	@Resource注解和@Autowired一样，也可以标注在字段或属性的setter方法上，但它默认按名称装配。名称可以通过@Resource的name属性指定，如果没有指定name属性，当注解标注在字段上，即默认取字段的名称作为bean名称寻找依赖对象，当注解标注在属性的setter方法上，即默认取属性名作为bean名称寻找依赖对象。
+	@Resources按名字，是ＪＤＫ的，@Autowired按类型，是Ｓｐｒｉｎｇ的。
+
+
+
+·常见格式化时间的方法：
+	··SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String date = df.format(new Date());
+
+	··String date = Timestamp.valueOf(LocalDateTime.now());
+
 
 
 ·常见分页功能的实现方式：
@@ -102,3 +115,15 @@ PropertyUtils.copyProperties();
 	1.设计好数据库的request_url，包括页面和操作；
 	2.用户单点登录时，找出当前用户可以访问的全部url，更新进权限校验拦截器中；
 	3.当前用户请求某个路径时，判断权限校验拦截器中是否包含当前请求的url，如果有，则返回true，拦截通过。
+
+
+
+
+pom.xml->application.yml->entity(实体，返回的数据对象)->
+----------------------
+·自定义数据源；
+·swagger接口文档；
+·实体转换器（单个对象转换，对象集合转换）开花了：查询数据库时先查全部字段，然后再service层根据需要进行对象拷贝，最后返回即可。
+·对象拷贝
+·注解切面
+·用户跟角色关联，角色跟权限关联；
