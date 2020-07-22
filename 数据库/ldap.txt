@@ -1,0 +1,30 @@
+
+·LDAP的全称为Lightweight Directory Access Protocol(轻量级目录访问协议), 基于X.500标准, 支持 TCP/IP。
+
+LDAP目录为数据库，通过LDAP服务器(相当于DBMS)处理查询和更新, 以树状的层次结构来存储数据,相对关系型数据库, LDAP主要是优化数据读取的性能,适用于比较少改变、跨平台的信息。
+
+这套标准下，AD(Active Directory)是微软出的一套实现。
+那AD是什么呢？暂且把它理解成是个数据库。也有很多人直接把LDAP说成数据库(可以把LDAP理解成存储数据的数据库)。像是其他数据库一样，LDAP也是有client端和server端。server端是用来存放资源，client端用来操作增删改查等操作。
+
+
+
+·总结一下LDAP树形数据库如下：
+	DN：Distinguished Name 唯一标识一条记录的路径。LDAP目录树的最顶部就是根即Base DN为基准DN。指定LDAP search的起始DN,即从哪个DN下开始搜索,RDN为叶子结点本身的名字。
+	DC：Domain Component 一条记录所属区域 (哪一颗树) 
+	OU：Organization Unit 组织单元（哪一个分支）
+	CN/UID：一条记录的名字/ID (哪一个苹果名字) 
+
+
+
+·ldap编程操作：
+	LDAP树形数据库，也可以通过JDBC方式；除此之外，还可以用JNDI的方式（更推荐），因为树形可以看做是目录，树结构的枝杈相当于目录的层级。
+
+
+
+
+·总结一下LDAP：
+1、LDAP的结构用树来表示，而不是用表格。正因为这样，就不能用SQL语句了。
+2、LDAP可以很快地得到查询结果，不过在写方面，就慢得多。
+3、LDAP提供了静态数据的快速查询方式。
+4、Client/server模型，Server 用于存储数据，Client提供操作目录信息树的工具。
+5、LDAP是一种开放Internet标准，LDAP协议是跨平台的Interent协议。

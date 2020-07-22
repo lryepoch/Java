@@ -1,34 +1,34 @@
 
 【我的】
-单行注释：ctrl+/
-多行注释：ctrl+shift+/
-一键格式化代码：ctrl+alt+L
+	单行注释：ctrl+/
+	多行注释：ctrl+shift+/
+	一键格式化代码：ctrl+alt+L
 
-查找当前：ctrl+f
-替换当前：ctrl+r
-查找全局文件：shift+shift
+	查找当前：ctrl+f
+	替换当前：ctrl+r
+	查找全局文件：shift+shift
 
-生成try-catch等(surround with)：alt+shift+z
-生成构造器get/set/toString：alt+insert
+	生成try-catch等(surround with)：alt+shift+z
+	生成构造器get/set/toString：alt+insert
 
-删除一行：ctrl+d
-打开最近修改的文件：ctrl+E
-返回方法的结果类型：ctrl+alt+v
+	删除一行：ctrl+d
+	打开最近修改的文件：ctrl+E
+	返回方法的结果类型：ctrl+alt+v
 
-当前方法在项目中哪里被调用：Ctrl + Alt + H
-当前属性被哪个类定义：
+	当前方法在项目中哪里被调用：Ctrl + Alt + H
+	当前属性被哪个类定义：
 
 
 
 【常规】
-关闭文件：Shift+Click
-跑到大括号的开头与结尾：Ctrl+[ OR ]
-删除行：Ctrl+X
-复制行：Ctrl+D
-在文件中高亮显示用法：Ctrl+Shift+F7
-查找下一个：F3
-查找代码所在位置：Alt+F1
-main/System.out.println();：psvm/sout
+	关闭文件：Shift+Click
+	跑到大括号的开头与结尾：Ctrl+[ OR ]
+	删除行：Ctrl+X
+	复制行：Ctrl+D
+	在文件中高亮显示用法：Ctrl+Shift+F7
+	查找下一个：F3
+	查找代码所在位置：Alt+F1
+	main/System.out.println();：psvm/sout
 
 
 
@@ -41,15 +41,15 @@ main/System.out.println();：psvm/sout
 
 【调试】
 计算表达式：
-	  ··这个表达式不仅可以是一般变量或参数，也可以是方法，当你的一行代码中调用了几个方法时，就可以通过这种方式查看查看某个方法的返回值；
-	  ··设置变量，在计算表达式的框里，可以改变变量的值；
+	··这个表达式不仅可以是一般变量或参数，也可以是方法，当你的一行代码中调用了几个方法时，就可以通过这种方式查看查看某个方法的返回值；
+	··设置变量，在计算表达式的框里，可以改变变量的值；
 
 
 
 断点回退：drop frame
-	  在IDEA里测试无法一行一行地回退或回到到上一个断点处，而是回到上一个方法。
+	在IDEA里测试无法一行一行地回退或回到到上一个断点处，而是回到上一个方法。
 
-	  回退的方式有两种，一种是Drop Frame按钮，按调用的方法逐步回退，包括三方类库的其它方法(取消Show All Frames按钮会显示三方类库的方法)。
+	回退的方式有两种，一种是Drop Frame按钮，按调用的方法逐步回退，包括三方类库的其它方法(取消Show All Frames按钮会显示三方类库的方法)。
 　　	  第二种方式，在调用栈方法上选择要回退的方法，右键选择Drop Frame，回退到该方法的上一个方法调用处，此时再按F8(Resume Program)，可以看到程序进入到该方法的断点处了。
 
 

@@ -13,22 +13,43 @@
 	··Mapstruct：
 		MapStruct使用注解处理器生成实现类，实现类内部是原生的new对象，然后SetXxx/getXxx方式赋值进行数据拷贝的，类似lombok，看实现类的.class；
 
+	··Spring的BeanUtils：BeanUtils.copyProperties(source, target)对于null值也会直接复制；
+						/**
+					     * 配合beanutils设置对源对象中空的元素不进行复制，避免了目标对象某属性原本不为空，赋值后为空
+					     */
+					    public static String[] getNullPropertyNames (Object source) {
+					        final BeanWrapper src = new BeanWrapperImpl(source);
+					        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+					        Set<String> emptyNames = new HashSet<String>();
+					        for(java.beans.PropertyDescriptor pd : pds) {
+					            Object srcValue = src.getPropertyValue(pd.getName());
+					            if (srcValue == null) {
+					                emptyNames.add(pd.getName());
+					            }
+					        }
+					        String[] result = new String[emptyNames.size()];
+					        return emptyNames.toArray(result);
+					    }
+
 	··Apache的BeanUtils:
-		1.PropertyUtils和BeanUtils两个工具类都是对bean之间存在属性名相同的属性进行处理，无论是源bean或者是目标bean中多出来的属性均不处理。
+		1.PropertyUtils和BeanUtils两个工具类都是对bean之间存在属性名相同的属性进行处理，无论是源bean或者是目标bean中多出来的属性均不处理，需要程序员手动处理。
 		2.具体来说：
-			BeanUtils.copyProperties()可以在一定范围内进行类型转换，同时还要注意一些不能转换时候，会将默认null值转化成0;
-			Property.copyProperties()则是严格的类型转化，必须类型和属性名完全一致才转化。
-			对于null的处理：PropertyUtils支持为null的场景；BeanUtils对部分属性不支持null，具体如下：
-				a.  java.util.Date类型不支持,但是它的自类java.sql.Date是被支持的。java.util.Date直接copy会报异常；
-				b.  Boolean，Integer，Long等不支持，会将null转化为0；
-				c.  String支持，转化后依然为null。
+			BeanUtils.copyProperties(dest, orgi)提供类型转换功能，可以在一定范围内进行类型转换，同时还要注意一些不能转换时候，会将默认null值转化成0；
+			Property.copyProperties(dest, orgi)则是严格的类型转化，必须类型和属性名完全一致才转化，相较于BeanUtils速度会更快一些；
+
+			对于null的处理：PropertyUtils支持为null的场景；
+							BeanUtils对部分属性不支持null，具体如下：
+								a.  java.util.Date类型不支持,但是它的自类java.sql.Date是被支持的。java.util.Date直接copy会报异常；
+								b.  Boolean，Integer，Long等不支持，会将null转化为0；
+								c.  String支持，转化后依然为null。
 
 		3.BeanUtils的高级功能org.apache.commons.beanutils.Converter接口可以自定义类型转化，也可以对部分类型数据的null值进行特殊处理，如
 		ConvertUtils.register(new DateConverter(null), java.util.Date.class)；但是PropertyUtils没有。
 
 		另外：值得注意的是，在测试过程中发现，commons-beanutils-1.8.0.jar版本中的BeanUtils类，支持Byte到Integer或int的转化。说明实际使用过程中，我们还是要多看源码，多做测试，并且注意版本号升级带来的微小变化。
 
-		apache的BeanUtils.copyProperties(dest,orgi)实际是调用了PropertyUtils.copyProperties(dest,orgi)这个方法来实现的；
+		apache的BeanUtils.copyProperties(dest, orgi)实际是调用了PropertyUtils.copyProperties(dest,orgi)这个方法来实现的；
 		这个方法的效率是非常低的，通过查看源代码：发现属性之间的copy主要用到了java.beans包里面的相关类和方法；对于原对象首先获取BeanInfo类型的对象，如：Introspector.getBeanInfo(a.class)，这个BeanInfo类型的实例包含了所有的Class类对象的信息。如果有父类将首先加载获取父类的信息。通过BeanInfo对象，可以获得PropertyDescriptor[]的数组。通过这个数组，可以获得原对象的所有属性以及属性的值。
 
 		在BeanUtils.copyProperties()方法中，首先循环获得原对象的一个属性和属性对应的值。然后根据这个属性循环目的对象（dest）的属性。找出两个属性一致的那个属性。然后通过PropertyDescriptor对象中，获得WriteMethod的一个Method类型对象。最好通过反射写入属性的值到目标对象对应的属性。假如：原来对象有10个属性。目标对象有10个属性。则在整个copy方法中。需要执行至少10×10比较。少于10×10次的赋值。效率将非常低下。
@@ -216,7 +237,30 @@ class C {
 	@Select：
 	1. 在SQL语句中手动指定别名来匹配；
 	2. 使用mybatis的自动下划线驼峰转换；
-	3. 使用ResultMap；
+	3. 使用ResultMap（association/collection）；
+	
+		<resultMap type="自定义规则中JavaBean类型的全路径，可用别名" id="唯一id方便引用">
+		    
+		    <id column="对应数据库id" property="对应javaBean属性id"/>
+		  	
+		    <result column="对应数据库字段" property="对应的javaBean属性"/>
+
+		    <!-- 其他不指定的列会自动封装：建议只要写 resultMap 就把全部的映射规则都写上 -->
+		    <result column="age" property="age"/>
+
+     	    <association property="指定哪个属性是联合的对象" javaType="指定这个属性对象的类型[不能省略]">
+		        <id column="对应javaBean属性id" property="对应数据库id"/>
+		        <result column="对应数据库字段" property="对应的javaBean属性"/>
+    		</association>
+
+		    <collection property="集合类的属性名称" javaType="list"(集合类型) ofType="集合里面修饰的元素的类型" fetchType="lazy"(懒加载)>
+		        <!-- 定义集合中元素的封装规则 -->
+		        <id column="id" property="id"/>
+		        <result column="name" property="name"/>
+		        <result column="age" property="age"/>
+		    </collection>
+
+		</resultMap>
 
 
 
@@ -268,3 +312,35 @@ class C {
 
 
 
+·数据库操作：
+使用内连接，如果book中有需要删除的数据，而其他三张表中没有与其关联的数据，那么就不会有任何数据被删除，因为满足相等连接条件没有得到满足（因为其他三张表没有对应的内容啊，怎么可能会满足！）使用外连接，如果book表一定有数据，而关联的表有可能有数据也有可能没数据的话，我们可以通过左连接删除的方式，把两张表都删除。无论关联的表有没有数据，book表都可以删除成功。
+
+
+
+·当传入两个表的数据时，可以自定义需要传入的实体（实体属性可以为基本类型，也可以是集合类型），还可以使用JSONObject（这个较麻烦）。
+
+
+
+
+
+·BeanInfo对象有较多的方法，主要的有两个：
+	一个是getPropertyDescriptor()，返回一个PropertyDescriptor类型的数组。该类型对象包括父类Object对象的class属性。
+	另外一个是getMethodDescriptor()，返回的是一个MethodDescriptor类型的数组。这个数组中包括对应Bean中的所有方法的属性，甚至是Object类型定义的wait().notify()等方法。
+
+
+
+
+
+
+·在Mybatis分页插件的说明中有如下内容 
+
+	··不支持的情况：
+		对于关联结果查询，使用分页得不到正常的结果，因为只有把数据全部查询出来，才能得到最终的结果，对这个结果进行分页才有效。因而如果是这种情况，必然要先全部查询，在对结果处理，这样就体现不出分页的作用了。
+
+		对于关联嵌套查询，使用分页的时候，只会对主SQL进行分页查询，嵌套的查询不会被分页。
+
+	··对于不支持情况：
+		在Mybatis中没有任何简单的分页能实现该功能，即使Mybatis的内存分页也不能实现关联结果查询的分页。
+
+	··如何对关联结果进行分页？
+		针对这种情况最好的方法就是手写分页，针对主要语句进行分页，对连接的表不进行分页查询，针对主要语句写count查询（不需要管连接的表）。这样一来，对嵌套的结果就没有影响了。

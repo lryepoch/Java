@@ -1,4 +1,5 @@
 
+
 ·常用命令解释：
 
 	mvn clean 		##清除。清除target目录下以前编译生成的文件及jar包；
@@ -14,6 +15,8 @@
 	mvn install		##安装。项目代码将会经过编译[compile]、测试[test]、打包[package]并拷贝到本地依赖库，提供给其他项目引用。
 	
 	mvn deploy		##安装并发布到指定的远程仓库中
+
+
 
 
 ·新建Maven工程：
@@ -33,3 +36,10 @@
 	··父项目中，<packaging></packaging>默认是jar, 修改为pom。 这样才可以作为父项目存在。
 
 	··在项目parentMavenProject的基础上创建其子项目，首先右键点击 parentMavenProject， 然后点击 New -> Other -> Maven -Maven Module -> Next。子项目中<parent></parent>表示是引用父项目。
+
+
+
+
+
+·其他：
+	··当idea的按键打包失败时，可用代码：mvn clean package -DskipTests
