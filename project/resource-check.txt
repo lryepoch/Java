@@ -310,6 +310,8 @@ class C {
 		存入redis：redisTemplate.opsForHash().put("tokens", name, token);
 
 		获取email：String email = JWT.decode(request.getHeader("token")).getAudience().get(0); 
+		验证token：JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
+					jwtVerifier.verify(token);
 
 
 	··JWT通常有两种应用场景：

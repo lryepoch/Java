@@ -507,3 +507,49 @@ MySQL：
 
 
 ·顺序：Where/group by/order by/limit
+
+
+
+
+
+
+·授权与收权：
+
+	一：授权主要的SQL
+
+		//某个数据库所有的权限 ALL 后面+ PRIVILEGES
+		grant all privileges on 库名.* to '用户名
+		'@'%' identified by '密码';   // *代表所有表， %代表所有IP
+
+		//某个数据库 特定的权限 权限后面没有 PRIVILEGES  所有的数据库权限- *.* 
+		grant select,update,insert,delete on 库名.* to '用户名'@'%' identified by '用户密码';
+
+		//授权语法 SQL详解
+		grant -权限- on 1.库名.表名(全部*) 2.所有数据库 *.*  to '用户名'@'允许的ip(所有%)' identified by '用户密码';
+
+
+	二：其他
+
+		//权限刷新 - 每当调整权限后，通常需要执行以下语句刷新权限：
+		flush privileges;
+
+		//显示授权
+		show grants;
+
+		//移除授权
+		revoke all privileges on *.* (库名或者 '*'-表示全部) from '用户名'@'ip';
+
+		//创建用户
+		create user '用户名'@'IP地址' identified by '密码';
+
+		//删除用户，用于删除一个或多个 MySQL 账户，并撤销其原有权限
+		drop user '用户名'@'IP地址';
+
+		//修改用户
+		rename user '用户名'@'IP地址'; to '新用户名'@'IP地址';
+
+		//修改密码
+		set password for '用户名'@'IP地址' = Password('新密码');
+
+		//将BINLOG里的SQL语句提出来
+		mysqlbinlog -v --skip-gtids=true  --base64-output=DECODE-ROWS /software/mysql-bin.001928 > /ss.sql
