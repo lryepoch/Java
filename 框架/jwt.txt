@@ -1,0 +1,259 @@
+
+·JWT:
+    JWT(JSON Web Token)是一个开放标准（RFC 7519），它定义了一种紧凑且独立的方式，可以在各个系统之间用JSON作为对象安全地传输信息，并且可以保证所传输的信息不会被篡改。
+
+    ··由三部分组成: 头信息（header）, 消息体（payload）和签名（signature）；
+        ···header 包含两部分，令牌token的类型和使用的加密算法。如 {typ: "jwt", alg: "HS256"}：头部用于描述关于该JWT的最基本的信息；
+
+        ···Payload 负载就是存放有效信息的地方，有效信息被分为标准中注册的声明、公共的声明和私有的声明；
+
+        ···Signature 这一部分指将Header和Payload使用"."连接而成的字符串，通过密钥secret和加盐算法进行编码后生成的签名即一个新的字符串。
+            将这个新字符串拼接在“header.payload."之后，形成完整的JWT。
+            secret密钥保存在服务端，不会发送给任何人，所以 JWT 的传输方式是很安全的。签名的作用就是为了防止恶意篡改数据；
+
+        最后，三部分使用.连接成字符串，就是要返回给浏览器的token， 浏览器一般会将这个 token 存储在 localStorge 以备其他需要验证用户的请求使用。
+        需要注意的是，JWT的内容并不是加密的，只是简单的Base64编码。也就是说，JWT一旦泄露，里面的信息可以被轻松获取，因此不应该用JWT保存任何敏感信息。
+
+
+    ··JWT 的声明一般被采用在身份提供者和服务器提供者间传递被认证的身份信息，以便于从资源服务器获取资源。
+        JWT 的使用流程：
+                        1.首次登陆系统，向服务端发送 username&&password 进行登录。
+                        服务端验证 username&&password,验证合法为客户端生成一串 JWT，这里在 payload 中可以自定义声明 user_id,username 等字段用来保存信息。
+                        客户端收到服务端的 JWT 字符串，自行保存。后续需要请求 API 都要携带该 JWT 到服务端进行身份校验。
+                        服务端收到客户端的 API 请求，先获取 JWT 信息，通过签名判断 JWT 的合法性，如果合法，返回数据。
+
+                        2.应用程序或客户端向授权服务器请求授权。这里的授权服务器可以是单独的一个应用，也可以和API集成在同一个应用里。
+                        授权服务器向应用程序返回一个JWT。
+                        应用程序将JWT放入到请求里（通常放在HTTP的Authorization头里）
+                        服务端接收到请求后，验证JWT并执行对应逻辑。
+
+
+    ··JWT是通信双方之间以JSON对象的形式安全传递信息的方法。其实可以理解为使用非对称算法来进行前后端校验。
+
+    ··处理验证用户身份：判断接口的cookie中是否包含 userInfo 等参数信息；
+                        还可以通过另外一种方式来处理-- JWT；
+
+
+    ··第三方库处理token：sign 用于生成 token；verify 用于检验token；
+
+    ··请求api携带token的方式：位于请求头、url、第三方类库
+
+
+    eg：生成token：String token = JWT.create().withAudience(email).sign(Algorithm.HMAC256(EncryptHelper.encryptData(password)));
+        存入redis：redisTemplate.opsForHash().put("tokens", name, token);
+
+        获取email：String email = JWT.decode(request.getHeader("token")).getAudience().get(0); 
+        验证token：JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
+                    jwtVerifier.verify(token);
+
+
+    ··JWT通常有两种应用场景：
+        授权。这是最常见的JWT使用场景。一旦用户登录，每个后续请求将包含一个JWT，作为该用户访问资源的令牌。
+        信息交换。可以利用JWT在各个系统之间安全地传输信息，JWT的特性使得接收方可以验证收到的内容是否被篡改。
+
+
+
+
+
+·JWT登录验证和传统session验证的区别：
+    1.传统的session验证存在安全问题，主要是因为session是存在cookie，具体弊端引用别人说的：如果我们的页面出现了 XSS 漏洞，由于 cookie 可以被 JavaScript 读取，XSS 漏洞会导致用户 token 泄露。而作为后端识别用户的标识，cookie 的泄露意味着用户信息不再安全。尽管我们通过转义输出内容，使用 CDN 等可以尽量避免 XSS 注入，但谁也不能保证在大型的项目中不会出现这个问题。
+
+    在设置 cookie 的时候，其实你还可以设置 httpOnly 以及 secure 项。设置 httpOnly 后 cookie 将不能被JS 读取，浏览器会自动的把它加在请求的 header 当中，设置 secure 的话，cookie 就只允许通过 HTTPS传输。secure 选项可以过滤掉一些使用 HTTP 协议的 XSS 注入，但并不能完全阻止。
+
+    2.而jwt有什么特点呢?
+    ··后端将JWT字符串作为登录成功的返回结果返回给前端。前端可以将返回的结果保存在localStorage或sessionStorage上，退出登录时前端删除保存的JWT即可；
+    ··简洁(Compact)：可以通过URL, POST 参数或者在 HTTP header 发送，因为数据量小，传输速度快；
+    ··自包含(Self-contained)：负载中包含了所有用户所需要的信息，避免了多次查询数据库；
+    ··前端在每次请求时将JWT放入HTTP Header中的Authorization位。(解决XSS和XSRF问题)
+
+
+
+
+1、导入依赖
+<dependency>
+    <groupId>com.auth0</groupId>
+    <artifactId>java-jwt</artifactId>
+    <version>3.8.0</version>
+</dependency>
+
+
+2、生成Token
+有两种方式：
+
+HS256 方式
+try {
+    Algorithm algorithm = Algorithm.HMAC256("secret");
+    String token = JWT.create()
+                .withIssuer("rstyro")   //发布者
+                .withSubject("test")    //主题
+                .withAudience(audience)     //观众，相当于接受者
+                .withIssuedAt(new Date())   // 生成签名的时间
+                .withExpiresAt(DateUtils.offset(new Date(),2, Calendar.MINUTE))    // 生成签名的有效期,分钟
+                .withClaim("data", JSON.toJSONString("Object")) //自定义字段存数据
+                .withNotBefore(new Date())  //生效时间
+                .withJWTId(UUID.randomUUID().toString())    //编号
+                .sign(algorithm);
+} catch (JWTCreationException exception){
+    //签名不匹配
+}
+
+
+RS256 方式
+RSAPublicKey publicKey = //Get the key instance
+RSAPrivateKey privateKey = //Get the key instance
+try {
+    Algorithm algorithm = Algorithm.RSA256(publicKey, privateKey);
+    String token = JWT.create()
+                .withIssuer("rstyro")   //发布者
+                .withSubject("test")    //主题
+                .withAudience(audience)     //观众，相当于接受者
+                .withIssuedAt(new Date())   // 生成签名的时间
+                .withExpiresAt(DateUtils.offset(new Date(), 2, Calendar.HOUR_OF_DAY))    // 生成签名的有效期,小时
+                .withClaim("data", JSON.toJSONString("Object")) //自定义字段存数据
+                .withNotBefore(new Date())  //生效时间
+                .withJWTId(UUID.randomUUID().toString())    //编号
+                .sign(algorithm);
+} catch (JWTCreationException exception){
+    //签名不匹配
+}
+
+
+3、校验 Token
+片段代码如下：
+
+if("RS256".equalsIgnoreCase(jwtdto.getAlg())){
+    algorithm = Algorithm.RSA256(CreateSecrteKey.getRSA256Key().getPublicKey(), null);
+}else {// hs256 的方式
+    algorithm = Algorithm.HMAC256(secret);
+}
+JWTVerifier verifier = JWT.require(algorithm)
+        .withIssuer("rstyro")
+        .build();
+try {
+    verify = verifier.verify(jwtdto.getToken());
+}catch (TokenExpiredException ex){
+    throw new ApiException(ApiResultEnum.TOKEN_EXPIRED);
+}catch (JWTVerificationException ex){
+    throw new ApiException(ApiResultEnum.SIGN_VERIFI_ERROR );
+}
+
+
+因为 RS256 加密，需要一个公私钥对，我们可以通过 KeyPairGenerator 随机获取一个公私钥对，工具类如下：
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+import top.lrshuai.jwt.entity.RSA256Key;
+
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 抄录地址：https://www.cnblogs.com/only-jlk/p/5960900.html
+ */
+public class CreateSecrteKey {
+
+    public static final String KEY_ALGORITHM = "RSA";
+    private static final String PUBLIC_KEY = "RSAPublicKey";
+    private static final String PRIVATE_KEY = "RSAPrivateKey";
+
+    private static RSA256Key rsa256Key;
+
+    //获得公钥
+    public static String getPublicKey(Map<String, Object> keyMap) throws Exception {
+        //获得map中的公钥对象 转为key对象
+        Key key = (Key) keyMap.get(PUBLIC_KEY);
+        //byte[] publicKey = key.getEncoded();
+        //编码返回字符串
+        return encryptBASE64(key.getEncoded());
+    }
+    public static String getPublicKey(RSA256Key rsa256Key) throws Exception {
+        //获得map中的公钥对象 转为key对象
+        Key key = rsa256Key.getPublicKey();
+        //byte[] publicKey = key.getEncoded();
+        //编码返回字符串
+        return encryptBASE64(key.getEncoded());
+    }
+
+    //获得私钥
+    public static String getPrivateKey(Map<String, Object> keyMap) throws Exception {
+        //获得map中的私钥对象 转为key对象
+        Key key = (Key) keyMap.get(PRIVATE_KEY);
+        //byte[] privateKey = key.getEncoded();
+        //编码返回字符串
+        return encryptBASE64(key.getEncoded());
+    }
+    //获得私钥
+    public static String getPrivateKey(RSA256Key rsa256Key) throws Exception {
+        //获得map中的私钥对象 转为key对象
+        Key key = rsa256Key.getPrivateKey();
+        //byte[] privateKey = key.getEncoded();
+        //编码返回字符串
+        return encryptBASE64(key.getEncoded());
+    }
+
+    //解码返回byte
+    public static byte[] decryptBASE64(String key) throws Exception {
+        return (new BASE64Decoder()).decodeBuffer(key);
+    }
+
+    //编码返回字符串
+    public static String encryptBASE64(byte[] key) throws Exception {
+        return (new BASE64Encoder()).encodeBuffer(key);
+    }
+
+    //map对象中存放公私钥
+    public static Map<String, Object> initKey() throws Exception {
+        //  /** RSA算法要求有一个可信任的随机数源 */
+        //获得对象 KeyPairGenerator 参数 RSA 1024个字节
+        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+        keyPairGen.initialize(1024);
+        //通过对象 KeyPairGenerator 生成密匙对 KeyPair
+        KeyPair keyPair = keyPairGen.generateKeyPair();
+
+        //通过对象 KeyPair 获取RSA公私钥对象RSAPublicKey RSAPrivateKey
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        //公私钥对象存入map中
+        Map<String, Object> keyMap = new HashMap<String, Object>(2);
+        keyMap.put(PUBLIC_KEY, publicKey);
+        keyMap.put(PRIVATE_KEY, privateKey);
+        return keyMap;
+    }
+
+    /**
+     * 获取公私钥
+     * @return
+     * @throws Exception
+     */
+    public static synchronized RSA256Key getRSA256Key() throws Exception {
+        if(rsa256Key == null){
+            synchronized (RSA256Key.class){
+                if(rsa256Key == null) {
+                    rsa256Key = new RSA256Key();
+                    Map<String, Object> map = initKey();
+                    rsa256Key.setPrivateKey((RSAPrivateKey) map.get(CreateSecrteKey.PRIVATE_KEY));
+                    rsa256Key.setPublicKey((RSAPublicKey) map.get(CreateSecrteKey.PUBLIC_KEY));
+                }
+            }
+        }
+        return rsa256Key;
+    }
+
+    public static void main(String[] args) {
+        Map<String, Object> keyMap;
+        try {
+            keyMap = initKey();
+            String publicKey = getPublicKey(keyMap);
+            System.out.println("公钥：\n"+publicKey);
+            String privateKey = getPrivateKey(keyMap);
+            System.out.println("私钥：\n"+privateKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

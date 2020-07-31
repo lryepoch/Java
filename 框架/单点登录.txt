@@ -35,7 +35,7 @@ void logincb(String callback, HttpServletRequest request, HttpServletResponse re
 		getSsoUserInfo(infoUrl)
 
 		if(ssoUserInfo->true){
-			//从token中找到邮箱
+			//从SsoUserInfo中找到邮箱
 			appAccount = get("AppAccount")
 			//根据邮箱从数据库获取用户全部信息
 			user = getUserByAppAccount(appAccount)

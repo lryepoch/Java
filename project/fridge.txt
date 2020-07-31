@@ -118,6 +118,24 @@ PropertyUtils.copyProperties();
 
 
 
+·String.format():
+	这个方法第一个参数是格式串，后面的参数都是格式串的参数，用于替换格式串中的占位符。
+	占位符以 "%x" 的形式表示，不同的参数类型要用不同的字母。后面会具体介绍。
+	String.format() 返回值类型为字符串，也就是格式化的结果。
+
+
+·Java中的getResourceAsStream有以下几种：
+	1. Class.getResourceAsStream(String path) ： path 不以’/'开头时默认是从此类所在的包下取资源，以’/'开头则是从ClassPath根下获取。其只是通过path构造一个绝对路径，最终还是由ClassLoader获取资源。
+	2. Class.getClassLoader.getResourceAsStream(String path) ：默认则是从ClassPath根下获取，path不能以’/'开头，最终是由ClassLoader获取资源。
+	3. ServletContext. getResourceAsStream(String path)：默认从WebAPP根目录下取资源，Tomcat下path是否以’/'开头无所谓，当然这和具体的容器实现有关。
+	4. Jsp下的application内置对象就是上面的ServletContext的一种实现。
+
+
+
+
+
+
+
 
 pom.xml->application.yml->entity(实体，返回的数据对象)->
 ----------------------
@@ -128,8 +146,13 @@ pom.xml->application.yml->entity(实体，返回的数据对象)->
 ·注解切面；
 ·用户跟角色关联，角色跟权限关联；
 ·获取当前用户信息，先从request中获取邮箱号；
+·反射（获取字段的数据类型以及值）；
 
 ·业务：
 	··getFields()：获得某个类的所有的公共（public）的字段，包括父类中的字段。 
 		getDeclaredFields()：获得某个类的所有声明的字段，即包括public、private和proteced，但是不包括父类的申明字段。
 		field.setAccessible(true)：反射时访问私有变量
+
+·登录
+	··单点登录：
+	··普通登录：此处还是需要借助单点登录，绝了
