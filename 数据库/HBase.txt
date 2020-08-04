@@ -61,3 +61,14 @@
 
 ·单元格(Cell)：
 	由{rowkey,column(=+),version}唯一确定的单元。Cell中的数据是没有类型的，全部是字节码形式存储；
+
+
+
+
+
+
+
+HBase提供的五个权限标识符：RWXCA,分别对应着READ('R'), WRITE('W'), EXEC('X'), CREATE('C'), ADMIN('A')
+klist;
+hbase shell;
+list_namespace;

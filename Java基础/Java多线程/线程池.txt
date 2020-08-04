@@ -71,3 +71,11 @@
 
 
 ·Java并发包还提供了Executors,可以快速创建线程池，但是不推荐使用Executors。因为Executors创建线程池都是默认使用无界队列LinkedBlockingQueue，在高负载的情况下容易OOM。所以建议使用有界队列。
+
+	sout("开启多线程");
+	ExecutorService executerService = Executors.newFixedThreadPool(10);
+	for(TableInfo tableInfo:tables){
+		executorService.execute(()->{
+			
+		});
+	}
