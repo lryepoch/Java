@@ -1,0 +1,99 @@
+
+·内部表和外部表：
+	未被external修饰的是内部表（managed table），被external修饰的为外部表（external table）；
+	内部表数据由Hive自身管理，外部表数据由HDFS管理；
+
+	内部表数据存储的位置是hive.metastore.warehouse.dir（默认：/user/hive/warehouse）；
+	外部表数据的存储位置由自己制定（如果没有LOCATION，Hive将在HDFS上的/user/hive/warehouse文件夹下以外部表的表名创建一个文件夹，并将属于这个表的数据存放在这里）；
+	
+	删除内部表会直接删除元数据（metadata）及存储数据；
+	删除外部表仅仅会删除元数据，HDFS上的文件并不会被删除；
+	
+	对内部表的修改会将修改直接同步给元数据；
+	而对外部表的表结构和分区进行修改，则需要修复（MSCK REPAIR TABLE table_name;）
+
+
+·Hive：基于Hadoop之上的一个离线数据仓库，使用hdfs作为底层存储，可以将结构化的数据文件映射为一张数据库表，并提供简单的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。
+
+
+·Hive主要分为以下几个部分：
+	1. 用户接口
+	用户接口主要有三个：CLI，Client 和 WebUI(HUE/Zeppelin)。其中最常用的是 CLI，Cli 启动的时候，会同时启动一个 Hive 副本。Client 是 Hive 的客户端，用户连接至 Hive Server。在启动Client模式的时候，需要指出 Hive Server所在节点，并且在该节点启动 Hive Server。 WebUI是通过浏览器访问 Hive。
+
+	2.元数据存储
+	Hive 将元数据默认存储在hive自带的derby数据库中，但是由于derby有以下局限性：
+		1.数据库太小(2M)；
+		2.单session有效,单个路径下只能连接一个session；
+		3.使用不方便；
+	所以生产中，我们使用mysql作为Hive的元数据存储(mysql主备)。
+		Hive中的元数据包括表的名字，表的列和分区及其属性，表的属性（是否为外部表等），表的数据所在目录，Hive库表和HDFS上的文件结构的对应关系等。
+
+	3.解释器、编译器、优化器、执行器
+	解释器:将类sql的hql语句解析
+	编译器:将hql语句编译为Job
+	优化器:优化Job
+	执行器:调用Hadoop执行Job
+	生成的查询计划存储在 HDFS中，并在随后由 MapReduce 调用执行。Hive的数据存储在 HDFS 中，大部分的查询由 MapReduce完成（不包含 * 的查询，比如 select * from tbl 不会生成 MapReduce 任务）
+
+
+·hive的数据单元？ 
+	Databases：数据库，概念等同于关系型数据库的Schema，本质上仅仅是表的一个目录结构或命名空间。
+	Tables：表，概念等同于关系型数据库的表，本质上是数据的一个目录结构或命名空间。
+	Partitions：分区。概念类似于关系型数据库的表分区，没有那么多分区类型，只支持固定分区，将同一组数据存放至一个固定的分区中，其本质为hdfs上的一个目录，为了更快更方便查找到数据
+	Buckets(orClusters):分桶。同一个Partitions分区内的数据还可以细分，将相同的KEY再划分至一个桶中，这个有点类似于HASH分区，只不过这里是HASH分桶，也有点类似子分区吧。更细粒度的操作，其本质为一个文件。
+
+
+·hive表有两种区别？
+	管理表（内部表）：Hive会控制表中数据的生命周期，当删除一张管理表时，同时也会删除表中的数据。管理表中的数据不与其他工具共享。
+	外部表：Hive只控制元数据，当删除一张外部表时，只会删除元数据，并不会删除真实数据。外部表中的数据与其他工具共享。
+	所以一般内部表用来做中间表，外部表做源数据表，或者对接表。
+
+
+·Hive中分区分桶：
+	1.hive分区的目的？本质？分为几种？(分区值必须不能为中文) 
+	创建分区表的最主要的目的是：快速查询！
+	Hive中的分区表类型并不复杂，通常以表中的某一个或多个列为分区依据，并创建文件夹，将表中的其他列中的数据放到该文件夹下的数据文件中。
+	分区可以分为静态分区和动态分区，静态分区的分区字段不能增加，动态分区相反。默认情况下的分区表是静态的。
+
+	2.分桶的目的？如何分桶？
+	分桶的优点在于，将数据大致平均的、随机的放入多个桶中，这样方便对海量的数据做抽样调查、分析
+	Hive桶以表中的某一列作为分桶的依据，桶的个数由用户设置，这里以用户表中的id字段来划分桶，划分4个桶。Hive会计算分桶列的hash值再以桶的个数取模来计算某条记录属于那个桶。
+
+
+·hive默认分隔符？
+	有三种: 
+	\n:行分隔符，对于文本文件来说，每行都是一条记录,因此可以用来分割记录 
+	^A:用于分隔字段(列),在create table语句中可以使用八进制编码\001表示
+	^B:用于分隔ARRARY或者STRUCT中的元素，或用于Map键值对之间的分隔,在create table语句中可以使用八进制编码\001表示 
+	^C:用于Map中键和值之间的分隔,在create table语句中可以使用八进制编码\003表示
+
+
+·hive数据类型？ 
+	hive的数据类型分为简单数据类型和复杂数据类型
+	简单数据类型有:hive支持多种不同长度的整型和浮点型数据，支持布尔型，也支持无长度限制的字符串类型。例如：TINYINT、SMALINT、BOOLEAN、FLOAT、DOUBLE、STRING等基本数据类型
+	复杂数据类型:struct、map和array集合数据类
+
+
+·hive数据保存？ 
+	默认在HDFS上的以下目录： /user/hive/warehouse/
+	如需要改变数据保存位置，修改hive-site.xml配置文件中的hive.metastore.warehouse.dir配置项即可。
+
+
+·Hive三种参数配置方式？
+	1.配置文件，修改hive-site.xml,属于全局的，永久生效
+	2.命令行参数，当前session生效，关闭此窗口则失效 启动Hive时，可以在命令行添加-hiveconf param=value，但这一设定只对本次启动的Session有效，一般不用
+	3.参数声明，启动Hive后，使用set关键字进行参数设定，这一设定的作用域也是Session级的，也是单次有效 
+	eg：set param查看某配置参数的value
+	set param=value设置某配置参数	
+	优先级:参数声明>命令行参数>配置文件
+
+
+·关于查看hive的详细日志:
+	在hive的配置文件 /conf/hive-log4j.properties ，默认hive-log4j.properties没有，可以通过hive-log4j.properties.template复制一份，里面有个配置项 ：hive.log.dir=${java.io.tmpdir}/${user.name}hive.log.file=hive.log
+	其含义表示hive详细日志默认存放在根下 /tmp/当前用户名形成的目录/hive.log的文件中，如需修改，修改此配置项即可。
+
+
+·hive 默认是非严格模式hive.mapred.mode=nonstrict; 严格模式下有三种限制？
+	1.限制分区查询 必须指定where条件
+	2.限制order by 必须加limit
+	3.不能笛卡尔积

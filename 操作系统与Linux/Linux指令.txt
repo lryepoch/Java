@@ -142,7 +142,7 @@ linux：一切皆文件
 									:q! 不保存文件，强制退出vi
 									:e! 放弃所有修改，从上次保存文件开始再编辑。
 
-		权限问题：编辑hosts文件，遇到Can't open file for writing ！
+		权限问题：如编辑hosts文件，遇到Can't open file for writing ！
 		解决方法：sudo vi /etc/hosts这条指令进入即可；
 
 

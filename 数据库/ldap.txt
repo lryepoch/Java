@@ -1,10 +1,10 @@
 
 ·LDAP的全称为Lightweight Directory Access Protocol(轻量级目录访问协议), 基于X.500标准, 支持 TCP/IP。
 
-LDAP目录为数据库，通过LDAP服务器(相当于DBMS)处理查询和更新, 以树状的层次结构来存储数据,相对关系型数据库, LDAP主要是优化数据读取的性能,适用于比较少改变、跨平台的信息。
+	LDAP目录为数据库，通过LDAP服务器(相当于DBMS)处理查询和更新, 以树状的层次结构来存储数据,相对关系型数据库, LDAP主要是优化数据读取的性能,适用于比较少改变、跨平台的信息。
 
-这套标准下，AD(Active Directory)是微软出的一套实现。
-那AD是什么呢？暂且把它理解成是个数据库。也有很多人直接把LDAP说成数据库(可以把LDAP理解成存储数据的数据库)。像是其他数据库一样，LDAP也是有client端和server端。server端是用来存放资源，client端用来操作增删改查等操作。
+	这套标准下，AD(Active Directory)是微软出的一套实现。
+	那AD是什么呢？暂且把它理解成是个数据库。也有很多人直接把LDAP说成数据库(可以把LDAP理解成存储数据的数据库)。像是其他数据库一样，LDAP也是有client端和server端。server端是用来存放资源，client端用来操作增删改查等操作。
 
 
 
@@ -28,3 +28,39 @@ LDAP目录为数据库，通过LDAP服务器(相当于DBMS)处理查询和更新
 3、LDAP提供了静态数据的快速查询方式。
 4、Client/server模型，Server 用于存储数据，Client提供操作目录信息树的工具。
 5、LDAP是一种开放Internet标准，LDAP协议是跨平台的Interent协议。
+
+
+
+
+
+
+
+
+资源签审系统
+1.开发环境：IDEA、JDK1.8、Maven、Mysql5.7、Git
+
+2.系统架构：Spring、Springboot、springMVC、Mybatis
+
+3.项目描述：统一管理数据库资源、Hive、Hbase、Kafka等大数据资源、云主机资源的申请使用以及单位领导的审批流程
+
+4.工作职责：1.对公有云主机的申请、审批流程进行开发；
+			2.对系统的资源回收、权限回收进行开发；
+
+GTSC工程服务管理平台
+1.开发环境：IDEA、JDK1.8、Maven、Mysql5.7、Git
+
+2.系统架构：Spring、Springboot、springMVC、Mybatis
+
+3.项目描述：根据商用订单系统、MES系统、ERP系统、派工系统等系统接口，给GTSC系统中的设备全生命周期提供数据支持，主要环节包括设备订单、设备生产、设备出货、开机密码、运行状况等节点
+
+4.工作职责：对系统接入订单信息、生产信息以及出货信息接口进行开发；
+
+冰箱产品竞争力评价系统
+1.开发环境：IDEA、JDK1.8、Maven、Mysql5.7、Git
+
+2.系统架构：Spring、Springboot、springMVC、Mybatis
+
+3.项目描述：对市面上各大厂商开发的冰箱产品进行多维度的对比分析，根据已有的市场产品来指导今后冰箱产品的开发
+
+4.工作职责：完成对
+

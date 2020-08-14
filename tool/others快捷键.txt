@@ -26,7 +26,7 @@ Windows：
 关闭指定端口：
 	查看所有：netstat -ano
 	查看对应端口：netstat -ano|findstr "9004"
-	令行关闭端口：taskkill -PID 进程号 -F
+	关闭端口：taskkill -PID 进程号 -F
 
 
 

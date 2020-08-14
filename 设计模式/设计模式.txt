@@ -208,20 +208,8 @@ UML四种关系：
 								}
 							}
 
+
 							//懒汉式
-							public class Singleton{
-								private Singleton(){
-
-								}
-								private static Singleton singleton;
-								public static Singleton getInstance(){
-									if(singleton==null)
-										instance=new Singleton();
-									 return singleton;
-								}
-							}
-
-							//懒汉式改进1
 							public class Singleton{
 								private Singleton(){
 
