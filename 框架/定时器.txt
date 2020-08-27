@@ -1,9 +1,87 @@
 
-Quartz框架：
+定时器：
 ------------------------
-调度器：Scheduler
-任务：JobDetail
-触发器：Trigger，包括SimpleTrigger和CronTrigger。触发器Trigger最基本的功能是指定Job的执行时间，执行间隔，运行次数等。
+Quartz：由Java编写的开源作业调度框架，为在Java应用程序中进行作业调度提供了简单却强大的机制。
+		这是一个功能比较强大的的调度器，可以让你的程序在指定时间执行，也可以按照某一个频度执行，配置起来稍显复杂。
+
+		··默认多线程异步执行
+		··一个任务在上一次调度未完成执行，下一次调度时间到时，会另起一个线程开始新的调度。在业务繁忙时，一个任务或许会有多个线程在执行，导致数据处理异常。
+		··单任务同步：配置属性，可以使一个任务的一次调度在未完成时，而不会开启下一次调度。
+		··多个任务同时运行，任务之间没有直接的影响，多任务执行的快慢取决于CPU的性能。
+		··支持集群部署。
+			集群通过故障切换和负载平衡的功能，能给调度器带来高可用性和伸缩性。
+			从本质上来说，是使集群上的每一个节点通过共享同一个数据库来工作的（Quartz通过启动两个维护线程来维护数据库状态实现集群管理，一个是检测节点状态线程，一个是恢复任务线程）。
+			负载平衡是自动完成的，集群的每个节点会尽快触发任务。当一个触发器的触发时间到达时，第一个节点将会获得任务（通过锁定），成为执行任务的节点。
+			故障切换的发生是在当一个节点正在执行一个或者多个任务失败的时候。当一个节点失败了，其他的节点会检测到并且标 识在失败节点上正在进行的数据库中的任务。任何被标记为可恢复（任务详细信息的”requests recovery”属性）的任务都会被其他的节点重新执行。没有标记可恢复的任务只会被释放出来，将会在下次相关触发器触发时执行。
+
+
+1.调度器：Scheduler是Quartz的大脑，所有任务都是由它来设施。
+
+	·Schduelr包含一个两个重要组件：JobStore和ThreadPool。
+
+		JobStore是会来存储运行时信息的，包括Trigger,Schduler,JobDetail，业务锁等。
+		它有多种实现RAMJob(内存实现)，JobStoreTX(JDBC，事务由Quartz管理），JobStoreCMT(JDBC，使用容器事务)，ClusteredJobStore(集群实现)、TerracottaJobStore(什么是Terractta)。
+
+		ThreadPool就是线程池，Quartz有自己的线程池实现。所有任务的都会由线程池执行。
+
+	·SchedulerFactory
+		··SchdulerFactory，顾名思义就是来用创建Schduler了，有两个实现：DirectSchedulerFactory和 StdSchdulerFactory。
+			前者可以用来在代码里定制你自己的Schduler参数。后者是直接读取classpath下的quartz.properties（不存在就都使用默认值）配置来实例化Schduler。
+			通常来讲，我们使用StdSchdulerFactory也就足够了。
+
+		··SchdulerFactory本身是支持创建RMI stub的，可以用来管理远程的Scheduler，功能与本地一样，可以远程提交个Job什么的。
+
+
+2.任务：
+		JobDetail & Job： JobDetail 定义的是任务数据，而真正的执行逻辑是在Job中，例子中是HelloQuartz。 为什么设计成JobDetail + Job，不直接使用Job？
+		这是因为任务是有可能并发执行，如果Scheduler直接使用Job，就会存在对同一个Job实例并发访问的问题。而JobDetail & Job 方式，sheduler每次执行，
+		都会根据JobDetail创建一个新的Job实例，这样就可以规避并发访问的问题。
+
+3.触发器：Trigger，包括SimpleTrigger和CronTrigger。触发器Trigger最基本的功能是指定Job的执行时间，执行间隔，运行次数等。
+
+try { 
+	    //创建scheduler
+        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+        //SchedulerFactory sf=new StdSchedulerFactory();//创建调度者工厂
+		//Scheduler scheduler = sf.getScheduler();//创建一个调度者
+
+        //定义一个JobDetail
+        JobDetail job = JobBuilder.newJob(HelloQuartz.class) //定义Job类为HelloQuartz类，这是真正的执行逻辑所在
+                .withIdentity("job1", "group1") //定义name/group
+                .usingJobData("name", "quartz") //定义属性
+                .build();
+
+        //定义一个Trigger
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger1", "group1") //定义name/group
+                .startNow()//一旦加入scheduler，立即生效
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule() //使用SimpleTrigger
+                        .withIntervalInSeconds(1) //每隔一秒执行一次
+                        .repeatForever()) //一直执行
+                .build();
+
+        //加入这个调度
+        scheduler.scheduleJob(job, trigger);
+
+        //启动之
+        scheduler.start();
+
+        //运行一段时间后关闭
+        Thread.sleep(10000);
+        scheduler.shutdown(true);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    //HelloQuartz类
+    public class HelloQuartz implements Job {
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            JobDetail detail = context.getJobDetail();
+            String name = detail.getJobDataMap().getString("name");
+            System.out.println("say hello to " + name + " at " + new Date());
+        }
+    }
+
 
 
 ·这是一个功能比较强大的的调度器，可以让你的程序在指定时间执行，也可以按照某一个频度执行，配置起来稍显复杂。
@@ -17,7 +95,15 @@ Quartz框架：
 		JobExecutionContext中包含了Quartz运行时的环境以及Job本身的详细数据信息。 
 
 	··JobDataMap：
-		JobDataMap实现了JDK的Map接口，可以以Key-Value的形式存储数据。 
+		job必须有一个无参的构造函数（当使用默认的JobFactory时）；另一个后果是，在job类中，不应该定义有状态的数据属性，因为在job的多次执行中，这些属性的值不会保留。
+		如何给job实例增加属性或配置呢？如何在job的多次执行中，跟踪job的状态呢？答案就是:JobDataMap，JobDetail对象的一部分。
+		
+		JobDataMap中可以包含不限量的（序列化的）数据对象，在job实例执行的时候，可以使用其中的数据；JobDataMap是Java Map接口的一个实现，额外增加了一些便于存取基本类型的数据的方法。
+		将job加入到scheduler之前，在构建JobDetail时，可以将数据放入JobDataMap。
+		JobDetail job=JobBuilder.newJob(RemindJob.class)
+								.withIdentity("job1", "group1")
+								.usingJobData("hello", "we are family")
+								.build();
 
 	··Trigger、SimpleTrigger、CronTrigger：
 		new Trigger().startAt():表示触发器首次被触发的时间;
@@ -32,7 +118,6 @@ Quartz框架：
 
 
 
-定时器：
 ----------------------
 ·Timer：这是早期的实现，并不是一个好的设计；
 	··实现任务调度的核心是Timer和TimerTask；
@@ -49,8 +134,8 @@ Quartz框架：
 	}, 1000);
 
 	缺点：
-		Timer只能被单线程调度；
-		TimerTask中出现的异常会影响到Timer的执行。
+		不支持多线程并发；
+		任务抛出异常会停止所有任务的执行；
 		使用这种方式可以让你的程序按照某一个频度执行，但不能在指定时间运行。一般用的较少。
 
 
@@ -66,17 +151,28 @@ Quartz框架：
 	}, 1, TimeUnit.SECONDS);
 
 	相比Timer，ScheduledExecutorService解决了同一个定时器调度多个任务的阻塞问题，并且任务异常不会中断ScheduledExecutorService。
-	是基于线程池设计的定时任务类,每个调度任务都会分配到线程池中的一个线程去执行,也就是说,任务是并发执行,互不影响。
+	是基于线程池设计的定时任务类，每个调度任务都会分配到线程池中的一个线程去执行。也就是说，任务是并发执行，互不影响。
 
 
 ·HashedWheelTimer：
 
 
 
+
+
+
+---------------
 ·Spring Task：
 	··Spring3.0以后自带的task，可以将它看成一个轻量级的Quartz，而且使用起来比Quartz简单许多。
 				@Component+@Scheduled()，主类上使用@EnableScheduling注解。
 				以上是在同一个线程中串行执行的，如果只有一个定时任务，这样做肯定没问题，当定时任务增多，如果一个任务卡死，会导致其他任务也无法执行。
+
+		···默认单线程同步执行。
+		···一个任务执行完上一次之后，才会执行下一次调度 spring task的调度任务是串行的，意思就是如果配了多个任务的话，前面一个任务没有结束，后面的任务即使是时间到点了也不会跑。
+		···多任务之间按顺序执行，一个任务执行完成之后才会执行另一个任务。
+		···多任务并行执行需要设置线程池。
+		···全程可以通过注解配置。
+		···不支持分布式部署 不支持持久化，如果项目需要持久化定时任务，还是要选择Quartz比较。
 
 	··使用注解多线程执行：
 		@Configuration  //一个配置类
@@ -109,9 +205,10 @@ Quartz框架：
 	··基于接口SchedulingConfigurer的动态定时任务：
 
 
+	··两者对异常的处理：
+		Quartz：某次执行任务过程中抛出异常，不影响下一次任务的执行，当下一次执行时间到来时，定时器会再次执行任务。
+		SpringTask：一旦某个任务在执行过程中抛出异常，则整个定时器生命周期就结束，以后永远不会再执行定时器任务。
 
 
 
 
-
-·Quartz：这是一个功能比较强大的的调度器，可以让你的程序在指定时间执行，也可以按照某一个频度执行，配置起来稍显复杂。

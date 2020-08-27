@@ -518,10 +518,9 @@ MySQL：
 	一：授权主要的SQL
 
 		//某个数据库所有的权限 ALL 后面+ PRIVILEGES
-		grant all privileges on 库名.* to '用户名
-		'@'%' identified by '密码';   // *代表所有表， %代表所有IP
+		grant all privileges on 库名.* to '用户名'@'%' identified by '密码';   // *代表所有表， %代表所有IP
 
-		//某个数据库 特定的权限 权限后面没有 PRIVILEGES  所有的数据库权限- *.* 
+		//赋予某个数据库特定的权限，权限后面没有PRIVILEGES。所有的数据库权限- *.* 
 		grant select,update,insert,delete on 库名.* to '用户名'@'%' identified by '用户密码';
 
 		//授权语法 SQL详解
@@ -534,7 +533,7 @@ MySQL：
 		flush privileges;
 
 		//显示授权
-		show grants;
+		show grants for '用户名'@'%';
 
 		//移除授权
 		revoke all privileges on *.* (库名或者 '*'-表示全部) from '用户名'@'ip';

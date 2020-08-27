@@ -1,6 +1,8 @@
 
---------------------------
-·ThreadPoolExecutor的构造方法：
+
+ThreadPoolExecutor：所有线程池最终都是通过这个方法来创建的。
+--------------------
+·构造方法：
 	public ThreadPoolExecutor(int corePoolSize,
 	                              int maximumPoolSize,
 	                              long keepAliveTime,
@@ -70,12 +72,55 @@
 		除了这四种还可以自定义拒绝策略，建议自定义拒绝策略。因为更加的友好，可以设置成服务降级啊等操作。
 
 
+
+
+--------------------
 ·Java并发包还提供了Executors,可以快速创建线程池，但是不推荐使用Executors。因为Executors创建线程池都是默认使用无界队列LinkedBlockingQueue，在高负载的情况下容易OOM。所以建议使用有界队列。
 
 	sout("开启多线程");
 	ExecutorService executerService = Executors.newFixedThreadPool(10);
 	for(TableInfo tableInfo:tables){
 		executorService.execute(()->{
-			
+
 		});
 	}
+
+
+
+·ExecutorService：
+	它是Java提供的线程池，也就是说，每次我们需要使用线程的时候，可以通过ExecutorService获得线程。
+	它可以有效控制最大并发线程数，提高系统资源的使用率，同时避免过多资源竞争，避免堵塞，同时提供定时执行、定期执行、单线程、并发数控制等功能，也不用使用TimerTask了。
+
+	ExecutorService的submit和execute：
+		ExecuteService代表的是Executors创建的线程池；
+		submit提交的是Callable方法，返回Future，说明submit是有返回值的；
+		execute执行的是Runnable方法，没有返回值；
+		所以submit和execute的区别是提交的方法和是否有返回值；
+
+
+
+
+·线程池类型：
+	··可缓存线程池：
+		ExecutorService cachePool = Executors.newCachedThreadPool();
+		创建的是非核心线程，而且最大线程数为Integer的最大值，空闲线程存活时间是1分钟。如果有大量耗时的任务，则不适合该方式。它只适用于生命周期短的任务；
+
+	··单线程池：
+		ExecutorService singlePool = Executors.newSingleThreadExecutor();
+		即创建一个核心线程，只用一个线程来执行任务，保证任务按FIFO顺序一个个执行。
+
+	··固定线程数线程池：
+		ExecutorService fixedPool = Executors.newFixedThreadPool(3);
+		即创建固定数量的可复用的线程数，来执行任务。当线程数达到最大核心线程数时，则加入队列等待有空闲线程时再执行。
+
+	··固定线程数，支持定时和周期性任务：
+		ExecutorService scheduledPool = Executors.newScheduledThreadPool(5);
+		public ScheduledThreadPoolExecutor(int corePoolSize){}
+
+	··newWorkStealingPool：创建一个拥有多个任务队列的线程池，可以减少连接数，创建当前可用cpu数量的线程来并行执行，适用于大耗时的操作，可以并行来执行
+
+	··手动创建线程池：
+		private ExecutorService pool = new ThreadPoolExecutor(3,10,10L,TimeUnit.SECONDS,
+										new LinkedBlockingQueue<Runnable>(512),Executors.defaultThreadFactory(),
+										new ThreadPoolExecutor.AbortPolicy());
+		根据自己的需求创建指定核心线程数和总线程数；

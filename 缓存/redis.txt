@@ -83,7 +83,14 @@
 
 
 
+·JedisPool(非切片链接池)和ShardedJedisPool(切片链接池)：
 
+	非切片池，一般项目基本都使用非切片池；只连接一台Redis服务器；
+
+	切片池，主要用于分布式项目，设置主从Redis库；如果需要指明Redis连接哪个库，需要在使用Redis进行数据操作之前使用如下语句：	Jedis resource = jedisPool.getResource();
+	resource.select(1);	select(1)表示指定Redis库的第二个库；
+
+	JedisPool连一台Redis，ShardedJedisPool连Redis集群，通过一致性哈希算法决定把数据存到哪台上，算是一种客户端负载均衡，所以添加是用这个（Redis 3.0之后支持服务端负载均衡）
 
 
 
