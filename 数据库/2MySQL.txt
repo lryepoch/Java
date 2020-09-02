@@ -21,7 +21,7 @@ MySQL：
 	··退出登录：exit；quit；\q；
 
 	··修改用户密码：格式：mysqladmin -u 用户名 -p 旧密码 password 新密码
-		注：因为开始时root没有密码，所以“-p 旧密码”一项就可以省略了。
+					注：因为开始时root没有密码，所以“-p 旧密码”一项就可以省略了。
 
 	··mysql提示符的修改：用prompt关键字
 		\D：完整的日期
@@ -31,14 +31,15 @@ MySQL：
 		eg：mysql>PROMPT \u@\h \d>
 
 	··常见函数：
-		SELECT VERSION(); 		当前版本
-		SELECT NOW();	当前时间
-		SELECT USER();	当前用户
+		select version(); 		当前版本
+		select now();	当前时间
+		select user();	当前用户
 
 		语法规范：
 		1.关键字与函数名称全部大写；（为了规范）
 		2.数据库名称、表结构、字段名称全部小写；
 		3.SQL语句必须以分号结尾；
+
 
 	··数据类型：
 		1.整型：
@@ -517,7 +518,7 @@ MySQL：
 
 	一：授权主要的SQL
 
-		//某个数据库所有的权限 ALL 后面+ PRIVILEGES
+		//某个数据库所有的权限 all 后面+ privileges
 		grant all privileges on 库名.* to '用户名'@'%' identified by '密码';   // *代表所有表， %代表所有IP
 
 		//赋予某个数据库特定的权限，权限后面没有PRIVILEGES。所有的数据库权限- *.* 
@@ -552,3 +553,5 @@ MySQL：
 
 		//将BINLOG里的SQL语句提出来
 		mysqlbinlog -v --skip-gtids=true  --base64-output=DECODE-ROWS /software/mysql-bin.001928 > /ss.sql
+
+	注：需要及时flush privileges;授权和收权才会生效；否组，只能重启mysql；

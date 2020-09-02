@@ -84,12 +84,13 @@ action这个加了“/ ” servlet 会根据这个，将user认为是项目名�
 资源签审系统
 1.开发环境：IDEA、JDK1.8、Maven、Mysql5.7、Git
 
-2.系统架构：Spring、Springboot、springMVC、Mybatis、Ldap
+2.系统架构：Spring、Springboot、springMVC、Mybatis、Ldap、redis
 
 3.项目描述：统一管理数据库资源、Hive、Hbase、Kafka等大数据资源、云主机资源的申请使用以及单位领导的审批流程
 
-4.工作职责：1.对公有云主机的申请、审批流程进行开发；
+4.工作职责：1.对公有云资源的申请、审批流程进行开发；
 			2.对系统的资源回收、权限回收进行开发；
+
 
 GTSC工程服务管理平台
 1.开发环境：IDEA、JDK1.8、Maven、Mysql5.7、Git
@@ -99,6 +100,7 @@ GTSC工程服务管理平台
 3.项目描述：根据商用订单系统、MES系统、ERP系统、派工系统等系统接口，给GTSC系统中的设备全生命周期提供数据支持，主要环节包括设备订单、设备生产、设备出货、开机密码、运行状况等节点
 
 4.工作职责：对系统接入订单信息、生产信息以及出货信息接口进行开发；
+
 
 冰箱产品竞争力评价系统
 1.开发环境：IDEA、JDK1.8、Maven、Mysql5.7、Git

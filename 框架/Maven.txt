@@ -1,5 +1,4 @@
 
-
 ·常用命令解释：
 
 	mvn clean 		##清除。清除target目录下以前编译生成的文件及jar包；
@@ -40,6 +39,12 @@
 
 
 
-
 ·其他：
 	··当idea的按键打包失败时，可用代码：mvn clean package -DskipTests
+
+
+
+
+·Maven标签：
+<optional>：我们自己的jar需要引用一些别的组件，但是提供给别人调用时，别人其实用不上这部分功能，但是因为你自己的pom中依赖了这些jar，导致别人也得依赖这些jar。
+			设置optional=true，这样外部应用你的依赖时就可以只依赖需要的依赖就可以了。 

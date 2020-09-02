@@ -15,7 +15,7 @@
 			</exclusions>
 		</dependency>
 
-		spring-boot-starter 中包含了 spring-boot-starter-logging，该依赖内容就是 Spring Boot 默认的日志框架 logback。
+		spring-boot-starter中包含了spring-boot-starter-logging，该依赖内容就是Spring Boot默认的日志框架logback。
 
 
 
@@ -36,8 +36,8 @@
 	log4j[Ceki][Logger、Appender、Level等概念]
 	|
 	|j.u.l(jdk1.4)[在Java1.5以后性能和可用性才有所提升][直接放弃使用，设计简单，不足以支撑开发应用系统]
-	|	|
-		|commons-logging[对Log4j和j.u.l的配置问题兼容的并不好][]
+		|
+		|commons-logging[对Log4j和j.u.l的配置问题兼容的并不好]
 			|
 			|SLF4J[Ceki][只要使用SLF4J提供的接口][logback天然支持]
 				|
@@ -69,7 +69,7 @@ log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
 log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
 
 
-#第二个地方R, 以滚动的方式输出到文件，文件名是example.log,文件最大100k, 最多滚动5个文件
+#第二个地方R, 以滚动的方式输出到文件, 文件名是example.log, 文件最大100k, 最多滚动5个文件
 log4j.appender.R=org.apache.log4j.RollingFileAppender
 log4j.appender.R.File=example.log
 log4j.appender.R.MaxFileSize=100KB
@@ -125,7 +125,7 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
             <!--<totalSizeCap>1GB</totalSizeCap>-->
         </rollingPolicy>
 
- 	<!--日志输出编码格式化-->
+ 	    <!--日志输出编码格式化-->
         <encoder>
             <charset>UTF-8</charset>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} [%thread] %-5level %X{log_type} %logger{36} %line - %msg%n</pattern>
@@ -224,8 +224,7 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
 	--------------------
 	··实际上我们不希望我的业务日志中会包括这些启动信息。所以这个时候我们就需要通过logger标签来搞事情：让root指向控制台输出；logger负责打印包com.glmapper.spring.boot.controller下的日志。
 
-	<logger name="com.glmapper.spring.boot.controller" level="${logging.level}"
-	        additivity="false">
+	<logger name="com.glmapper.spring.boot.controller" level="${logging.level}" additivity="false">
 	    <appender-ref ref="GLMAPPER-LOGGERONE" />
 	</logger>
 
@@ -246,7 +245,7 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
 
 
 ------------------------
-·log4j2配置文件：
+·log4j2配置文件：Logger logger = LogManager.getLogger("recommend");
 
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="WARN">
@@ -259,6 +258,7 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
         </Console>
 
+        <!--把系统正常产生的日志打印到此处 -->
         <!--配置自定义日志，按天输出-->
         <RollingFile name="recommend" fileName="/recommend/recommend.log" filePattern="/recommend/recommend-%d{yyyy-MM-dd}.log" >
             <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
@@ -279,8 +279,8 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
             </DefaultRolloverStrategy>
         </RollingFile>
 
-		<!-- 把系统所有的error全部打到这个文件里  -->
-        <!--配置自定义日志，按天输出-->
+		<!-- 把系统产生的error日志打印到此处  -->
+        <!-- 配置自定义日志，按天输出 -->
         <RollingFile name="error" fileName="/recommend/recommendError.log" filePattern="/recommend/recommendError-%d{yyyy-MM-dd}.log" >
             <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
             <Policies>
@@ -300,7 +300,6 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
             </DefaultRolloverStrategy>
         </RollingFile>
 
-
 <!--        <File name="error" fileName="/recommend/recommendError.log">-->
 <!--            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>-->
 <!--            <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>-->
@@ -315,16 +314,17 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
         <logger name="org.mybatis" level="ERROR"></logger>
         <logger name="org.hibernate" level="ERROR"></logger>
 
-        <root level="info">
-            <appender-ref ref="console"/>
-            <appender-ref ref="error" />
-        </root>
-
         <!-- additivity="true" 的意思是会在控制台也输入一份-->
         <logger name="recommend" level="info" additivity="true">
             <appender-ref ref="recommend"/>
         </logger>
+
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="error" />
+        </root>
     </loggers>
+
 </configuration>
 
 
