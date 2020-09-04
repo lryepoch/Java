@@ -282,7 +282,7 @@
 		git diff HEAD                       ##显示工作区与当前分支最新commit之间的差异
 		git log 									##查看历史记录
 		git log --oneline                  ##简化日志
-		git log -n5 --oneline           ##查看前5个日志
+		git log -n5 --oneline           	##查看前5个日志
 		git reflog 								##查看历史记录的版本号id
 
 

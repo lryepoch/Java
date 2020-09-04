@@ -20,6 +20,6 @@ RabbitMQ：
 ·与activemq不一样， rabbitmq 使用的是一种叫做 AMQP 的协议来通信。 AMQP 是 dvanced Message Queuing Protocol 的缩写。协议内容我们就没必要深入研究了，简单地说，通过这种协议，可以处理更为复杂的业务需求。
 
 ·与 ActiveMQ 拿到消息就直接放在队列等待消费者拿走不同， Rabbit 拿到消息之后，会先交给 交换机 （Exchange）, 然后交换机再根据预先设定的不同绑定( Bindings )策略，来确定要发给哪个队列。
-如图所示，比起 ActiveMQ 多了 Exchange 和 Bindings。正式由于有了 Exchange 和 Bindings， RabbitMQ 就可以灵活地支撑各种模式。
+如图所示，比起 ActiveMQ 多了 Exchange 和 Bindings。正是由于有了 Exchange 和 Bindings， RabbitMQ 就可以灵活地支撑各种模式。
 
-·RabbitMQ提供了四种Exchange模式：fanout,direct,topic,header 。 header模式在实际使用中较少。
+·RabbitMQ提供了四种Exchange模式：fanout,direct,topic,header。 header模式在实际使用中较少。

@@ -3,18 +3,24 @@
 
 
 ·Redis技术：
-	··它的性能十分优越，可以支持每秒十几万此的读/写操作，其性能远超数据库；
+	··它的性能十分优越，可以支持每秒十几万级别的读/写操作，其性能远超数据库；
 	··支持集群、分布式、主从同步等配置，原则上可以无限扩展，让更多的数据存储在内存中；
 	··还支持一定的事务能力，这保证了高并发的场景下数据的安全和一致性。
 
 
-·使用场景：
-	··存储缓存用的数据；限于成本的原因，一般我们只是使用Redis存储一些常用和主要的数据，比如用户登录的信息等。
-	··需要高速读/写的场合，使用它快速读/写；
 
-	··数据缓存；
-	··session共享；
+·应用场景：
+	··Redis能够做什么；
+		1.缓存；
+		2.排行榜；
+		3.计数器；
+		4.好友关系；
+		5.简单消息队列（订阅发布、阻塞队列）；
+		6.Session服务器；
 
+	··Redis不能做什么；
+		1.数据量太大不适合；
+		2.数据访问频率太低不适合；
 
 
 
@@ -30,25 +36,26 @@
 	··但是这些缓存的数据仍然需要持久化，也就是存入数据库之中，所以在一个请求操作完Redis的读/写之后，会去判断该高速读/写的业务是否结束，这个判断通常会在秒杀商品为0，红包金额为0时成立，如果不成立，则不会操作数据库；如果成立，则触发事件将Redis缓存的数据以批量的形式一次性写入数据库，从而完成持久化的工作。
 
 
+
+
 ·redis与Java的配合：
-	··在常见命令中，使用各种Redis自带客户端的命令行方式访问Redis服务。而在实际工作中却需要用到Java代码才能访问，	使用第三方jar包：Jedis，就能方便地访问Redis的各种服务了。
+	1.在常见命令中，使用各种Redis自带客户端的命令行方式访问Redis服务。而使用Java代码访问，使用第三方jar包：Jedis，就能方便地访问Redis的各种服务了。
 
-	··在Java中我们却通常以类对象为主，所以在需要Redis存储的五中数据类型与Java对象之间进行转换，如果自己编写一些工具类，比如一个角色对象的转换，还是比较容易的，但是涉及到许多对象的时候，这其中无论工作量还是工作难度都是很大的，Redis无法操作对象的问题，无法在那些基础类型和Java对象之间方便的转换；
+	2.在Java中我们却通常以类对象为主，所以在需要Redis存储的五种数据类型与Java对象之间进行转换，如果自己编写一些工具类，比如一个角色对象的转换，还是比较容易的，但是涉及到许多对象的时候，这其中无论工作量还是工作难度都是很大的，Redis无法操作对象的问题，无法在那些基础类型和Java对象之间方便的转换；
 
-	··但是在Spring中，这些问题都可以通过使用RedisTemplate得到解决！除了Jedis包以外还需要在 Spring 引入spring-data-redis包；
+	3.但是在Spring中，这些问题都可以通过使用RedisTemplate得到解决！除了Jedis包以外还需要在 Spring 引入spring-data-redis包；
 
-	··配置RedisTemplate时，普通的连接根本没有办法直接将对象直接存入Redis内存中，我们需要替代的方案：将对象序列化（可以简单的理解为继承Serializable接口）。我们可以把对象序列化之后存入Redis缓存中，然后在取出的时候又通过转换器，将序列化之后的对象反序列化回对象，这样就完成了我们的要求：
+	4.配置RedisTemplate时，普通的连接根本没有办法直接将对象直接存入Redis内存中，我们需要替代的方案：将对象序列化（可以简单的理解为继承Serializable接口）。我们可以把对象序列化之后存入Redis缓存中，然后在取出的时候又通过转换器，将序列化之后的对象反序列化回对象，这样就完成了我们的要求。
 
 
-·spring与redis集成：
-	··redis配置文件；
-	··spring配置文件中配置redis，如使用spring配置JedisPoolConfig（连接池）对象，之后为连接池配置工厂模型，第三配置RedisTemplate；
+
 
 
 ·springboot与redis集成：
 	··导入springboot框架中redis的jar包；
 	··springboot配置文件中配置redis参数；
 	··自定义redis缓存器【redisTemplate】【@Configuration + @Bean】；
+
 	··使用注解；
 		---------------
 		@Cacheable：支持缓存，当被调用后将返回值缓存起来，保证下次利用同样参数执行该方法时可以直接从缓存中获取结果，而不需要再次执行该方法；
@@ -78,8 +85,11 @@
 
 
 
+
 ·SpringBoot自动帮我们在容器中生成了一个RedisTemplate和一个StringRedisTemplate。但是，这个RedisTemplate的泛型是<Object,Object>，写代码不方便，需要写好多类型转换的代码；我们需要一个泛型为<	String,Object>形式的RedisTemplate。并且，这个RedisTemplate没有设置数据存在Redis时，key及value的序列化方式。
   	看到这个@ConditionalOnMissingBean注解后，就知道如果Spring容器中有了RedisTemplate对象了，这个自动配置的RedisTemplate不会实例化。因此我们可以直接自己写个配置类，配置RedisTemplate。
+
+
 
 
 
@@ -91,6 +101,87 @@
 	resource.select(1);	select(1)表示指定Redis库的第二个库；
 
 	JedisPool连一台Redis，ShardedJedisPool连Redis集群，通过一致性哈希算法决定把数据存到哪台上，算是一种客户端负载均衡，所以添加是用这个（Redis 3.0之后支持服务端负载均衡）
+
+
+
+
+·spring-data-redis针对jedis提供了如下功能：
+	1. 连接池自动管理，提供了一个高度封装的“RedisTemplate”类
+
+	2. 针对jedis客户端中大量api进行了归类封装,将同一类型操作封装为operation接口
+
+	ValueOperations：简单K-V操作
+	SetOperations：set类型数据操作
+	ZSetOperations：zset类型数据操作
+	HashOperations：针对map类型的数据操作
+	ListOperations：针对list类型的数据操作
+
+	3. 提供了对key的“bound”(绑定)便捷化操作API，可以通过bound封装指定的key，然后进行一系列的操作而无须“显式”的再次指定Key，即BoundKeyOperations：
+
+	BoundValueOperations
+	BoundSetOperations
+	BoundListOperations
+	BoundSetOperations
+	BoundHashOperations
+
+	4. 将事务操作封装，有容器控制。
+
+	5. 针对数据的“序列化/反序列化”，提供了多种可选择策略(RedisSerializer)：【序列策略】
+
+		JdkSerializationRedisSerializer：POJO对象的存取场景，使用JDK本身序列化机制，将pojo类通过ObjectInputStream/ObjectOutputStream进行序列化操作，最终redis-server中将存储字节序列。这是目前最常用的序列化策略。
+
+		StringRedisSerializer：key或者value为字符串的场景，根据指定的charset对数据的字节序列编码成string，是“new String(bytes, charset)”和“string.getBytes(charset)”的直接封装。这是最轻量级和高效的策略。
+
+		JacksonJsonRedisSerializer：jackson-json工具提供了javabean与json之间的转换能力，可以将pojo实例序列化成json格式存储在redis中，也可以将json格式的数据转换成pojo实例。因为jackson工具在序列化和反序列化时，需要明确指定Class类型，因此此策略封装起来稍微复杂。【需要jackson-mapper-asl工具支持】
+
+		OxmSerializer：提供了将javabean与xml之间的转换能力，目前可用的三方支持包括jaxb，apache-xmlbeans；redis存储的数据将是xml工具。不过使用此策略，编程将会有些难度，而且效率最低；不建议使用。【需要spring-oxm模块的支持】
+
+	如果你的数据需要被第三方工具解析，那么数据应该使用StringRedisSerializer而不是JdkSerializationRedisSerializer。
+
+
+
+
+
+
+·Redis的数据类型：
+	··String字符串
+	string是redis最基本的类型，一个key对应一个value。
+	string类型是二进制安全的。意思是redis的string可以包含任何数据。比如jpg图片或者序列化的对象 。
+	string类型是Redis最基本的数据类型，一个键最大能存储512MB。
+
+
+	··链表
+	redis列表是简单的字符串列表，排序为插入的顺序。列表的最大长度为2^32-1。
+	redis的列表是使用链表实现的，这意味着，即使列表中有上百万个元素，增加一个元素到列表的头部或尾部的操作都是在常量的时间完成。
+	可以用列表获取最新的内容（像帖子，微博等），用ltrim很容易就会获取最新的内容，并移除旧的内容。
+	用列表可以实现生产者消费者模式，生产者调用lpush添加项到列表中，消费者调用rpop从列表中提取，如果没有元素，则轮询去获取，或者使用brpop等待生产者添加项到列表中。
+
+
+	··集合
+	redis集合是无序的字符串集合，集合中的值是唯一的，无序的。可以对集合执行很多操作，例如，测试元素是否存在，对多个集合执行交集、并集和差集等等。
+	我们通常可以用集合存储一些无关顺序的，表达对象间关系的数据，例如用户的角色，可以用sismember很容易就判断用户是否拥有某个角色。
+	在一些用到随机值的场合是非常适合的，可以用 srandmember/spop 获取/弹出一个随机元素。
+	同时，使用@EnableCaching开启声明式缓存支持，这样就可以使用基于注解的缓存技术。注解缓存是一个对缓存使用的抽象，通过在代码中添加下面的一些注解，达到缓存的效果。
+
+
+	··ZSet有序集合
+	有序集合由唯一的，不重复的字符串元素组成。有序集合中的每个元素都关联了一个浮点值，称为分数。可以把有序看成hash和集合的混合体，分数即为hash的key。
+	有序集合中的元素是按序存储的，不是请求时才排序的。
+
+
+	··Hash哈希
+	redis的哈希值是字符串字段和字符串之间的映射，是表示对象的完美数据类型。
+	哈希中的字段数量没有限制，所以可以在你的应用程序以不同的方式来使用哈希。
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -184,12 +275,17 @@
 		···MULTI：进入事务；
 			EXEC：提交事务；
 			WATCH：一个乐观锁。在EXEC命令执行之前，监视任意数量的数据库键，并在EXEC命令执行时，检查被监视的键是否至少有一个已经被修改过了，如果是的话，服务器将拒绝执行事务，并向客户端返回代表事务执行失败的空回复。
+
 		···当一个客户端处于非事务状态时，这个客户端发送的命令会立即被服务器执行；而当客户端处于事务状态后，服务器根据客户端发来的不同命令执行不同操作：
 			=======当发送命令为EXEC/DISCARD/WATCH/MULTI四个命令的其中一个，服务器立刻执行这个命令；
 			=======当非以上命令时，则不会立即执行，而是将命令放入一个事务队列里面，然后向客户端返回QUEUED回复；
+
 		···提供了一种将多个命令打包，然后一次性、有序地执行的机制；
+
 		···多个命令会被放入到事务队列中，然后按照先进先出的顺序执行；
+
 		···事务在执行过程中不会被中断，当事务队列中所有命令都被执行完毕后，事务才会结束；
+		
 		···Redis的事务总是具有ACID中的原子性、一致性、隔离性；当服务器运行在AOF持久化模式下，并且appendfsync选项的值为always时，事务也具有持久性；
 
 
