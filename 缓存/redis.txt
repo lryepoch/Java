@@ -59,22 +59,23 @@
 	··使用注解；
 		---------------
 		@Cacheable：支持缓存，当被调用后将返回值缓存起来，保证下次利用同样参数执行该方法时可以直接从缓存中获取结果，而不需要再次执行该方法；
-		参数： value缓存名、 key缓存键值、 condition满足缓存条件、unless否决缓存条件 
+			参数： value/cacheNames缓存名、 key缓存键值、 condition满足缓存条件、unless否决缓存条件 
 	
-		value属性是必须指定的，其表示当前方法的返回值是会被缓存在哪个Cache上的，对应Cache的名称。其可以是一个Cache也可以是多个Cache，当需要指定多个Cache时其是一个数组。
+				value/cacheNames属性是必须指定的，其表示当前方法的返回值是会被缓存在哪个Cache上的，对应Cache的名称。其可以是一个Cache也可以是多个Cache，当需要指定多个Cache时其是一个数组。
 
-		key属性是用来指定Spring缓存方法的返回结果时对应的key的。该属性支持SpringEL表达式。当我们没有指定该属性时，Spring将使用默认策略生成key。可以直接使用“#参数名”或者“#p参数index”。
+				key属性是用来指定Spring缓存方法的返回结果时对应的key的。该属性支持SpringEL表达式。当我们没有指定该属性时，Spring将使用默认策略生成key。可以直接使用“#参数名”或者“#p参数index”。
+				如果不填 key ，默认的 key 是当前的方法名，更新缓存时会因为方法名不同而更新失败。
 
-		condition属性默认为空，表示将缓存所有的调用情形。当为true时表示进行缓存处理；当为false时表示不进行缓存处理，即每次调用该方法时该方法都会执行一次。
+				condition属性默认为空，表示将缓存所有的调用情形。当为true时表示进行缓存处理；当为false时表示不进行缓存处理，即每次调用该方法时该方法都会执行一次。
 
 
 		----------------
 		@CachePut：支持缓存，执行前不会检查是否存在之前执行过的结果，而是每次都会执行该方法，并将执行结果以键值对的形式存入指定的缓存中； 主要用于数据新增和修改方法。
-
+					cacheNames 和 key 都必须填，如果不填 key ，默认的 key 是当前的方法名，更新缓存时会因为方法名不同而更新失败。
 
 		----------------
 		@CacheEvict：触发缓存的清除操作；方法执行成功后会从缓存中移除相应数据。
-		参数： value缓存名、 key缓存键值、 condition满足缓存条件、 unless否决缓存条件、 allEntries是否移除所有数据（设置为true时会移除所有缓存） 、beforeInvocation（指定该属性值为true时，Spring会在调用该方法之前清除缓存中的指定元素）
+		参数： value缓存名、 key缓存键值、 condition满足缓存条件、unless否决缓存条件、allEntries是否移除所有数据（设置为true时会移除所有缓存）、beforeInvocation（指定该属性值为true时，Spring会在调用该方法之前清除缓存中的指定元素）
 
 
 		------------------
@@ -83,6 +84,20 @@
 		Spring Redis默认使用JDK进行序列化和反序列化，因此被缓存对象需要实现java.io.Serializable接口，否则缓存出错。
 		当被缓存对象发生改变时，可以选择更新缓存或者失效缓存，但一般而言，后者优于前者，因为执行速度更快。
 
+	··其他常用功能：
+		1.cacheNames也可以统一写在类上面， @CacheConfig(cacheNames = "product")；
+		2.key也可以动态设置为方法的参数，@Cacheable(cacheNames = "prodcut", key = "#openid")；
+		如果参数是个对象，也可以设置对象的某个属性为 key。比如其中一个参数是 user 对象，key 可以写成 key="#user.id"
+		3.缓存还可以设置条件；设置当 openid 的长度大于3时才缓存，@Cacheable(cacheNames = "prodcut", key = "#openid", condition = "#openid.length > 3")。
+
+		还可以指定 unless 即条件不成立时缓存。#result 代表返回值，意思是当返回码不等于 0 时不缓存，也就是等于 0 时才缓存。@Cacheable(cacheNames = "prodcut", key = "#openid", condition = "#openid.length > 3", unless = "#result.code != 0")
+
+
+
+·@EnableCaching注解：作用是启用缓存注解；
+					是spring framework中的注解驱动的缓存管理功能。自spring版本3.1起加入了该注解。如果你使用了这个注解，那么你就不需要在XML文件中配置cache manager了。
+
+当你在配置类(@Configuration)上使用@EnableCaching注解时，会触发一个post processor，这会扫描每一个spring bean，查看是否已经存在注解对应的缓存。如果找到了，就会自动创建一个代理拦截方法调用，使用缓存的bean执行处理。
 
 
 
@@ -138,6 +153,13 @@
 
 	如果你的数据需要被第三方工具解析，那么数据应该使用StringRedisSerializer而不是JdkSerializationRedisSerializer。
 
+	6.设置缓存过期：
+	a.@Scheduled和@CacheEvict(cacheNames="", allEntries=true)
+	b.redis还可以通过application.yml配置一个全局的过期时间
+	spring:
+		cache:
+			redis:
+				time-to-live: 600s 	#默认从不过期，可以设置一个过期时间
 
 
 
@@ -149,12 +171,16 @@
 	string类型是二进制安全的。意思是redis的string可以包含任何数据。比如jpg图片或者序列化的对象 。
 	string类型是Redis最基本的数据类型，一个键最大能存储512MB。
 
+	String 数据结构是简单的key-value类型，value其实不仅是String，也可以是数字。
+
 
 	··链表
 	redis列表是简单的字符串列表，排序为插入的顺序。列表的最大长度为2^32-1。
 	redis的列表是使用链表实现的，这意味着，即使列表中有上百万个元素，增加一个元素到列表的头部或尾部的操作都是在常量的时间完成。
 	可以用列表获取最新的内容（像帖子，微博等），用ltrim很容易就会获取最新的内容，并移除旧的内容。
 	用列表可以实现生产者消费者模式，生产者调用lpush添加项到列表中，消费者调用rpop从列表中提取，如果没有元素，则轮询去获取，或者使用brpop等待生产者添加项到列表中。
+
+	list的应用场景非常多，也是Redis最重要的数据结构之一，比如twitter的关注列表，粉丝列表等都可以用Redis的list结构来实现。
 
 
 	··集合
@@ -163,15 +189,21 @@
 	在一些用到随机值的场合是非常适合的，可以用 srandmember/spop 获取/弹出一个随机元素。
 	同时，使用@EnableCaching开启声明式缓存支持，这样就可以使用基于注解的缓存技术。注解缓存是一个对缓存使用的抽象，通过在代码中添加下面的一些注解，达到缓存的效果。
 
+	set对外提供的功能与list类似是一个列表的功能，特殊之处在于set是可以自动排重的，当你需要存储一个列表数据，又不希望出现重复数据时，set是一个很好的选择，并且set提供了判断某个成员是否在一个set集合内的重要接口，这个也是list所不能提供的。
+	Set 就是一个集合，集合的概念就是一堆不重复值的组合。利用Redis提供的Set数据结构，可以存储一些集合性的数据。
 
 	··ZSet有序集合
 	有序集合由唯一的，不重复的字符串元素组成。有序集合中的每个元素都关联了一个浮点值，称为分数。可以把有序看成hash和集合的混合体，分数即为hash的key。
 	有序集合中的元素是按序存储的，不是请求时才排序的。
 
+	sorted set的使用场景与set类似，区别是set不是自动有序的，而sorted set可以通过用户额外提供一个优先级(score)的参数来为成员排序，并且是插入有序的，即自动排序。当你需要一个有序的并且不重复的集合列表，那么可以选择sorted set数据结构，比如twitter 的public timeline可以以发表时间作为score来存储，这样获取时就是自动按时间排好序的。
+
 
 	··Hash哈希
 	redis的哈希值是字符串字段和字符串之间的映射，是表示对象的完美数据类型。
-	哈希中的字段数量没有限制，所以可以在你的应用程序以不同的方式来使用哈希。
+	哈希中的字段数量没有限制，所以可以在你的应用程序以不同的方式来使用哈希。	
+
+	Hash的应用场景，比如我们要存储一个用户信息对象数据。
 
 
 
@@ -285,7 +317,7 @@
 		···多个命令会被放入到事务队列中，然后按照先进先出的顺序执行；
 
 		···事务在执行过程中不会被中断，当事务队列中所有命令都被执行完毕后，事务才会结束；
-		
+
 		···Redis的事务总是具有ACID中的原子性、一致性、隔离性；当服务器运行在AOF持久化模式下，并且appendfsync选项的值为always时，事务也具有持久性；
 
 
