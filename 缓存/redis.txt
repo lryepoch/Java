@@ -164,6 +164,27 @@
 
 
 
+· 通过源码可以看出，SpringBoot自动帮我们在容器中生成了一个RedisTemplate和一个StringRedisTemplate。但是，这个RedisTemplate的泛型是<Object,Object>，写代码不方便，需要写好多类型转换的代码；我们需要一个泛型为<String,Object>形式的RedisTemplate。并且，这个RedisTemplate没有设置数据存在Redis时，key及value的序列化方式。
+    看到这个@ConditionalOnMissingBean注解后，就知道如果Spring容器中有了RedisTemplate对象了，这个自动配置的RedisTemplate不会实例化。因此我们可以直接自己写个配置类，配置RedisTemplate。
+
+
+
+
+
+·StringRedisTemplate 与 RedisTemplate 的区别：
+	1.StringRedisTemplate 继承了 RedisTemplate。
+
+	2.RedisTemplate 是一个泛型类，而 StringRedisTemplate 则不是。
+
+	3.StringRedisTemplate 只能对 key=String，value=String 的键值对进行操作，RedisTemplate 可以对任何类型的 key-value 键值对操作。
+
+	4.他们各自序列化的方式不同，但最终都是得到了一个字节数组，殊途同归，StringRedisTemplate 使用的是 StringRedisSerializer 类；RedisTemplate 使用的是 JdkSerializationRedisSerializer 类。反序列化，则是一个得到 String，一个得到 Object。
+
+	5.两者的数据是不共通的，StringRedisTemplate 只能管理 StringRedisTemplate 里面的数据，RedisTemplate 只能管理 RedisTemplate中 的数据。
+
+
+
+
 
 ·Redis的数据类型：
 	··String字符串
