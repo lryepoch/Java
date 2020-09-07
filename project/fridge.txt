@@ -37,18 +37,6 @@ PropertyUtils.copyProperties();
 
 
 
-·postman的使用：
-	··传入一个参数【get】：3种
-						(1)Params：输入传入参数的key和value；（可以带参数，但必须捆绑在链接上）
-						(2)Body：
-							@RequestParam + form-data：键值对
-							@RequestParam + x-www-form-urlencoded      将表单数据编码为(name1=value1&name2=value2…)
-
-	··传入页码，每页记录条数这属于发起get请求；
-
-	··传入一个对象【post】：1种
-						Body：row(application/json)->json
-
 
 
 ·后端数据处理：

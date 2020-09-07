@@ -1,21 +1,24 @@
 
-·HBase能够“快速地”“分布式地”处理“大量数据”，基于它的
-　　1.内存结构
-　　2.文件存储结构
-
-
-·HBase 是 BigTable 的开源（源码使用 Java 编写）版本。是 Apache Hadoop 的数据库，是建立在 HDFS 之上，被设计用来提供高可靠性、高性能、列存储、可伸缩、多版本的 NoSQL 的分布式数据存储系统，实现对大型数据的实时、随机的读写访问。
+·HBase是BigTable的开源（源码使用Java编写）版本。是ApacheHadoop的数据库，是建立在HDFS之上，实现对大型数据的实时、随机的读写访问。
 	HBase 依赖于 HDFS 做底层的数据存储，BigTable 依赖 Google GFS 做数据存储；
 	HBase 依赖于 MapReduce 做数据计算，BigTable 依赖 Google MapReduce 做数据计算；
 	HBase 依赖于 ZooKeeper 做服务协调，BigTable 依赖 Google Chubby 做服务协调；
 
+·HBase – Hadoop Database，是一个高可靠性、高性能、面向列、可伸缩的分布式存储系统，利用HBase技术可在廉价PC Server上搭建起大规模结构化存储集群。
+
+
+
+
+·HBase能够“快速地”“分布式地”处理“大量数据”，基于它的
+　　1.内存结构
+　　2.文件存储结构
 
 
 ·要点：
 	它介于 NoSQL 和 RDBMS 之间，仅能通过主键(rowkey)和主键的 range 来检索数据；
 	HBase 查询数据功能很简单，不支持 join 等复杂操作；
 	不支持复杂的事务，只支持行级事务(可通过 hive 支持来实现多表 join 等复杂操作)；
-	HBase 中支持的数据类型：byte[]（底层所有数据的存储都是字节数组）；
+	HBase中支持的数据类型：byte[]（底层所有数据的存储都是字节数组）；
 	主要用来存储结构化和半结构化的松散数据。
 
 
@@ -33,7 +36,7 @@
 	··命名空间相当于mysql 的database。命名空间中包括了表、权限等信息;
 
 ·Table
-	··表（相当于mysql中的表），所有的表都是命名空间的成员，即表必属于某个命名空间，如果没有指定，则在 default 默认的命名空间中；
+	··表（相当于mysql中的表），所有的表都是 namespace 的成员，即表必属于某个命名空间，如果没有指定，则在 default 默认的命名空间中；
 
 ·Rowkey
 	··Rowkey的概念和mysql中的主键是完全一样的，Hbase使用Rowkey来唯一的区分某一行的数据；
@@ -64,7 +67,8 @@
 	··timestamp是实现hbase多版本的关键；在hbase中使用不同timestamp来标识相同rowkey行对应的不同版本的数据；
 	··hbase中通过rowkey和columns确定的为一个存储单元，称为cell；每个cell都保存着同一份数据的多个版本，版本通过时间戳来索引；
 
-	··时间戳由hbase(在数据写入时自动)赋值，此时时间戳是精确到毫秒的当前系统时间。时间戳也可以由客户显示赋值。如果应用程序要避免数据版本冲突，就必须自己生成具有唯一性的时间戳。每个cell中，不同版本的数据按照时间倒序排序，即最新的数据排在最前面；
+	··时间戳由hbase(在数据写入时自动)赋值，此时时间戳是精确到毫秒的当前系统时间。时间戳也可以由客户显式赋值。如果应用程序要避免数据版本冲突，就必须自己生成具有唯一性的时间戳。
+		每个cell中，不同版本的数据按照时间倒序排序，即最新的数据排在最前面；
 	
 	··为了避免数据存在过多版本造成的管理（包括存储和索引）负担，hbase提供了两种数据版本回收方式：
 		保存数据的最后n个版本;
@@ -75,10 +79,7 @@
 
 
 
-
-
-
-·Apache HBase从0.98.0, 0.95.2两个版本开始支持namespace级别的授权操作：
+·Apache HBase从0.98.0, 0.95.2两个版本开始支持 namespace级别的授权操作：
 	包括以下5种权限，
 	Read(R) 允许读取权限
 	Write(W) 允许写入权限
@@ -88,8 +89,11 @@
 
 
 
-klist;
-hbase shell;
-list_namespace;
+
+·常用指令：
+
+klist
+hbase shell
+list_namespace
 
 
