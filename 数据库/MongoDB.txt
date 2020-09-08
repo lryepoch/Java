@@ -1,10 +1,36 @@
 
 ·概念：
-MongoDB 是由C++语言编写的，是一个基于分布式文件存储的开源数据库系统。
+	MongoDB 是由C++语言编写的，是一个基于分布式文件存储的开源数据库系统。
 
-在高负载的情况下，添加更多的节点，可以保证服务器性能。
+	在高负载的情况下，添加更多的节点，可以保证服务器性能。
 
-MongoDB 旨在为WEB应用提供可扩展的高性能数据存储解决方案。
+	MongoDB 旨在为WEB应用提供可扩展的高性能数据存储解决方案。
 
-MongoDB 将数据存储为一个文档，数据结构由键值(key=>value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。
+	MongoDB 将数据存储为一个文档，数据结构由键值(key=>value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。
+
+	MongoDB是文档型的NoSQL数据库，具有大数据量、高并发等优势，但缺点是不能建立实体关系，而且也没有事务管理机制。
+
+
+·mongodb操作：
+	查询全部：show dbs        #在MongoDB中，集合只有在内容插入后才会创建! 就是说，创建集合(数据表)后要再插入一个文档(记录)，集合才会真正创建
+
+	创建：use DATABASE_NAME，db.DATABASE_NAME.insert({"name":"菜鸟教程"})  #插入一些文档，自动创建集合
+
+	删除库：use DATABASE_NAME，db.dropDatabase()
+
+	删除集合：db.collection.drop()
+	use DATABASE_NAME，
+	db.createCollection("DATABASE_NAME")    # 先创建集合，类似数据库中的表
+	show tables，							# show collections 命令会更加准确点
+	db.DATABASE_NAME.drop()，
+	show tables
+
+	创建集合：db.createCollection(name, options)
+	use DATABASE_NAME
+	db.createCollection("runoob")
+	show collections
+
+	创建固定集合mycol，整个集合空间大小6142800KB，文档最大个数为10000个：
+	db.createCollection("mycol",{capped:true, autoIndexId:true,size:6142800,max:10000})
+
 
