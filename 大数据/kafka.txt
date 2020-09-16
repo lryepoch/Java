@@ -1,37 +1,24 @@
 
-·Kafka是一种高吞吐量的分布式发布订阅消息系统，它可以处理消费者在网站中的所有动作流数据。
+·kafka是一种高吞吐量的分布式发布订阅消息系统，它可以处理消费者在网站中的所有动作流数据。
 
 ·kafka通过zookeeper管理集群，在每台服务器上先安装zookeeper；具体管理：
 	··探测broker和consumer的添加或移除；
 	··负责维护所有partition的领导者/从属者关系（主分区和备份分区），如果主分区挂了，需要选举出备份分区作为主分区；
 	··维护topic、partition等元配置信息；
-	···
+	···。。。
 	kafka之间是无法互相发现对方的，每个kafka向zk注册，说我是A节点（broker.id），我是B节点，这样组成了一个kafka集群。每个人通过zk来发现彼此。
 
 
 ·简单的几个名词： 
-	Producer ：消息生产者，向broker发消息的客户端；
-
-	Consumer ：消息消费者，向broker取消息的客户端；
-
-	Message：消息是kafka处理的对象，在kafka中，消息是被发布到broker的topic中。而consumer也是从相应的topic中拿数据。也就是说，message是按topic存储的；
-			 每个消息（也叫记录record，我习惯叫消息）是由一个key，一个value和时间戳构成；
-
-	Consumer Group ：将topic消息的广播发给consumer的手段；一个topic可以有多个CG；（消费者组之间从逻辑上它们是独立的）
-					向Topic订阅消费消息的单位是Consumers，当然它其中也可以只有一个消费者（consumer）；
-					一个分区(partition)里面的数据只会由分组(cgroup)中的一个消费者处理，同分组的其他消费者不会重复处理，也是为了提高吞吐量；
-					消费者组中的消费者数量<=分区数量；如果大于分区数量，多出来的消费者会处于收不到消息的状态，造成不必要的浪费；
-
-
-	Broker ：一台kafka服务器就是一个broker。一个集群由多个broker组成；
+	Broker：一台kafka服务器就是一个broker。一个集群由多个broker组成；
 			一个broker可以容纳多个topic，一个topic会分为多个partition，实际上partition会分布在不同的broker中；即同一份topic会分布在多个不同的broker上，由此得知：Kafka是天然分布式的；
 			已发布的消息保存在一组服务器中，称之为Kafka集群。集群中的每一个服务器都是一个代理（Broker）；
 			消费者可以订阅一个或多个主题（topic），并从Broker拉数据，从而消费这些已发布的消息；
 
-	Topic ：一个队列，主题；
+	Topic：一个队列，主题；
 			为了提高一个队列(topic)的吞吐量，kafka会把topic进行分区(Partition)；
 			Topic是Kafka数据写入操作的基本单元，可以指定副本；
-			一个Topic包含一个或多个Partition，建Topic的时候可以手动指定Partition个数，个数与服务器个数相当；
+			一个Topic包含一个或多个Partition，建议Topic的时候可以手动指定Partition个数，个数与服务器个数相当；
 			每条消息属于且仅属于一个Topic；
 			Producer发布数据时，必须指定将该消息发布到哪个Topic；
 			Consumer订阅消息时，也必须指定订阅哪个Topic的信息；
@@ -42,18 +29,32 @@
 				kafka只保证按一个partition中的顺序将消息发给consumer，不保证一个topic的整体（多个partition间）的顺序。
 				生产者往topic里丢数据是存在partition上的，而partition持久化到磁盘是IO顺序访问的，并且是先写缓存，隔一段时间或者数据量足够大的时候才批量写入磁盘的。 
 
-	Offset：kafka的存储文件都是按照offset.kafka来命名，用offset做名字的好处是方便查找。例如你想找位于2049的位置，只要找到2048.kafka的文件即可。当然the first offset就是00000000000.kafka。
+	Offset：kafka的存储文件都是按照offset.kafka来命名，用offset做名字的好处是方便查找。例如你想找位于2049的位置，只要找到2048.kafka的文件即可。
+			当然the first offset就是00000000000.kafka。
+			
 			Kafka就是用offset来表示消费者的消费进度到哪了，每个消费者会都有自己的offset。说白了offset就是表示消费者的消费进度。
 			在以前版本的Kafka，这个offset是由Zookeeper来管理的，后来Kafka开发者认为Zookeeper不合适大量的删改操作，于是把offset在broker以内部topic(__consumer_offsets)的方式来保存起来。
-			kafka的topic中的每个消费组消费的下标；
 
-			说白了offset就是表示消费者的消费进度。
+			kafka的topic中的每个消费组消费的下标；说白了offset就是表示消费者的消费进度。
+
+
+	Producer：消息生产者，向broker发消息的客户端；
+
+	Consumer：消息消费者，向broker取消息的客户端；
+
+	Message：消息是kafka处理的对象。在kafka中，消息是被发布到broker的topic中。而consumer也是从相应的topic中拿数据。也就是说，message是按topic存储的；
+			 每个消息（也叫记录record，我习惯叫消息）是由一个key，一个value和时间戳构成；
+
+	Consumer Group：将topic消息的广播发给consumer的手段；一个topic可以有多个CG；（消费者组之间从逻辑上它们是独立的）
+					向topic订阅消费消息的单位是 consumers，当然它其中也可以只有一个消费者（consumer）；
+					一个分区(partition)里面的数据只会由分组(cgroup)中的一个消费者处理，同分组的其他消费者不会重复处理，也是为了提高吞吐量；
+					消费者组中的消费者数量<=分区数量；如果大于分区数量，多出来的消费者会处于收不到消息的状态，造成不必要的浪费；
 
 
 
 ·问题：
 	··使用消息队列不可能是单机的（必然是分布式or集群）
-		Kafka天然是分布式的，往一个topic丢数据，实际上就是往多个broker的partition存储数据；不同broker有同一份topic。
+		kafka天然是分布式的，往一个topic丢数据，实际上就是往多个broker的partition存储数据；不同broker有同一份topic。
 
 	··数据写到消息队列，可能会存在数据丢失问题，数据在消息队列需要持久化(磁盘？数据库？Redis？分布式文件系统？)
 		Kafka会将partition以消息日志的方式(落磁盘)存储起来，通过顺序访问IO和缓存(等到一定的量或时间)才真正把数据写到磁盘上，来提高速度。

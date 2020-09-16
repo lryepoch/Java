@@ -95,6 +95,19 @@
 
 
 ·hive 默认是非严格模式hive.mapred.mode=nonstrict; 严格模式下有三种限制？
-	1.限制分区查询 必须指定where条件
-	2.限制order by 必须加limit
-	3.不能笛卡尔积
+	1.限制分区查询 必须指定where条件；
+	2.限制order by 必须加limit；
+	3.不能笛卡尔积；
+
+
+
+
+·视图：
+	··概念：
+	hive的视图是逻辑视图，到了hive3.0以后开始出现物理视图。
+	逻辑视图具有普通表的结构，但是不进行数据存储。
+	缺点：如果碰到复杂的sql，每次查询视图就要去加载一遍，很耗时间。
+
+	创建视图：create view viewName as select ***
+	删除视图：drop view viewName
+	查看视图：desc formatted viewName

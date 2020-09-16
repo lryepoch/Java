@@ -12,25 +12,85 @@
 
 
 ·mongodb操作：
-	查询全部：show dbs        #在MongoDB中，集合只有在内容插入后才会创建! 就是说，创建集合(数据表)后要再插入一个文档(记录)，集合才会真正创建
+	··数据库：
+		查看数据库：show dbs        #在MongoDB中，集合只有在内容插入后才会创建! 就是说，创建集合(数据表)后要再插入一个文档(记录)，集合才会真正创建
+		查看当前数据库：db
+		使用数据库：use DATABASE_NAME
+		删除库：use DATABASE_NAME，db.dropDatabase()
 
-	创建：use DATABASE_NAME，db.DATABASE_NAME.insert({"name":"菜鸟教程"})  #插入一些文档，自动创建集合
+		创建：use DATABASE_NAME，db.DATABASE_NAME.insert({"name":"菜鸟教程"})  #插入一些文档，自动创建集合
 
-	删除库：use DATABASE_NAME，db.dropDatabase()
+	
+	··集合：
+		查看当前数据库的集合：show collections
 
-	删除集合：db.collection.drop()
-	use DATABASE_NAME，
-	db.createCollection("DATABASE_NAME")    # 先创建集合，类似数据库中的表
-	show tables，							# show collections 命令会更加准确点
-	db.DATABASE_NAME.drop()，
-	show tables
+		删除集合：db.collection.drop()
+		use DATABASE_NAME，
+		db.createCollection("DATABASE_NAME")    # 先创建集合，类似数据库中的表
+		show tables，							# show collections 命令会更加准确点
+		db.DATABASE_NAME.drop()，
+		show tables
 
-	创建集合：db.createCollection(name, options)
-	use DATABASE_NAME
-	db.createCollection("runoob")
-	show collections
+		创建集合：db.createCollection(name, options)
+		use DATABASE_NAME
+		db.createCollection("runoob")
+		show collections
 
-	创建固定集合mycol，整个集合空间大小6142800KB，文档最大个数为10000个：
-	db.createCollection("mycol",{capped:true, autoIndexId:true,size:6142800,max:10000})
+		创建固定集合mycol，整个集合空间大小6142800KB，文档最大个数为10000个：
+		db.createCollection("mycol",{capped:true,autoIndexId:true,size:6142800,max:10000})
 
 
+	··文档：
+		插入文档：
+			db.COLLECTION_NAME.insert(document) 或 db.COLLECTION_NAME.save(document)
+
+			save()：如果 _id主键存在则更新数据，如果不存在就插入数据。该方法新版本中已废弃，可以使用 db.collection.insertOne() 或 db.collection.replaceOne() 来代替。
+
+			插入文档你也可以使用 db.col.save(document) 命令。如果不指定 _id 字段 save() 方法类似于 insert() 方法。如果指定 _id 字段，则会更新该 _id 的数据。
+
+			insert(): 若插入的数据主键已经存在，则会抛org.springframework.dao.DuplicateKeyException 异常，提示主键重复，不保存当前数据。
+
+		删除文档：db.COLLECTION_NAME.remove(<query>)
+		删除所有数据：db.COLLECTION_NAME.remove({})
+
+		更新文档：db.COLLECTION_NAME.update(document) /db.COLLECTION_NAME.save(document)
+
+		查询文档：db.COLLECTION_NAME.find(query, projection)  #find() 方法以非结构化的方式来显示所有文档
+
+		db.COLLECTION_NAME.find().pretty()：以易读的方式来读取数据；
+		db.COLLECTION_NAME.findOne()：它只返回一个文档；
+
+		db.COLLECTION_NAME.find({key1:value1,key2:value2}).pretty()   #MongoDB 的 find() 方法可以传入多个键(key)，每个键(key)以逗号隔开，即常规 SQL 的 AND 条件。
+
+	··$type操作符是基于BSON类型来检索集合中匹配的数据类型，并返回结果；
+		db.COLLECTION_NAME.find({"title":{$type:'string'}})
+
+	··Limit与Skip：
+		db.COLLECTION_NAME.find().limit(NUMBER)  #指定从MongoDB中读取的记录条数
+		db.COLLECTION_NAME.find().limit(NUMBER).skip(NUMBER) 	#skip()方法默认参数为 0 
+
+	··排序：db.COLLECTION_NAME.find().sort({KEY:1})  #1 为升序排列，而 -1 是用于降序排列
+
+	··索引：没有索引时，MongoDB在读取数据时必须扫描集合中的每个文件并选取那些符合查询条件的记录。
+		db.COLLECTION_NAME.createIndex(keys, options);
+
+	··聚合：用于处理数据(诸如统计平均值,求和等)，并返回计算后的数据结果。有点类似sql语句中的 count(*)
+
+		db.COLLECTION_NAME.aggregate(AGGREGATE_OPERATION)
+
+
+
+·关系型数据库mysql与非关系型数据库mongodb概念对比
+	mysql								mongodb
+	表(table)						集合(collection)
+	记录(row)						文档(document)
+	主键(primary key) 手动设置		_id 自动生成
+
+
+
+
+·文档的注意事项：
+	1.  键值对是有序的，如：{ "name" : "stephen", "genda" : "male" } 不等于 { "genda" : "male", "name" : "stephen" }
+	2.  文档信息是大小写敏感的，如：{ "name" : "stephen" } 不等于 { "Name" : "stephen" }
+	3.  文档信息是区分类型的，如：{ "age" : 30 } 不等于 { "age" : "30" }
+	4.  文档中不能出现重复键，如：{ "name" : "stephen", "name" : "liu" }
