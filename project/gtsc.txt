@@ -11,6 +11,7 @@
 
 
 
+·mybatis foreach item与index：item代表的是list里面的各个成员，就是一个别名，而index则表示迭代的次数，简单说就是找#{item}这个值找了几次。
 
 
 ·jks证书的绝对路径如何优化成相对路径；
