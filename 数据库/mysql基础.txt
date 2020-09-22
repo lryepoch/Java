@@ -56,27 +56,26 @@ MySQL：
 
 
 ·常用命令：
-	显示全部数据库：SHOW DATABASES;		
-	显示错误信息：SHOW WARNINGS;		
-	显示创建数据库时的全部信息：SHOW CREATE DATABASE 数据库名；
+	显示全部数据库：show databases;		
+	显示错误信息：show warnings;		
+	显示创建数据库时的全部信息：show create database 数据库名；
 
-	创建数据库：CREATE {DATABASE | SCHEMA} IF NOT EXISTS db_name CHARACTER SET charset_name;
-	修改数据库（如修改编码方式）：ALTER {DATABASE | SCHEMA} db_name CHARACTER SET charset_name;
-	删除数据库：DROP {DATABASE | SCHEMA} IF EXISTS db_name;
+	创建数据库：create {DATABASE | SCHEMA} if not exists db_name character set charset_name;
+	修改数据库（如修改编码方式）：alter {DATABASE | SCHEMA} db_name character set charset_name;
+	删除数据库：drop {DATABASE | SCHEMA} if exists db_name;
 
-	查看当前数据库：SELECT DATABASE()；
-	创建数据表：CREATE TABLE tb_name(
+	查看当前数据库：select database()；
+	创建数据表：create table tb_name(
 		age TINYINT UNSIGNED【无符号！！】,
 		salary FLOAT(8,2) UNSIGNED
 	);
 
-	查看数据表：SHOW TABLES FROM db_name;
-	查看数据表结构，如约束：SHOW COLUMNS FROM tbl_name；
-	显示索引：SHOW INDEXES FROM tb_name;
-
-	想要查看表的定义的话，有如下方式可供选择：
-	　1、show create table 语句：show create table table_name;
-	　2、desc table_name 语句：
+	查看数据表：show tables from db_name;
+	查看数据表结构，如约束：show columns from tbl_name；
+	显示索引：show indexes from tb_name;
+	切换数据库：use 数据库名；
+	列出所有表：show tables;
+	显示数据表结构：describe 表名；
 
 	MySql中 delimiter 详解：其实就是告诉MySQL解释器，该段命令是否已经结束了，mysql是否可以执行了。默认情况下，delimiter是分号;。
 
@@ -554,4 +553,8 @@ MySQL：
 		//将BINLOG里的SQL语句提出来
 		mysqlbinlog -v --skip-gtids=true  --base64-output=DECODE-ROWS /software/mysql-bin.001928 > /ss.sql
 
-	注：需要及时flush privileges;授权和收权才会生效；否组，只能重启mysql；
+		注：需要及时flush privileges;授权和收权才会生效；否组，只能重启mysql；
+
+
+		查看MYSQL数据库中所有用户：
+		mysql> SELECT DISTINCT CONCAT('User: ''',user,'''@''',host,''';') AS query FROM mysql.user;
