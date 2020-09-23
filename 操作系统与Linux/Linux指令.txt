@@ -1,5 +1,8 @@
 
-linux：一切皆文件
+·linux：一切皆文件
+
+·linux的发行版说简单点就是将linux内核与应用软件做一个打包。比较知名的发行版有ubuntu/redhat/centos。
+	通常服务器使用LAMP(linux+apache+mysql+php)或LNMP(linux+nginx+mysql+php)组合；
 
 ·超级权限root用户：#
 		一般用户：$
@@ -60,9 +63,16 @@ linux：一切皆文件
 
 		echo  写入的内容>文件名称
 
-		cat 文件名                #查看文件内容，注意：这是一种不进入文件中的查看；
-		cat -n file1 file2		#一次性查看多个文件，-n参数表示显示行号，从1开始编号；
-		more 文件名            #分页形式显示文件全部内容；
+		查看文件的内容：
+			cat xxx                    #由第一行开始显示文件内容。注意：这是一种不进入文件中的查看；
+			cat -n file1 file2		#一次性查看多个文件，-n参数表示显示行号，从1开始编号；
+			tac xxx                #从最后一行开始显示，可以看出 tac 是 cat 的倒着写！
+			nl xxx                 #显示的时候，顺道输出行号！
+			more xxx               #一页一页的显示文件内容
+			less xxx               #与 more 类似，但是比 more 更好的是，他可以往前翻页！
+			head xxx               #只看头几行
+			tail xxx               #只看尾巴几行
+			你可以使用 man [命令]来查看各个命令的使用文档，如 ：man cp。
 
 
 		rm 文件名称           #删除文件
