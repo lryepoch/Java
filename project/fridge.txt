@@ -120,6 +120,78 @@ PropertyUtils.copyProperties();
 
 
 
+·spring-boot-configuration-processor 是干啥用的？
+spring默认使用yml中的配置，但有时候要用传统的xml或properties配置，就需要使用spring-boot-configuration-processor了
+
+引入pom依赖
+
+ <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-configuration-processor</artifactId>
+     <optional>true</optional>
+ </dependency>
+ 
+
+author.name=zhangsan
+author.age=20
+再在配置类开头加上@PropertySource("classpath:your.properties")，其余用法与加载yml的配置一样
+
+@Component
+@PropertySource(value = {"classpath:static/config/authorSetting.properties"},
+        ignoreResourceNotFound = false, encoding = "UTF-8", name = "authorSetting.properties")
+public class AuthorTest {
+ 
+    @Value("${author.name}")
+    private String name;
+    @Value("${author.age}")
+    private int age;
+}
+
+@PropertySource 中的属性解释：
+1.value：指明加载配置文件的路径。 
+2.ignoreResourceNotFound：指定的配置文件不存在是否报错，默认是false。当设置为 true 时，若该文件不存在，程序不会报错。实际项目开发中，最好设置 ignoreResourceNotFound 为 false。 
+3.encoding：指定读取属性文件所使用的编码，我们通常使用的是UTF-8。
+
+当我们使用 @Value 需要注入的值较多时，代码就会显得冗余，于是 @ConfigurationProperties 登场了
+
+@Component
+@ConfigurationProperties(prefix = "author")
+@PropertySource(value = {"classpath:static/config/authorSetting.properties"},
+        ignoreResourceNotFound = false, encoding = "UTF-8", name = "authorSetting.properties")
+public class AuthorTest {
+ 
+    private String name;
+    private int age;
+ 
+}
+
+@RestController
+@EnableConfigurationProperties
+public class DemoController {
+ 
+    @Autowired
+    AuthorTest authorTest;
+ 
+    @RequestMapping("/")
+    public String index(){
+        return "author's name is " + authorTest.getName() + ",ahtuor's age is " + authorTest.getAge();
+    }
+}
+
+使用 @EnableConfigurationProperties 开启 @ConfigurationProperties 注解。
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

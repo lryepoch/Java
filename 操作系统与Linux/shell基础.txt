@@ -43,10 +43,12 @@
 
 	只读变量(值不能被改变)：readonly myUrl
 
-	删除变量(被删除后不能再次使用)：unset variable_name。unset命令不能删除只读变量。
+	删除变量(被删除后不能再次使用)：unset variable_name。
+	unset命令不能删除只读变量。变量删除后不能再次使用。
 
 	使用变量：在变量名前面加美元符号。
 				变量名外面的花括号是可选的，加不加都行，加花括号是为了帮助解释器识别变量的边界。推荐给所有变量加上花括号，这是个好的编程习惯。
+				eg：${var} 和 $var
 
 
 	··Shell脚本编程需要如下几个事项：
@@ -213,15 +215,19 @@ A=jfedu.net  自定义变量A
 	··条件表达式要放在方括号之间，并且要有空格，例如: [$a==$b] 是错误的，必须写成 [ $a == $b ]。
 
 
+·算数运算符：+、-、*、/、%、=、==、!=
+
 ·关系运算符
 	··关系运算符只支持数字，不支持字符串，除非字符串的值是数字。
+	-eq/-ne/-gt/-lt/-ge/-le
 
+·布尔运算符：！非运算，-o或运算， -a与运算
 
-·布尔运算符：！-o -a
+·逻辑运算符：&&逻辑与，||逻辑或
 
-·逻辑运算符：&& ||
-
-·字符串运算符：
+·字符串运算符：=、!=  检测两个字符串是否相等
+				-z、-n  检测字符串长度是否为0
+				str  检测字符串是否为空，不为空返回true
 	
 ·文件测试运算符：
 	··用于检测 Unix 文件的各种属性；
@@ -324,6 +330,20 @@ A=jfedu.net  自定义变量A
 		do
 		  ### 语句
 		done
+
+	#!/usr/bin/env bash
+	PS3="Choose the package manager"
+	select ITEM in bower npm gem pip
+	do
+	echo -n "Enter the package name:" && read PACKAGE
+	case ${ITEM} in
+		bower) bower install ${PACKAGE} ;;
+		npm) npm install ${PACKAGE} ;;
+		gem) gem install ${PACKAGE} ;;
+		pip) pip install ${PACKAGE} ;;
+	esac
+	break # 避免无限循环
+	done
 
 
 

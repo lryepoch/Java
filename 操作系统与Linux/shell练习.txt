@@ -1,0 +1,67 @@
+
+·如何向脚本传递参数？
+
+·如何在脚本中使用参数？
+	第一个参数 : $1，第二个参数 : $2
+
+·如何计算传递进来的参数？
+$#
+
+·如何在脚本中获取脚本名称？
+$0
+
+·如何检查之前的命令是否运行成功？
+$?
+
+·如何获取文件的最后一行？
+tail-1
+
+·如何获取文件的第一行？
+head-1
+
+·如何获取一个文件每一行的第三个元素？
+awk'{print $3}'
+
+·假如文件中每行第一个元素是FIND，如何获取第二个元素？
+awk'{ if ($1 == "FIND") print $2}'
+
+·如何调试bash脚本？
+将-xv参数加到#!/bin/bash后
+
+·举例如何写一个函数？
+function example{
+	echo "hello world!"
+}
+
+·如何连接两个字符串？
+V1="Hello"
+V2="World"
+V3=${V1}${V2}
+echo $V3
+
+输出：HelloWorld
+
+·如何进行两个整数相加？
+V1=1
+V2=2
+let V3=$V1+$V2
+echo $V3
+
+输出：3
+
+·如何检查文件系统中是否存在某个文件？
+if [ -f /var/log/messages ]
+then
+echo "File exists"
+fi
+
+
+·shell脚本中所有循环语法？
+for循环：
+foriin$(ls);do
+echo item:$i
+done
+
+while循环：
+#!/bin/bash
+COUNTER=0
