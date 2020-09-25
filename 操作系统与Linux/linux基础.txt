@@ -183,8 +183,28 @@
 	··通过jobs命令查看后台运行任务：jobs
 		这会列出所有后台执行的作业，并且每个作业前面都有个编号。如果想将某个作业调回前台控制，只需要 fg + 编号即可。fg 23 
 
-	··如何查看nohup.out里面的日志：在当前目录下输入，tail -fn 50 nohup.out  （循环实时查看最后50行记录(最常用的)）
+	··如何查看nohup.out里面的日志，在当前目录下输入:
 
+		tail [ -f ] [ -c Number | -n Number | -m Number | -b Number | -k Number ] [ File ] 
+		参数解释： 
+				-f 该参数用于监视File文件增长。 
+				-c Number 从 Number 字节位置读取指定文件 
+				-n Number 从 Number 行位置读取指定文件。 
+				-m Number 从 Number 多字节字符位置读取指定文件，比方你的文件假设包括中文字，假设指定-c参数，可能导致截断，但使用-m则会避免该问题。 
+				-b Number 从 Number 表示的512字节块位置读取指定文件。 
+				-k Number 从 Number 表示的1KB块位置读取指定文件。 
+				File 指定操作的目标文件名称 上述命令中，都涉及到number，假设不指定，默认显示10行。
+				Number前面可使用正负号，表示该偏移从顶部还是从尾部開始计算。 
+				tail可运行文件一般在/usr/bin/以下。
+
+
+		tail notes.log #显示notes.log文件的最后10行；
+
+		tail -f notes.log #显示 notes.log 文件的最后 10 行。当将某些行添加至 notes.log 文件时，tail 命令会继续显示这些行。 																			显示一直继续，直到您按下（Ctrl-C）组合键停止显示。实时跟踪名为 notes.log 的文件的增长情况。
+
+		tail -c 10 notes.log #显示文件 notes.log 的最后 10 个字符
+
+		tail -n 20 notes.log #显示 notes.log 最后20行
 
 
 
