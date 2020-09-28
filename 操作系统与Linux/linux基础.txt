@@ -193,18 +193,20 @@
 				-m Number 从 Number 多字节字符位置读取指定文件，比方你的文件假设包括中文字，假设指定-c参数，可能导致截断，但使用-m则会避免该问题。 
 				-b Number 从 Number 表示的512字节块位置读取指定文件。 
 				-k Number 从 Number 表示的1KB块位置读取指定文件。 
+
 				File 指定操作的目标文件名称 上述命令中，都涉及到number，假设不指定，默认显示10行。
-				Number前面可使用正负号，表示该偏移从顶部还是从尾部開始计算。 
+				Number 前面可使用正负号，表示该偏移从顶部还是从尾部開始计算。 
 				tail可运行文件一般在/usr/bin/以下。
 
 
-		tail notes.log #显示notes.log文件的最后10行；
+		tail notes.log 			#显示notes.log文件的最后10行
+		tail -n 20 notes.log 	#显示notes.log最后20行
 
-		tail -f notes.log #显示 notes.log 文件的最后 10 行。当将某些行添加至 notes.log 文件时，tail 命令会继续显示这些行。 																			显示一直继续，直到您按下（Ctrl-C）组合键停止显示。实时跟踪名为 notes.log 的文件的增长情况。
+		tail -f notes.log 		#显示notes.log文件的最后10行，然后实时跟踪名为notes.log的文件的增长情况
 
-		tail -c 10 notes.log #显示文件 notes.log 的最后 10 个字符
+		tail -c 10 notes.log 	#显示文件notes.log的最后10个字符
 
-		tail -n 20 notes.log #显示 notes.log 最后20行
+
 
 
 
