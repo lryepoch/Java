@@ -48,6 +48,7 @@ PropertyUtils.copyProperties();
 ·mybatis别名配置：
 	··当实体类中的字段与数据库表中的字段不匹配时（不符合驼峰等），需要使用as来定义别名。
 	··在xml配置文件中自己定义一个resultMap实现别名配置。
+	··yml配置mybatis别名配置；
 
 
 
@@ -84,6 +85,8 @@ PropertyUtils.copyProperties();
 
 	··自行封装；
 		定义一个Page<T>，有currentPage/pageSize/total/recordList/pageNum/, 根据sql语句的limit (currentRecord-1)*pageSize,pageSize; 对需要的字段拼接出来；
+
+	··返回一个集合的视图：list.subList();
 
 
 ·如何处理图片问题：

@@ -240,6 +240,32 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
 
 
 
+    ··在springboot中，通过spring-boot-starter-logging 加入Logback依赖，其实只要我们加入任意的Spring Boot starter都会默认引入spring-boot-starter-logging，因此 我们不需要分开加入他们。
+
+    如果Logback JAR在类路径一直可用那么Spring Boot 将一直选择Logback 记录日志。
+
+    所以想用其他的日志工具如Log4J2，我们需要去除Logback JAR并且在类路径中加入Log4J2的依赖。
+
+    如果使用Logback记录日志我们不用做任何事情，只要在application.properties或者application.yml中配置日志级别就可以了。console默认输入ERROR, WARN ，INFO级别的日志。可通过修改logging.level属性来改变日志的输出级别。可以通过配置logging.file属性或logging.path属性将日志输出到文件中。当文件到达10M的时候，将新建一个文件记录日志。
+
+    logging.level.* : 作为package（包）的前缀来设置日志级别。
+    logging.file :配置日志输出的文件名，也可以配置文件名的绝对路径。
+    logging.path :配置日志的路径，将日志输出到文件夹中。如果没有配置logging.file,Spring Boot 将默认使用spring.log作为文件名。
+    logging.pattern.console :定义console中logging的样式。
+    logging.pattern.file :定义文件中日志的样式。
+    logging.pattern.level :定义渲染不同级别日志的格式。默认是%5p.
+    logging.exception-conversion-word :.定义当日志发生异常时的转换字
+    PID :定义当前进程的ID
+
+
+
+
+
+
+
+
+
+
 
 
 
