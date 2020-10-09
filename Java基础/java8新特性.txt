@@ -133,6 +133,7 @@ Optional：【对象】
 	··使用静态方法 of()创建一个非空的Optional对象；该方法会返回一个不会null的optional对象，如果value为null的话，则会抛出NullPointerException异常。
 		of()方法并没有摆脱NPE问题，所以应该明确对象不为null 的时候使用 of()。
 		当我们在运行过程中，不想隐藏NullPointerException。而是要立即报告，这种情况下就用of函数。
+		通过工厂方法创建；
 
 		//调用工厂方法创建Optional实例
     	Optional<String> name = Optional.of("javaHuang");
@@ -217,7 +218,7 @@ Optional：【对象】
 			Optional<String> upperName = name.map((value) -> value.toUpperCase());
 			System.out.println(upperName.orElse("empty"));
 
-	··flatMap：如果有值，为其执行mapping函数返回Optional类型返回值，否则返回空Optional。
+	··flatMap：如果有值，为其执行mapping函数返回Optional类型返回值，否则返回空Optional。与map不同的是，flatMap 的返回值必须是Optional，而map的返回值可以是任意的类型T。
 			upperName = name.flatMap((value) -> Optional.of(value.toUpperCase()));
 			System.out.println(upperName.get());
 
