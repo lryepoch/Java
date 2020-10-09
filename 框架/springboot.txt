@@ -189,11 +189,12 @@
 
 ·WebMvcConfigurer解析：
 
-	··WebMvcConfigurer：拦截器的注册类（实现HandlerInterceptor接口的类需要在这里注册，@Configuration）
+	··WebMvcConfigurer：拦截器的注册类（实现HandlerInterceptor接口的类需要在这里注册，@Configuration + @Bean）
 	··HandlerInterceptorAdapter：拦截组件
 							   拦截组件HandlerInterceptorAdapter可以有多个，需要注册到WebMvcConfigurer里面，在WebMvcConfigurer里面拦截器是按顺序执行的。
 
-		在Spring Boot2.0及Spring 5.0前, 该类WebMvcConfigurerAdapter被标记为@Deprecated，已被废弃。官方推荐直接实现WebMvcConfigurer或者直接继承WebMvcConfigurationSupport，方式一实现WebMvcConfigurer接口（推荐），方式二继承WebMvcConfigurationSupport类。
+		在Spring Boot2.0及Spring 5.0前, 该类WebMvcConfigurerAdapter被标记为@Deprecated，已被废弃。
+		官方推荐直接实现WebMvcConfigurer或者直接继承WebMvcConfigurationSupport，方式一实现WebMvcConfigurer接口（推荐），方式二继承WebMvcConfigurationSupport类。
 		在Spring Boot 2.0后都是靠重写WebMvcConfigurer的方法来添加自定义拦截器，消息转换器等。
 
 
@@ -221,7 +222,7 @@
 
 
 
-·HandlerInterceptor解析:（这是拦截组件，一个接口）（或者@Component）
+·HandlerInterceptor解析:（这是拦截组件，一个接口）（或者直接使用@Component）
 	1. boolean preHandle (HttpServletRequest request, HttpServletResponse response, Object handle)方法：该方法将在请求处理之前进行调用，只有该方法返回true，才会继续执行后续的Interceptor和Controller，当返回值为true 时就会继续调用下一个Interceptor的preHandle 方法，如果已经是最后一个Interceptor的时候就会是调用当前请求的Controller方法； 
 
 	2.void postHandle (HttpServletRequest request, HttpServletResponse response, Object handle, ModelAndView modelAndView)方法：该方法将在请求处理之后，DispatcherServlet进行视图返回渲染之前进行调用，可以在这个方法中对Controller 处理之后的ModelAndView对象进行操作。 
