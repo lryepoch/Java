@@ -3,7 +3,7 @@
 	此种方式可以实现多级目录；
 
 	··树形结构实体类；（id、菜单名、链接、是否有图标、子节点集合、是否叶子节点、父节点）
-	public class Menu{
+	public class Menu {
 		private Integer menuId;
 
 		private Integer menuName;
