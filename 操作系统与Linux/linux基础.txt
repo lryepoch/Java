@@ -198,11 +198,13 @@
 				Number 前面可使用正负号，表示该偏移从顶部还是从尾部開始计算。 
 				tail可运行文件一般在/usr/bin/以下。
 
-
 		tail notes.log 			#显示notes.log文件的最后10行
+
 		tail -n 20 notes.log 	#显示notes.log最后20行
 
 		tail -f notes.log 		#显示notes.log文件的最后10行，然后实时跟踪名为notes.log的文件的增长情况
+
+		tail -fn 20 notes.log   #显示notes.log文件的最后20行，然后实时跟踪其增长情况
 
 		tail -c 10 notes.log 	#显示文件notes.log的最后10个字符
 
