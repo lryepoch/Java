@@ -1,6 +1,38 @@
 
+·概念：一个轻量级的快速开发框架。
+		设计目的是用来简化新Spring应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。
+		Spring启动框架。
+
+
+·SpringBoot所具备的特征有：
+	··可以创建独立的Spring应用程序，并且基于其Maven或Gradle插件，可以创建可执行的JARs和WARs；
+	··内嵌Tomcat或Jetty等Servlet容器；
+	··提供自动配置的“starter”项目对象模型（POMS）以简化Maven配置；
+	··尽可能自动配置Spring容器；
+	··提供准备好的特性，如指标、健康检查和外部化配置；
+	··绝对没有代码生成，不需要XML配置。 
+
+
+·自动配置的实现原理：SpringBoot的核心就是自动配置，自动配置又是基于条件判断来配置Bean。关于自动配置的源码在spring-boot-autoconfigure-2.0.3.RELEASE.jar
+					使用@EnableAutoConfiguration注解，会启用自动配置。
+					@SpringBootApplication注解主配置类里边最主要的功能就是SpringBoot开启了一个@EnableAutoConfiguration注解的自动配置功能。
+
+
+·用好SpringBoot只要把握这几点：
+	··SpringBoot启动会加载大量的自动配置类；
+
+	··所要做的就是我们需要的功能SpringBoot有没有帮我们写好的自动配置类；
+
+	··如果有就再来看这个自动配置类中到底配置了哪些组件，Springboot自动配置类里边只要我们要用的组件有，我们就不需要再来配置了，但是如果说没有我们所需要的组件，那么我们就需要自己来写一个配置类来把我们相应的组件配置起来。
+
+	··给容器中自动配置类添加组件的时候，会从properties类中获取某些属性，而这些属性我们就可以在配置文件指定这些属性的值。
+
+ 
+
+
 ·优点：
 	··可以创建独立的Spring应用程序，并且有内置的服务器。不需要将我们的项目单独的发布到tomcat或者jboss等某个HHTP服务器上，因为它有内置的tomcat、jetty等服务器，它直接回归到了我们最初学习java	时的启动方式。也就是通过一个main函数的方式来启动我们的项目。只不过我们的main函数上面多了一个@SpringBootApplication的注解。
+
 	··可以大量减少构建配置。基本上不需要代码的生成、XML的配置以及尽可能多的提供第三方库。SpringBoot只需通过注解的形式配置开发当中一些动态的参数即可；
 
 
