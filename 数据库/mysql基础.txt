@@ -1,4 +1,3 @@
-MySQL：
 
 ·MySQL入门：
 	命令行操作：
@@ -235,6 +234,7 @@ MySQL：
 
 
 · Mysql通用函数：
+
 	1.字符函数：
 		CONCAT()	字符连接	 模糊查询：concat('%',#{0},'%') 这是mysql的写法。select * from   category_  where name like concat('%',#{0},'%')
 		CONCAT_WS()		使用指定分隔符进行字符连接

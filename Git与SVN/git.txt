@@ -62,33 +62,36 @@
 
 
 
+·常见git操作场景：
 
-·Command line instructions：You can also upload existing files from your computer using the instructions below.
-		··=================
-		Create a new repository：
-		git clone git@10.2.7.13:260408/plm.git
-		cd plm
-		touch README.md
-		git add README.md
-		git commit -m "add README"
-		git push -u origin master
+    ··Create a new repository：
 
-		··=================
-		Push an existing folder：
-		cd existing_folder
-		git init
-		git remote add origin git@10.2.7.13:260408/plm.git     (本地关联远程库)
-		git add .
-		git commit -m "initial commit"
-		git push -u origin master
+      $ git clone git@10.2.7.13:260408/plm.git
+      $ cd plm
+      $ touch README.md
+      $ git add README.md
+      $ git commit -m "add README"
+      $ git push -u origin master
 
-		··=================
-		Push an existing Git repository：
-		cd existing_repo
-		git remote rename origin old-origin
-		git remote add origin git@10.2.7.13:260408/plm.git
-		git push -u origin --all
-		git push -u origin --tags
+
+    ··Push an existing folder：
+
+      $ cd existing_folder
+      $ git init
+      $ git remote add origin git@10.2.7.13:260408/plm.git     (本地关联远程库)
+      $ git add .
+      $ git commit -m "initial commit"
+      $ git push -u origin master
+
+
+    ··Push an existing Git repository：
+
+      $ cd existing_repo
+      $ git remote rename origin old-origin
+      $ git remote add origin git@10.2.7.13:260408/plm.git
+      $ git push -u origin --all
+      $ git push -u origin --tags
+
 
 
 

@@ -180,8 +180,8 @@
 
 
 
-·HTTP与HTTPS不同之处：
 
+·HTTP与HTTPS不同之处：
 	1.HTTP和HTTPS使用的端口也不一样，前者是80，后者是443；
 	2.HTTP是明文传输，HTTPS则是具有安全性的SSL加密传输；
 	3.HTTPS协议需要到CA申请证书，一般免费证书很少，需要交费；

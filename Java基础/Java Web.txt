@@ -81,6 +81,7 @@
 
 
 
+
 ·request中参数（parameter）和属性（Attribute）的区别？
 		··区别： 
 			···来源不同：   
@@ -119,6 +120,7 @@
 
 ·请求转发：通过forward（）将当前请求传递给其他的web资源进行处理。
  请求包含：返回的响应信息中，既包含当前servlet的响应信息，又包含其他web资源作出的响应信息。
+
 
 
 
@@ -235,6 +237,8 @@
 			    <jsp:include page="relativeURI" flush="true" /> 引入执行页面或 servlet 所生成的应答文本 .
 
 
+
+
 ·隐式对象：
     ··EL表达式隐式对象：11个。pageContext可以获取其他10隐式对象。
 	··Servlet与JSP九大内置对象的关系：
@@ -250,6 +254,8 @@
 		Config ->getServletConfig
 
 
+
+
 ·web领域相关对象：PageContext、HttpserveltRequest、HttpSession、ServletContext。
 		特点：可以存储数据，内部定义了一个map集合，称为域。
 		EL表达式为了获取域中数据，可以使用pageScope、requestScope、sessionScope、applicationScope这4个隐式对象。
@@ -259,6 +265,7 @@
 
 
 ·RESTful API：
+
 	··REST：representational State Transfer，英语的直译就是“表现层状态转移”。
 
 	··什么是RESTful：用URL（统一资源定位符）定位资源，用HTTP动词（GET,POST,PUT,DELETE)描述操作。
@@ -298,6 +305,7 @@
 
 
 
+
 ·转发forward和重定向redirect区别：
 
 	··从地址栏显示来说 
@@ -316,7 +324,7 @@
 		forward:高.
 		redirect:低.
 
-	本质区别：
+	··本质区别：
 			解释一　　
 				一句话，转发是服务器行为，重定向是客户端行为。为什么这样说呢，这就要看两个动作的工作流程：
 
@@ -336,7 +344,7 @@
 
 
 ·JSTL标签：
-	---<c:forEach> 标签的varStatus属性和var 属性的区别：
+	··<c:forEach> 标签的varStatus属性和var 属性的区别：
 
 		我们一般用<c:forEach> 来遍历需要的数据，为了方便使用，varStatus属性可以方便我们实现一些与行数相关的功能，varStatus 是循环索引。
 		如：奇数行、偶数行差异；最后一行特殊处理等等。
