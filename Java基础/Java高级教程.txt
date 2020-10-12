@@ -1,0 +1,158 @@
+
+·泛型：
+------------------------
+  泛型只在编译的时候保证数据类型的正确性，和运行时性能无关。
+  ··只看尖括号里边的！！明确点和范围两个概念
+  ··如果尖括号里的是一个类，那么尖括号里的就是一个点，比如List<A>,List<B>,List<Object>
+  ··如果尖括号里面带有问号，那么代表一个范围，<? extends A> 代表小于等于A的范围，<? super A>代表大于等于A的范围，<?>代表全部范围
+  ··尖括号里的所有点之间互相赋值都是错，除非是俩相同的点
+  ··尖括号小范围赋值给大范围，对，大范围赋值给小范围，错。如果某点包含在某个范围里，那么可以赋值，否则，不能赋值
+  ··List<?>和List 是相等的，都代表最大范围
+  -----------------------------------------
+  ··补充：List既是点也是范围，当表示范围时，表示最大范围
+
+    下面贴代码：
+    public static void main(String[] args) {
+            List<A> a;
+            List list;
+            list = a;   //A对，因为List就是List<?>，代表最大的范围，A只是其中的一个点，肯定被包含在内
+            List<B> b;
+            a = b;      //B错，点之间不能相互赋值
+            List<?> qm;
+            List<Object> o;
+            qm = o;     //C对，List<?>代表最大的范围，List<Object>只是一个点，肯定被包含在内
+            List<D> d;
+            List<? extends B> downB;
+            downB = d;  //D对，List<? extends B>代表小于等于B的范围，List<D>是一个点，在其中
+            List<?extends A> downA;
+            a = downA;  //E错，范围不能赋值给点
+            a = o;      //F错，List<Object>只是一个点
+            downA = downB;  //G对，小于等于A的范围包含小于等于B的范围，因为B本来就比A小，B时A的子类嘛
+        }
+
+       泛型值存在于java的编译期，编译后生成字节码文件泛型是被擦除的。
+
+
+
+
+·反射：
+-------------------------
+	··通过反射机制，可以在程序运行时动态访问java对象的属性、方法、构造方法；
+
+	··应用场景：
+					1.开发通用框架；
+					2.动态代理；
+					3.注解；
+					4.可扩展功能；
+
+ 	··Java的反射机制主要由以下来实现：
+														    Class类；一个类
+														    Constructor类；类的构造方法
+														    Field类；类的属性
+														    Method类；类的方法
+
+	··通过反射创建对象：与传统的通过new来获取对象的方式不同，反射机制会先拿到“类对象”,然后通过类对象获取“构造器对象”，再通过构造器对象创建一个对象；
+
+  	     eg：//使用反射的方式创建对象
+  	        String className = "charactor.Hero";	包名+类名
+
+  	        //类对象
+  	        Class pClass=Class.forName(className);
+
+  	        //构造器
+  	        Constructor c= pClass.getConstructor();
+
+  	        //通过构造器实例化
+  	        Hero h2= (Hero) c.newInstance();
+
+	··Class对象的生成方式如下：
+
+	    1.类名.class     		 说明：JVM将使用类装载器, 将类装入内存(前提是:类还没有装入内存), 不做类的初始化工作.返回Class的对象
+
+	    2.Class.forName("类名字符串")       注：类名字符串是包名+类名   		说明：装入类,并做类的静态初始化，返回Class的对象
+
+        实质：实际上java的每个类被编译成.class文件的时候，jvm会自动为这个类生成一个类对象，这个对象保存了这个类的所有信息（成员变量，方法，构造器等），以后这个类要想实例化，那么都要以这个class对象为蓝图（或模版）来创建这个类的实例。
+        eg：class<?> c=Class.forName("com.pojo.User"); 
+            c就是User的类对象，而 User u=new User();这个u就是以c为模版创建的，其实就相当于u=c.newInstance()。
+
+	    3.实例对象.getClass()     说明：对类进行静态初始化、非静态初始化；返回引用运行时真正所指的对象(因为:子对象的引用可能会赋给父对象的引用变量中)
+
+  ··根据类的反射获取该类字段：
+    ···getFields()：只获取该类的所有public字段，包括父类中的public字段；
+    ···getDeclaredFields()：获取该类所有的字段，不包括父类中的字段；
+
+  ··同样类似的还有getConstructors()和getDeclaredConstructors()、getMethods()和getDeclaredMethods()；
+
+
+
+
+
+
+·关于Object：
+---------------------------
+    ··Object默认的基本方法中，
+      没有copy()，没有hasNext()，这个方法是迭代器中的；
+      含有如下方法：getClass(), hashCode(), equals(), clone(), toString(), notify(), notifyAll(), wait(), finalize()；    源代码：https://www.nowcoder.com/test/question/done?tid=16664302&qid=14830#summary
+
+    ··Object对象类的方法：
+      1．clone方法
+      保护方法，实现对象的浅复制，只有实现了Cloneable接口才可以调用该方法，否则抛出CloneNotSupportedException异常。
+
+      2．getClass方法
+      final方法，获得运行时类型。
+      得到父类名字用getClass.getSuperclass();
+
+        返回：包名+类名 
+            super.getClass().getName():当前类
+            this.getClass().getSuperclass().getName()：父类
+
+      3．toString方法
+      该方法用得比较多，一般子类都有覆盖。
+        ···System.out的println()方法只能在控制台上输出字符串，而Apple类实例是一个在内存中的对象，当用这种方法输出对象时，实际上输出的是Object类中的toString()方法返回值
+        ···toString()方法是Object类里的一个实例方法，所有的Java类都是Object类的子类，所以所有Java对象都有toString()方法
+        ···toString()方法是一个“自我描述”的方法，当输出某实例对象时，可以通过重写自定义等方式为对象实现输出自我描述的信息
+        ···Object类的toString()方法默认返回该对象实现类的“类名+@+hashcode”值（如上结果中看到的那样），这个返回值不能实现自我描述功能，所以需要重写Object类的toString()方法来实现。
+
+      4．finalize方法
+      该方法用于释放资源。因为无法确定该方法什么时候被调用，很少使用。
+
+      5．equals方法
+      该方法是非常重要的一个方法。一般equals和==是不一样的，但是在Object中两者是一样的。子类一般都要重写这个方法。
+
+      6．hashCode方法
+      该方法用于哈希查找，重写了equals方法一般都要重写hashCode方法。这个方法在一些具有哈希功能的Collection中用到。
+      一般必须满足obj1.equals(obj2)==true。可以推出obj1.hash-Code()==obj2.hashCode()，但是hashCode相等不一定就满足equals。不过为了提高效率，应该尽量使上面两个条件接近等价。
+
+      7．wait方法
+      wait方法就是使当前线程等待该对象的锁，当前线程必须是该对象的拥有者，也就是具有该对象的锁。wait()方法一直等待，直到获得锁或者被中断。wait(long timeout)设定一个超时间隔，如果在规定时间内没有获得锁就返回。
+      调用该方法后当前线程进入睡眠状态，直到以下事件发生。
+        （1）其他线程调用了该对象的notify方法。
+        （2）其他线程调用了该对象的notifyAll方法。
+        （3）其他线程调用了interrupt中断该线程。
+        （4）时间间隔到了。
+      此时该线程就可以被调度了，如果是被中断的话就抛出一个InterruptedException异常。
+
+      8．notify方法
+      该方法唤醒在该对象上等待的某个线程。
+
+      9．notifyAll方法
+      该方法唤醒在该对象上等待的所有线程。
+      这种类型的题一般考察点有两个：
+        ···Object中没有hasNext（） 方式，这个方法是迭代器中的
+        ···Object没有copy方法，但是有clone()方法， 用于创建并返回该对象的一个副本
+
+    ··所有类都是object的子类，但是你用一个类A继承了object，在用一个类B继承A，object类提供的方法B类里也是可以使用的。
+
+
+
+
+
+·序列化：
+------------------------
+  ··在序列化的时候，被transient或者static修饰的属性，不可以序列化。
+
+  ··一个类可以被序列化，那么它的子类也可以被序列化。
+
+  ··序列化可以实现深复制，而Object中的clone实现的就只是浅复制。
+
+  ··反射和序列化同样会调用构造方法。不过这个构造方法不能有参数。
