@@ -22,6 +22,8 @@
 		2.数据访问频率太低不适合；
 
 
+·redis除了缓存，其他用途有？消息队列
+
 
 ·使用Redis进行存储的时候，我们需要从以下几个方面来考虑：
 	··业务数据常用吗？命中率如何？如果命中率很低，就没有必要写入缓存；
@@ -131,11 +133,11 @@
 
 	3. 提供了对key的“bound”(绑定)便捷化操作API，可以通过bound封装指定的key，然后进行一系列的操作而无须“显式”的再次指定Key，即BoundKeyOperations：
 
-	BoundValueOperations
-	BoundSetOperations
-	BoundListOperations
-	BoundSetOperations
-	BoundHashOperations
+		BoundValueOperations
+		BoundSetOperations
+		BoundListOperations
+		BoundSetOperations
+		BoundHashOperations
 
 	4. 将事务操作封装，有容器控制。
 
