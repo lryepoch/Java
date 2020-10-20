@@ -6,7 +6,7 @@
 ·从JDK1.4开始提供了支持正则表达式API。java.util.regex 包主要包括以下三个类：
 
 	··Pattern类：
-		pattern 对象是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个Pattern对象。该方法接受一个正则表达式作为它的第一个参数。
+		pattern对象是一个正则表达式的编译表示。Pattern类没有公共构造方法。要创建一个Pattern对象，你必须首先调用其公共静态编译方法，它返回一个Pattern对象。该方法接受一个正则表达式作为它的第一个参数。
 
 		切割：String split()方法;            #根据给定正则表达式的匹配拆分此字符串。返回一个字符串数组。
 
@@ -18,18 +18,19 @@
 			　　　　4，通过引擎对符合规则的子串进行操作，比如取出。				
 
 				m.matches()：全部匹配，是将整个输入串与模式匹配，如果要验证一个输入的数据是否为数字类型或其他类型，一般要用matches()；
+
 				m.find()：部分匹配，是查找输入串中与模式匹配的子串，如果该匹配的串有组还可以使用group()函数；
 				结论：当正则完全匹配字符串，从头到尾正好匹配上字符串，matches()方法是true，find()方法为false；
 						  当正则只能匹配字符串中的部分内容，matches()方法是fasle ，find()方法是true；
 
 				m.group()：只能获取一个匹配后的结果，所以需要遍历。
-				group是针对（）来说的，group（0）就是指的整个串，group（1） 指的是第一个括号里的东西，group（2）指的第二个括号里的东西。
+							group是针对（）来说的，group（0）就是指的整个串，group（1） 指的是第一个括号里的东西，group（2）指的第二个括号里的东西。
 
 
 		 OR boolean isMatch = Pattern.matches(regex, str);
 
 	··Matcher类：
-		Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern类一样，Matcher也没有公共构造方法。你需要调用Pattern对象的matcher方法来获得一个Matcher对象。
+		Matcher对象是对输入字符串进行解释和匹配操作的引擎。与Pattern类一样，Matcher也没有公共构造方法。你需要调用Pattern对象的matcher方法来获得一个Matcher对象。
 
 		匹配：String  matches（） 		#用规则匹配整个字符串，只要有一处不符合规则，就匹配结束，返回false。
 			  							其实，String类中的matches方法。用的就是Pattern和Matcher对象来完成的。	只不过被String的方法封装后，用起来较为简单。但是功能却单一。
@@ -42,7 +43,8 @@
 
 
 
-·Java中有四个内置的运行正则表达式的方法，分别是 matches()、split()、replaceFirst()、replaceAll()。注意replace()方法不支持正则表达式。
+·Java中String有四个内置的运行正则表达式的方法，分别是 matches()、split()、replaceFirst()、replaceAll()。注意replace()方法不支持正则表达式。
+
 	··s.matches("regex")	当仅且当正则匹配整个字符串时返回 true
 
 	··s.split("regex")		按匹配的正则表达式切片字符串
