@@ -27,7 +27,12 @@
 							group是针对（）来说的，group（0）就是指的整个串，group（1） 指的是第一个括号里的东西，group（2）指的第二个括号里的东西。
 
 
-		 OR boolean isMatch = Pattern.matches(regex, str);
+		OR boolean isMatch = Pattern.matches(regex, str);
+		--------------------
+		String content = "I am noob " + "from runoob.com.";
+	    String pattern = ".*runoob.*";
+	    boolean isMatch = Pattern.matches(pattern, content);
+	    System.out.println("字符串中是否包含了 'runoob' 子字符串? " + isMatch);	true
 
 	··Matcher类：
 		Matcher对象是对输入字符串进行解释和匹配操作的引擎。与Pattern类一样，Matcher也没有公共构造方法。你需要调用Pattern对象的matcher方法来获得一个Matcher对象。
@@ -39,11 +44,17 @@
 					replaceFirst 替换首次匹配；
 
 	··PatternSyntaxException：
-		PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。
+		···PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。
+
+		···PatternSyntaxException 类提供了下面的方法来帮助我们查看发生了什么错误。
+			public String getDescription()	获取错误的描述。
+			public int getIndex() 	获取错误的索引。
+			public String getPattern()	获取错误的正则表达式模式。
+			public String getMessage()	返回多行字符串，包含语法错误及其索引的描述、错误的正则表达式模式和模式中错误索引的可视化指示。
 
 
 
-·Java中String有四个内置的运行正则表达式的方法，分别是 matches()、split()、replaceFirst()、replaceAll()。注意replace()方法不支持正则表达式。
+·Java中有四个内置的运行正则表达式的方法，分别是 matches()、split()、replaceFirst()、replaceAll()。注意replace()方法不支持正则表达式。
 
 	··s.matches("regex")	当仅且当正则匹配整个字符串时返回 true
 
@@ -56,7 +67,7 @@
 
 
 ·符号意思：
-	.（点号）：它匹配任何一个字符(除了\n外)
+	.（点号）：匹配除"\r\n"之外的任何单个字符。若要匹配包括"\r\n"在内的任意字符，请使用诸如"[\s\S]"之类的模式。
 	()：组
 	[]：或
 	{}：范围
@@ -65,10 +76,34 @@
 
 
 ·捕获组：
-	··把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。
+	··把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。eg：正则表达式 (dog) 创建了单一分组，组里包含"d"，"o"，和"g"。
+
 	··通过从左至右计算其开括号来编号。
-	··通过调用 matcher 对象的 groupCount 方法来查看表达式有多少个分组。groupCount 方法返回一个 int 值，表示matcher对象当前有多个捕获组。
-			一个特殊的组（group(0)），它总是代表整个表达式。该组不包括在 groupCount 的返回值中。
+		在表达式（（A）（B（C））），有四个这样的组：
+												((A)(B(C)))
+												(A)
+												(B(C))
+												(C)
+
+	··通过调用matcher对象的groupCount()方法来查看表达式有多少个分组。groupCount()方法返回一个int值，表示matcher对象当前有多个捕获组。
+		一个特殊的组（group(0)），它总是代表整个表达式。该组不包括在 groupCount()的返回值中。
+
+		// 按指定模式在字符串查找
+		String line = "This order was placed for QT3000! OK?";
+		String pattern = "(\\D*)(\\d+)(.*)";
+
+		// 创建 Pattern 对象
+		Pattern r = Pattern.compile(pattern);
+
+		// 现在创建 matcher 对象
+		Matcher m = r.matcher(line);
+		System.out.println(m.groupCount());
+		if (m.find( )) {
+		 System.out.println("Found value: " + m.group(0) );
+		 System.out.println("Found value: " + m.group(1) );
+		 System.out.println("Found value: " + m.group(2) );
+		 System.out.println("Found value: " + m.group(3) ); 
+		} 
 
 
 
@@ -97,27 +132,18 @@
 			非贪婪匹配：就是匹配到结果就好，就少的匹配字符。如上面使用模式p匹配字符串str，结果就是匹配到：abc
 
 		(2)<img src="test.jpg" width="60px" height="80px"/>
-			非懒惰模式匹配src内容，即：src=".*"
-			匹配结果：src="test.jpg" width="60px" height="80px"
+			>非懒惰模式匹配src内容，即：src=".*"
+				匹配结果：src="test.jpg" width="60px" height="80px"
 				意思是从="往后匹配，直到最后一个"匹配结束。
 
-			懒惰模式即后边多加一个?表示，必须跟在*或者+后边用：src=".*?"
-			匹配结果：src="test.jpg"
+			>懒惰模式即后边多加一个?表示，必须跟在*或者+后边用：src=".*?"
+				匹配结果：src="test.jpg"
 				因为匹配到第一个"就结束了一次匹配，不会继续向后匹配，因为他懒惰嘛。
 
+	··总结：当此字符紧随任何其他限定符（*、+、?、{n}、{n,}、{n,m}）之后时，匹配模式是"非贪心的"。
+			"非贪心的"模式匹配搜索到的、尽可能短的字符串，而"默认"的"贪心的"模式匹配搜索到的、尽可能长的字符串。
+			例如，在字符串"oooo"中，"o+?"只匹配单个"o"，而"o+"匹配所有"o"。
 
-
-	··编程中如何区分两种模式
-
-		默认是贪婪模式；在量词后面直接加上一个问号？就是非贪婪模式。
-
-		量词：{m,n}：m到n个
-
-		*：0个或者多个
-
-		+：1个或者多个
-
-		？：0或一个
 
 
 
