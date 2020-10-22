@@ -37,11 +37,39 @@
 	··Matcher类：
 		Matcher对象是对输入字符串进行解释和匹配操作的引擎。与Pattern类一样，Matcher也没有公共构造方法。你需要调用Pattern对象的matcher方法来获得一个Matcher对象。
 
-		匹配：String  matches（） 		#用规则匹配整个字符串，只要有一处不符合规则，就匹配结束，返回false。
-			  							其实，String类中的matches方法。用的就是Pattern和Matcher对象来完成的。	只不过被String的方法封装后，用起来较为简单。但是功能却单一。
+		···索引方法：
+			public int start()
+			返回以前匹配的初始索引。
+			public int start(int group)
+			返回在以前的匹配操作期间，由给定组所捕获的子序列的初始索引
+			public int end()
+			返回最后匹配字符之后的偏移量。
+			public int end(int group)
+			返回在以前的匹配操作期间，由给定组所捕获子序列的最后字符之后的偏移量。
 
-		替换：String replaceAll(regex,str)方法          #使用给定的replacement替换此字符串所有匹配给定的正则表达式的子字符串。
-					replaceFirst 替换首次匹配；
+		···查找方法：
+			public boolean lookingAt()
+			尝试将从区域开头开始的输入序列与该模式匹配。
+			public boolean find()
+			尝试查找与该模式匹配的输入序列的下一个子序列。
+			public boolean find(int start）
+			重置此匹配器，然后尝试查找匹配该模式、从指定索引开始的输入序列的下一个子序列。
+			public boolean matches()
+			用规则匹配整个字符串，只要有一处不符合规则，就匹配结束，返回false。
+			其实，String类中的matches方法。用的就是Pattern和Matcher对象来完成的。	只不过被String的方法封装后，用起来较为简单。但是功能却单一。
+
+		···替换方法：
+			public Matcher appendReplacement(StringBuffer sb, String replacement)
+			实现非终端添加和替换步骤。
+			public StringBuffer appendTail(StringBuffer sb)
+			实现终端添加和替换步骤。
+			public String replaceAll(String replacement)
+			替换模式与给定替换字符串相匹配的输入序列的每个子序列。
+			public String replaceFirst(String replacement)
+			替换模式与给定替换字符串匹配的输入序列的第一个子序列。
+			public static String quoteReplacement(String s)
+			返回指定字符串的字面替换字符串。这个方法返回一个字符串，就像传递给Matcher类的appendReplacement 方法一个字面字符串一样工作。
+
 
 	··PatternSyntaxException：
 		···PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。
@@ -78,7 +106,7 @@
 ·捕获组：
 	··把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。eg：正则表达式 (dog) 创建了单一分组，组里包含"d"，"o"，和"g"。
 
-	··通过从左至右计算其开括号来编号。
+	··通过从左至右计算其开括号来编号。数左小括号"("，第几个就是第几组。
 		在表达式（（A）（B（C））），有四个这样的组：
 												((A)(B(C)))
 												(A)
