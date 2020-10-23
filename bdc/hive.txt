@@ -1,19 +1,4 @@
 
-·内部表和外部表：
-	未被external修饰的是内部表（managed table），被external修饰的为外部表（external table）；
-	内部表数据由Hive自身管理，外部表数据由HDFS管理；
-
-	内部表数据存储的位置是hive.metastore.warehouse.dir（默认：/user/hive/warehouse）；
-	外部表数据的存储位置由自己制定（如果没有LOCATION，Hive将在HDFS上的/user/hive/warehouse文件夹下以外部表的表名创建一个文件夹，并将属于这个表的数据存放在这里）；
-	
-	删除内部表会直接删除元数据（metadata）及存储数据；
-	删除外部表仅仅会删除元数据，HDFS上的文件并不会被删除；
-	
-	对内部表的修改会将修改直接同步给元数据；
-	而对外部表的表结构和分区进行修改，则需要修复（MSCK REPAIR TABLE table_name;）
-
-
---------------------
 ·Hive：基于Hadoop之上的一个离线数据仓库，使用hdfs作为底层存储，可以将结构化的数据文件映射为一张数据库表，并提供简单的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。
 
 
@@ -48,6 +33,19 @@
 	管理表（内部表）：Hive会控制表中数据的生命周期，当删除一张管理表时，同时也会删除表中的数据。管理表中的数据不与其他工具共享。
 	外部表：Hive只控制元数据，当删除一张外部表时，只会删除元数据，并不会删除真实数据。外部表中的数据与其他工具共享。
 	所以一般内部表用来做中间表，外部表做源数据表，或者对接表。
+
+	内部表和外部表：
+		未被external修饰的是内部表（managed table），被external修饰的为外部表（external table）；
+		内部表数据由Hive自身管理，外部表数据由HDFS管理；
+
+		内部表数据存储的位置是hive.metastore.warehouse.dir（默认：/user/hive/warehouse）；
+		外部表数据的存储位置由自己制定（如果没有LOCATION，Hive将在HDFS上的/user/hive/warehouse文件夹下以外部表的表名创建一个文件夹，并将属于这个表的数据存放在这里）；
+		
+		删除内部表会直接删除元数据（metadata）及存储数据；
+		删除外部表仅仅会删除元数据，HDFS上的文件并不会被删除；
+		
+		对内部表的修改会将修改直接同步给元数据；
+		而对外部表的表结构和分区进行修改，则需要修复（MSCK REPAIR TABLE table_name;）
 
 
 ·Hive中分区分桶：
