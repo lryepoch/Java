@@ -20,8 +20,8 @@
 				m.matches()：全部匹配，是将整个输入串与模式匹配，如果要验证一个输入的数据是否为数字类型或其他类型，一般要用matches()；
 
 				m.find()：部分匹配，是查找输入串中与模式匹配的子串，如果该匹配的串有组还可以使用group()函数；
-				结论：当正则完全匹配字符串，从头到尾正好匹配上字符串，matches()方法是true，find()方法为false；
-						  当正则只能匹配字符串中的部分内容，matches()方法是fasle ，find()方法是true；
+							结论：当正则完全匹配字符串，从头到尾正好匹配上字符串，matches()方法是true，find()方法为false；
+						  			当正则只能匹配字符串中的部分内容，matches()方法是fasle ，find()方法是true；
 
 				m.group()：只能获取一个匹配后的结果，所以需要遍历。
 							group是针对（）来说的，group（0）就是指的整个串，group（1） 指的是第一个括号里的东西，group（2）指的第二个括号里的东西。
@@ -38,47 +38,35 @@
 		Matcher对象是对输入字符串进行解释和匹配操作的引擎。与Pattern类一样，Matcher也没有公共构造方法。你需要调用Pattern对象的matcher方法来获得一个Matcher对象。
 
 		···索引方法：
-			public int start()
-			返回以前匹配的初始索引。
-			public int start(int group)
-			返回在以前的匹配操作期间，由给定组所捕获的子序列的初始索引
-			public int end()
-			返回最后匹配字符之后的偏移量。
-			public int end(int group)
-			返回在以前的匹配操作期间，由给定组所捕获子序列的最后字符之后的偏移量。
+			public int start()				返回以前匹配的初始索引。
+			public int start(int group)			返回在以前的匹配操作期间，由给定组所捕获的子序列的初始索引
+			public int end()				返回最后匹配字符之后的偏移量。
+			public int end(int group)		返回在以前的匹配操作期间，由给定组所捕获子序列的最后字符之后的偏移量。
 
 		···查找方法：
-			public boolean lookingAt()
-			尝试将从区域开头开始的输入序列与该模式匹配。
-			public boolean find()
-			尝试查找与该模式匹配的输入序列的下一个子序列。
-			public boolean find(int start）
-			重置此匹配器，然后尝试查找匹配该模式、从指定索引开始的输入序列的下一个子序列。
-			public boolean matches()
-			用规则匹配整个字符串，只要有一处不符合规则，就匹配结束，返回false。
+			public boolean lookingAt()		尝试将从区域开头开始的输入序列与该模式匹配。lookingAt方法虽然不需要整句都匹配，但是需要从第一个字符开始匹配。
+			public boolean find()			尝试查找与该模式匹配的输入序列的下一个子序列。
+			public boolean find(int start）		重置此匹配器，然后尝试查找匹配该模式、从指定索引开始的输入序列的下一个子序列。
+			public boolean matches()		用规则匹配整个字符串，只要有一处不符合规则，就匹配结束，返回false。matches 要求整个序列都匹配，而lookingAt 不要求。
+
 			其实，String类中的matches方法。用的就是Pattern和Matcher对象来完成的。	只不过被String的方法封装后，用起来较为简单。但是功能却单一。
 
 		···替换方法：
-			public Matcher appendReplacement(StringBuffer sb, String replacement)
-			实现非终端添加和替换步骤。
-			public StringBuffer appendTail(StringBuffer sb)
-			实现终端添加和替换步骤。
-			public String replaceAll(String replacement)
-			替换模式与给定替换字符串相匹配的输入序列的每个子序列。
-			public String replaceFirst(String replacement)
-			替换模式与给定替换字符串匹配的输入序列的第一个子序列。
-			public static String quoteReplacement(String s)
-			返回指定字符串的字面替换字符串。这个方法返回一个字符串，就像传递给Matcher类的appendReplacement 方法一个字面字符串一样工作。
+			public Matcher appendReplacement(StringBuffer sb, String replacement)		实现非终端添加和替换步骤。
+			public StringBuffer appendTail(StringBuffer sb)			实现终端添加和替换步骤。
+			public String replaceAll(String replacement)			替换模式与给定替换字符串相匹配的输入序列的每个子序列。
+			public String replaceFirst(String replacement)			替换模式与给定替换字符串匹配的输入序列的第一个子序列。
+			public static String quoteReplacement(String s)		返回指定字符串的字面替换字符串。这个方法返回一个字符串，就像传递给Matcher类的appendReplacement 方法一个字面字符串一样工作。
 
 
 	··PatternSyntaxException：
 		···PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。
 
-		···PatternSyntaxException 类提供了下面的方法来帮助我们查看发生了什么错误。
-			public String getDescription()	获取错误的描述。
-			public int getIndex() 	获取错误的索引。
-			public String getPattern()	获取错误的正则表达式模式。
-			public String getMessage()	返回多行字符串，包含语法错误及其索引的描述、错误的正则表达式模式和模式中错误索引的可视化指示。
+		···PatternSyntaxException类提供了下面的方法来帮助我们查看发生了什么错误。
+			public String getDescription()		获取错误的描述。
+			public int getIndex() 			获取错误的索引。
+			public String getPattern()		获取错误的正则表达式模式。
+			public String getMessage()		返回多行字符串，包含语法错误及其索引的描述、错误的正则表达式模式和模式中错误索引的可视化指示。
 
 
 
@@ -94,11 +82,66 @@
 
 
 
-·符号意思：
+
+·关于\：
+	在其他语言中，\\ 表示：我想要在正则表达式中插入一个普通的（字面上的）反斜杠，请不要给它任何特殊的意义。
+	在 Java 中，\\ 表示：我要插入一个正则表达式的反斜线，所以其后的字符具有特殊的意义。
+
+	所以，在其他的语言中（如Perl），一个反斜杠 \ 就足以具有转义的作用，而在 Java 正则表达式中，则需要有两个反斜杠才能被解析为其他语言中的转义作用。
+	也可以简单的理解在 Java 的正则表达式中，两个 \\ 代表其他语言中的一个 \，这也就是为什么表示一位数字的正则表达式是 \\d，而表示一个普通的反斜杠是 \\\\，一个*普通的反斜杠是 \\\*。
+
+
+
+
+·语法规则：
 	.（点号）：匹配除"\r\n"之外的任何单个字符。若要匹配包括"\r\n"在内的任意字符，请使用诸如"[\s\S]"之类的模式。
 	()：组
 	[]：或
 	{}：范围
+	\：将下一字符标记为特殊字符、文本、反向引用或八进制转义符。例如，"n"匹配字符"n"。"\n"匹配换行符。序列"\\\\"匹配"\\"，"\\("匹配"("。
+	^:以……开头，还会与"\n"或"\r"之后的位置匹配。
+	$:以……结尾，还会与"\n"或"\r"之后的位置匹配。
+	+：一个或多个
+	*：0个或多个
+	?：0个或1个
+	{n}：匹配n次
+	{n,}：至少匹配n次
+	{n,m}：至少匹配n次，至多匹配m次
+
+	x|y：'(z|f)ood' 匹配"zood"或"food"
+	[xyz]："[abc]"匹配"plain"中的"a"
+	[^xyz]："[^abc]"匹配"plain"中"p"，"l"，"i"，"n"
+	[a-z]：字符范围
+	[^a-z]：
+
+	\b：匹配一个字边界，即字与空格间的位置。"er\b"匹配"never"中的"er"，但不匹配"verb"中的"er"
+	\B：非字边界匹配。"er\B"匹配"verb"中的"er"，但不匹配"never"中的"er"
+
+	\d：数字字符匹配。等效于 [0-9]。
+	\D：非数字字符匹配。等效于 [^0-9]。
+
+	\w：匹配任何字类字符，包括下划线。与"[A-Za-z0-9_]"等效。
+	\W：与任何非单词字符匹配。与"[^A-Za-z0-9_]"等效。
+	
+	\f：	换页符匹配。等效于 \x0c 和 \cL。
+	\n：	换行符匹配。等效于 \x0a 和 \cJ。
+	\r：	匹配一个回车符。等效于 \x0d 和 \cM。
+	\t：制表符匹配。与 \x09 和 \cI 等效。
+	\v：垂直制表符匹配。与 \x0b 和 \cK 等效。
+
+	(pattern)
+	(?:pattern)
+	(?=pattern)
+	(?!pattern)
+
+	\cx
+	\xn
+	\num
+	\n
+	\nm
+	\nml
+	\un：匹配 n，其中 n 是以四位十六进制数表示的 Unicode 字符。例如，\u00A9 匹配版权符号 (©)。
+
 
 
 
@@ -132,17 +175,6 @@
 		 System.out.println("Found value: " + m.group(2) );
 		 System.out.println("Found value: " + m.group(3) ); 
 		} 
-
-
-
-
-·关于\：
-		在其他语言中，\\ 表示：我想要在正则表达式中插入一个普通的（字面上的）反斜杠，请不要给它任何特殊的意义。
-		在 Java 中，\\ 表示：我要插入一个正则表达式的反斜线，所以其后的字符具有特殊的意义。
-
-		所以，在其他的语言中（如Perl），一个反斜杠 \ 就足以具有转义的作用，而在 Java 正则表达式中，则需要有两个反斜杠才能被解析为其他语言中的转义作用。
-		也可以简单的理解在 Java 的正则表达式中，两个 \\ 代表其他语言中的一个 \，这也就是为什么表示一位数字的正则表达式是 \\d，而表示一个普通的反斜杠是 \\\\，一个*普通的反斜杠是 \\\*。
-
 
 
 

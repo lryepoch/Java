@@ -88,6 +88,7 @@
 	··以特定字符分割字符串，并返回字符串数组：String[] str=string.split("-");
 
 
+
 ----------------------------
 【数组】：
 	拼接一个最大/小的数字、合并两个有序数组、调整数组顺序使奇数位于偶数前面、查找多数元素、数组中的重复元素；
@@ -104,16 +105,18 @@
 
 	··快慢指针中的快慢是指移动的步长，及每次向前移速度的快慢。例如：快指针每次沿链表向前移动2，慢指针每次向前移动1。快指针控制进栈和出栈的时机，慢指针然后将出栈的跟后面一半的数据进行比较。
     	快慢指针应用:
-						1.判断单链表是否为循环链表。 2.寻找链表的中间位置（当不是数组时）。 3.如果链表有环，如何找到环的入口。
-	··关于链表：
-					 class ListNode {
-							    int val;
-							    ListNode next=null;
+					1.判断单链表是否为循环链表。 2.寻找链表的中间位置（当不是数组时）。 3.如果链表有环，如何找到环的入口。
 
-							    ListNode(int val) {
-							        this.val = val;
-							     }
-				    }
+	··关于链表：
+			 class ListNode {
+					    int val;
+					    ListNode next=null;
+
+					    ListNode(int val) {
+					        this.val = val;
+					     }
+		    }
+
     ··ListNode head中head。p = head->next；表示head的指针域，即p指向首元结点。
 	    当有头结点时，头指针是指向头结点的，而不是头结点指向首元结点的那个指针，头指针位于头结点之前。
 	    当没有头结点时，头指针直接指向首元结点。
@@ -131,6 +134,9 @@
 
 -------------------------
 【双向链表】:数据、直接前驱、直接后继。
+
+
+
 
 
 -------------------------
@@ -307,36 +313,36 @@
 				总之，一般情况下，深度优先搜索法占内存少但速度较慢，广度优先搜索算法占内存多但速度较快，在距离和深度成正比的情况下能较快地求出最优解。因此在选择用哪种算法时，要综合考虑。决定取舍。
 
 
-	··对于图的操作，还有一个最常用的就是找到最小生成树，最小生成树就是用最少的边连接所有顶点。对于给定的一组顶点，可能有很多种最小生成树，但是最小生成树的边的		数量 E 总是比顶点 V 的数量小1，即：V = E + 1。
-				这里不用关心边的长度，不是找最短的路径（会在带权图中讲解），而是找最少数量的边，可以基于深度优先搜索和广度优先搜索来实现。
-				比如基于深度优先搜索，我们记录走过的边，就可以创建一个最小生成树。因为DFS 访问所有顶点，但只访问一次，它绝对不会两次访问同一个顶点，但她看到某条边将到达一个已访问的顶点，它就不会走这条边，它从来不遍历那些不可能的边，因此，DFS 算法走过整个图的路径必定是最小生成树。
+	··对于图的操作，还有一个最常用的就是找到最小生成树，最小生成树就是用最少的边连接所有顶点。对于给定的一组顶点，可能有很多种最小生成树，但是最小生成树的边的数量E总是比顶点V的数量小1，即：V = E+1。
+		这里不用关心边的长度，不是找最短的路径（会在带权图中讲解），而是找最少数量的边，可以基于深度优先搜索和广度优先搜索来实现。
+		比如基于深度优先搜索，我们记录走过的边，就可以创建一个最小生成树。因为DFS 访问所有顶点，但只访问一次，它绝对不会两次访问同一个顶点，但她看到某条边将到达一个已访问的顶点，它就不会走这条边，它从来不遍历那些不可能的边，因此，DFS 算法走过整个图的路径必定是最小生成树。
 
 
-				//基于深度优先搜索找到最小生成树
-				public void mst(){
-				    vertexList[0].wasVisited = true;
-				    theStack.push(0);
-				     
-				    while(!theStack.isEmpty()){
-				        int currentVertex = theStack.peek();
-				        int v = getAdjUnvisitedVertex(currentVertex);
-				        if(v == -1){
-				            theStack.pop();
-				        }else{
-				            vertexList[v].wasVisited = true;
-				            theStack.push(v);
-				             
-				            displayVertex(currentVertex);
-				            displayVertex(v);
-				            System.out.print(" ");
-				        }
-				    }
-				     
-				    //搜索完毕，初始化，以便于下次搜索
-				    for(int i = 0; i < nVerts; i++) {
-				        vertexList[i].wasVisited = false;
-				    }
-				}
+		//基于深度优先搜索找到最小生成树
+		public void mst(){
+		    vertexList[0].wasVisited = true;
+		    theStack.push(0);
+		     
+		    while(!theStack.isEmpty()){
+		        int currentVertex = theStack.peek();
+		        int v = getAdjUnvisitedVertex(currentVertex);
+		        if(v == -1){
+		            theStack.pop();
+		        }else{
+		            vertexList[v].wasVisited = true;
+		            theStack.push(v);
+		             
+		            displayVertex(currentVertex);
+		            displayVertex(v);
+		            System.out.print(" ");
+		        }
+		    }
+		     
+		    //搜索完毕，初始化，以便于下次搜索
+		    for(int i = 0; i < nVerts; i++) {
+		        vertexList[i].wasVisited = false;
+		    }
+		}
 
 
 ----------------------
@@ -357,15 +363,3 @@
 
    
 
-------------------------
-【其他】：
-·Math类的常用API：
-	··Math.random()和Random的对比：
-		···Random类专门用于生成一个伪随机数，它有两个构造器：一个构造器使用默认的种子（以当前时间作为种子），另一个构造器需要程序员显式的传入一个long型整数的种子。Random比Math的random（）方法提供了更多的方式来生成各种伪随机数。
-
-	    ···Random类中的nextXxxx系列方法生成0－n的随机数；Math.random() 方法生成[0, 范围内的double类型随机数，Math.random() 线程安全，多线程环境能被调用，如无特殊需求，则使用(int)(Math.random()*n)的方式生成随机数即可。
-
-	    eg：public int nextInt(int n)				该方法的作用是生成一个随机的int值，该值介于[0,n)的区间，也就是0到n之间的随机int值，包含0而不包含n。
-
-    ··Math.max(a,b);找最大值；
-    ··Math.min(a, b);找最小值；
