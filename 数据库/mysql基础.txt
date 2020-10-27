@@ -206,6 +206,26 @@
 
 				在带in的子查询中，会遍历表中所有记录进行筛选，带exists的查询找到一条记录就返回，不会遍历整个表，所以带exists的查询是一个优质查询。
 
+				‍‍区分in和exists，not in和not exists：
+
+					select * from 表A where id in (select id from 表B)
+					上面sql语句相当于：
+					select * from 表A where exists(select * from 表B where 表B.id=表A.id)
+
+					区分in和exists主要是造成了驱动顺序的改变（这是性能变化的关键）。
+					如果是exists，那么以外层表为驱动表，先被访问；如果是IN，那么先执行子查询。
+					所以IN适合于外表大而内表小的情况；EXISTS适合于外表小而内表大的情况。
+
+					关于not in和not exists，推荐使用not exists，不仅仅是效率问题，not in可能存在逻辑问题。
+					如何高效的写出一个替代not exists的sql语句？
+
+					原sql语句
+					select colname … from A表 where a.id not in (select b.id from B表)
+
+					高效的sql语句
+					select colname … from A表 Left join B表 on where a.id = b.id where b.id is null
+
+
 		>能用连接查询就不要使用嵌套查询；
 		>使用聚集函数实现子查询比直接用ANY或ALL查询效率高；
 
@@ -230,6 +250,10 @@
 
 	··基于派生表的查询：
 		···子查询出现在FROM字句中，select查询的结果也是一张表，可以作为出现在from子句后面作为派生表进行查询。
+
+
+
+
 
 
 
