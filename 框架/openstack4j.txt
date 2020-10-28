@@ -31,8 +31,10 @@
 
 
 
-·dhcp:使用openstack4j创建实例可以指定IP或者指定网段然后DHCP分配IP。指定的IP可以直接获取了，那DHCP分配的IP如何获取，看了半天API发现可以通过port去获取。
-
+·DHCP：使用openstack4j创建实例可以指定IP或者指定网段，然后DHCP分配IP。
+	
+	指定的IP可以直接获取了，那DHCP分配的IP如何获取，看了半天API发现可以通过port去获取。
+	
 	PortListOptions options = PortListOptions.create();
 	options.deviceId(serverId);
 	List<? extends Port> ports = os3.networking().port().list(options);
