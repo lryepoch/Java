@@ -29,7 +29,7 @@
 
 如何去写一手好SQL?
 ------------------------
-··MySQL性能
+·MySQL性能
 	最大数据量：抛开数据量和并发数，谈性能都是耍流氓。MySQL 没有限制单表最大记录数，它取决于操作系统对文件大小的限制。
 
 	《阿里巴巴Java开发手册》提出单表行数超过500万行或者单表容量超过2GB，才推荐分库分表。性能由综合因素决定，抛开业务复杂度，影响程度依次是硬件配置、MySQL配置、数据表设计、索引优化。500万这个值仅供参考，并非铁律。
@@ -48,7 +48,7 @@ MySQL会为每个连接提供缓冲区，意味着消耗更多的内存。如果
 	不允许执行极度耗时的事务，配合应用程序拆分成更小的事务。
 	预估重要数据表（比如订单表）的负载和数据增长态势，提前优化。
 
-··数据表设计
+·数据表设计
 	数据类型：选择原则是更简单或者占用空间更小。
 	如果长度能够满足，整型尽量使用tinyint、smallint、medium_int而非int。
 	如果字符串长度确定，采用char类型。
@@ -63,7 +63,7 @@ MySQL会为每个连接提供缓冲区，意味着消耗更多的内存。如果
 
 	text类型：由于text字段储存大量数据，表容量会很早涨上去，影响其他字段的查询性能。建议抽取出来放在子表里，用业务主键关联。
 
-··索引优化
+·索引优化
 	索引分类：
 	普通索引：最基本的索引。
 	组合索引：多个字段上建立的索引，能够加速复合查询条件的检索。
@@ -78,7 +78,7 @@ MySQL会为每个连接提供缓冲区，意味着消耗更多的内存。如果
 	字符串可使用前缀索引，前缀长度控制在5-8个字符。
 	字段唯一性太低，增加索引没有意义，如：是否删除、性别。
 
-··SQL优化
+·SQL优化
 	分批处理：不带分页参数的查询或者影响大量数据的update和delete操作，都是树枝，我们要把它打散分批处理。
 
 	不做列运算：
@@ -129,5 +129,95 @@ MySQL会为每个连接提供缓冲区，意味着消耗更多的内存。如果
 	LIMIT优化:limit用于分页查询时越往后翻性能越差，解决的原则：缩小扫描范围；
 
 
-··其他数据库：作为一名后端开发人员，务必精通作为存储核心的MySQL或SQL Server，也要积极关注NoSQL数据库，他们已经足够成熟并被广泛采用，能解决特定场景下的性能瓶颈。
+·其他数据库：作为一名后端开发人员，务必精通作为存储核心的MySQL或SQL Server，也要积极关注NoSQL数据库，他们已经足够成熟并被广泛采用，能解决特定场景下的性能瓶颈。
 	Memcache/Redis/MongoDb/Neo4J
+
+
+
+
+
+JDBC
+-------------------------
+·JDBC中的3个：
+	··Statement：执行简单的sql语句，不带参数化的查询；
+
+	··preparedStatement：继承自Statement，参数化查询，可以预编译sql语句，性能更好，防止sql注入；
+
+		···sql注入：即使得where条件恒为真，无须账号密码也能获取到数据库的数据，甚至可以删除数据库；
+
+		···解决办法之一：使用preparedStatement，因为preparedStatement是参数化查询的，数据库不会将参数作为sql指令的一部分来处理，而是在数据库完成编译		后，才套用参数运行，因此就算参数中含有破坏性的指令也不会被数据库编译；局限性：不允许一个占位符（？）有多个值，在执行有in字句查询时会变得棘手。
+
+		···之二是组合SQL字符串的时候，先对所传入的参数做字符取代，将单引号字符取代为连续2个单引号字符，这在SQL数据库中会被视为字符串中的一个单引号字符；
+
+	··callableStatement：继承自preparedStatement，调用存储过程；准备一个CallableStatement的方法是：CallableStatement Connection.prepareCall();
+										
+	··关于批处理：mysql中没有批处理。
+	··？是占位符的意思，索引从1开始非0。
+	··preparedStatement不会把sql语句发送给数据库做预处理，而是等到执行查询动作的时候（即调用executeQuery（）方法时）才把查询语句发到数据库。这情况和statement一样的。
+
+	··ResultSet跟普通的数组不同，ResultSet结果集读取数据的方法主要是getXXX() ，他的参数可以使整型表示第几列（是从1开始的），还可以是列名。
+
+
+
+
+·dbcp/c3p0都是数据库连接池来的：
+	db.properties和c3p0.xml都是配置数据库连接池的配置文件；
+
+	创建数据源对象方法：在static静态代码块里面实现初始化数据源；
+
+	dbcp:
+	1.通过BasicDataSource类直接创建数据源对象；
+	2.通过BasicDataSourceFactory工厂类读取配置文件（db.properties）；
+	  其中有使用到Properties以及InputStream in=new Example02().getClass().getClassLoader().gtResourceAsStream("db.properties");
+
+	c3p0:
+	1.通过ComboPooledDataSource()构造方法创建数据源对象；
+	2.通过读取配置文件(c3p0.xml)创建数据源对象；
+
+
+
+
+
+·慢查询：
+	··MySQL的慢查询日志是MySQL提供的一种日志记录，它用来记录在MySQL中响应时间超过阀值的语句，具体指运行时间超过long_query_time值的SQL，则会被记录到慢查询日志中。
+		long_query_time的默认值为10，意思是运行10S以上的语句。默认情况下，Mysql数据库并不启动慢查询日志，需要我们手动来设置这个参数，当然，如果不是调优需要的话，一般不建议启动该参数，因为开启慢查询日志会或多或少带来一定的性能影响。
+		慢查询日志支持将日志记录写入文件，也支持将日志记录写入数据库表。
+
+
+	··MySQL慢查询的相关参数解释：
+		slow_query_log    ：是否开启慢查询日志，1表示开启，0表示关闭。
+
+		log-slow-queries  ：旧版（5.6以下版本）MySQL数据库慢查询日志存储路径。可以不设置该参数，系统则会默认给一个缺省的文件host_name-slow.log
+
+		slow-query-log-file：新版（5.6及以上版本）MySQL数据库慢查询日志存储路径。可以不设置该参数，系统则会默认给一个缺省的文件host_name-slow.log
+
+		long_query_time ：慢查询阈值，当查询时间多于设定的阈值时，记录日志。
+
+		log_queries_not_using_indexes：未使用索引的查询也被记录到慢查询日志中（可选项）。
+
+		log_output：日志存储方式。log_output='FILE'表示将日志存入文件，默认值是'FILE'。log_output='TABLE'表示将日志存入数据库，这样日志信息就会被写入到mysql.slow_log表中。MySQL数据库支持同时两种日志存储方式，配置的时候以逗号隔开即可，如：log_output='FILE,TABLE'。日志记录到系统的专用日志表中，要比记录到文件耗费更多的系统资源，因此对于需要启用慢查询日志，又需要能够获得更高的系统性能，那么建议优先记录到文件。
+
+
+	··指令：
+		>show variables like '%slow_query_log%';		#默认情况下slow_query_log的值为OFF，表示慢查询日志是禁用的
+
+		>set global slow_query_log=1;	#开启了慢查询日志只对当前数据库生效，如果MySQL重启后则会失效。如果要永久生效，就必须修改配置文件my.cnf（其它系统变量也是如此）。
+
+		修改my.cnf文件，增加或修改参数slow_query_log 和slow_query_log_file后，然后重启MySQL服务器，如下所示:
+		slow_query_log = 1
+		slow_query_log_file=/tmp/mysql_slow.log
+		>show variables like 'slow_query%'
+
+		关于慢查询的参数slow_query_log_file，它指定慢查询日志文件的存放路径，系统默认会给一个缺省的文件host_name-slow.log（如果没有指定参数slow_query_log_file的话）
+		>show variables like 'slow_query_log_file'
+
+		那么开启了慢查询日志后，什么样的SQL才会记录到慢查询日志里面呢？ 这个是由参数long_query_time控制，默认情况下long_query_time的值为10秒，可以使用命令修改，也可以在my.cnf参数里面修改。关于运行时间正好等于long_query_time的情况，并不会被记录下来。也就是说，在mysql源码里是判断大于long_query_time，而非大于等于。从MySQL 5.1开始，long_query_time开始以微秒记录SQL语句运行时间，之前仅用秒为单位记录。如果记录到表里面，只会记录整数部分，不会记录微秒部分。
+		>show variables like 'long_query_time%';
+		>set global long_query_time=4;
+		>show variables like 'long_query_time'
+
+		注意：使用命令 set global long_query_time=4修改后，需要重新连接或新开一个会话才能看到修改值。你用show variables like 'long_query_time'查看是当前会话的变量值，你也可以不用重新连接会话，而是用show global variables like 'long_query_time'。
+
+		
+
+

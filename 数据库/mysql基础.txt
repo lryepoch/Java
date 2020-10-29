@@ -70,11 +70,12 @@
 	);
 
 	查看数据表：show tables from db_name;
+	查看生成表的SQL：show create table tableName;
 	查看数据表结构，如约束：show columns from tbl_name；
-	显示索引：show indexes from tb_name;
+	查看索引：show indexes from tb_name;
 	切换数据库：use 数据库名；
 	列出所有表：show tables;
-	显示数据表结构：describe 表名；
+	显示数据表结构：describe/desc tableName；
 
 	MySql中 delimiter 详解：其实就是告诉MySQL解释器，该段命令是否已经结束了，mysql是否可以执行了。默认情况下，delimiter是分号;。
 
@@ -113,7 +114,7 @@
 
 
 
-·数据表的结构：
+·数据库表结构：
 	··针对字段：
 		1.增加：ALTER TABLE tb_name ADD column_name 数据类型 ……        【还可以指定列的位置，FIRST, AFTER ……】
 		2.删除：ALTER TABEL tb_name DROP column_name;
@@ -301,7 +302,7 @@
 		SECOND(time):选择秒
 		
 		DATE_ADD(date,INTERVAL expr type)：向日期添加指定的时间间隔，变成未来的一个时间点。date参数是合法的日期表达式；expr参数是您希望添加的时间间隔；type参数可以是DAY/MONTH/YEAR；
-		DATE_SUB(date,INTERVAL expr type)：想日期减去指定的时间间隔，变成过去的一个时间点。
+		DATE_SUB(date,INTERVAL expr type)：向日期减去指定的时间间隔，变成过去的一个时间点。
 
 		DATE_FORMAT(date,format)：date参数是合法的日期。format规定日期/时间的输出格式。
 
@@ -316,7 +317,7 @@
 				···计算两日期之间相差多少天：
 					select timestampdiff(day,'2011-09-30','2015-05-04');
 
-		TO_DAYS(time)返回一个天数!从年份0开始的天数;
+		TO_DAYS(time)：返回一个天数!从年份0开始的天数;
 		eg：查询当前表中昨天的数据：select * from 表名 where to_days(now())-to_days(create_time)<1
 			查询当前表中前天的数据：select * from 表名 where to_days(now())-to_days(create_time)<2 and to_days(now())-to_days(create_time)>1
 
@@ -389,44 +390,6 @@
 				使用 group by 子句对数据进行分组；
 				对 group by 子句形成的组运行聚集函数计算每一组的值；
 				最后用 having 子句去掉不符合条件的组。
-
-
-
-·JDBC中的3个：
-		··Statement：执行简单的sql语句，不带参数化的查询；
-
-		··preparedStatement：继承自Statement，参数化查询，可以预编译sql语句，性能更好，防止sql注入；
-
-			···sql注入：即使得where条件恒为真，无须账号密码也能获取到数据库的数据，甚至可以删除数据库；
-
-			···解决办法之一：使用preparedStatement，因为preparedStatement是参数化查询的，数据库不会将参数作为sql指令的一部分来处理，而是在数据库完成编译		后，才套用参数运行，因此就算参数中含有破坏性的指令也不会被数据库编译；局限性：不允许一个占位符（？）有多个值，在执行有in字句查询时会变得棘手。
-
-			···之二是组合SQL字符串的时候，先对所传入的参数做字符取代，将单引号字符取代为连续2个单引号字符，这在SQL数据库中会被视为字符串中的一个单引号字符；
-
-		··callableStatement：继承自preparedStatement，调用存储过程；准备一个CallableStatement的方法是：CallableStatement Connection.prepareCall();
-											
-		··关于批处理：mysql中没有批处理。
-		··？是占位符的意思，索引从1开始非0。
-		··preparedStatement不会把sql语句发送给数据库做预处理，而是等到执行查询动作的时候（即调用executeQuery（）方法时）才把查询语句发到数据库。这情况和statement一样的。
-
-		··ResultSet跟普通的数组不同，ResultSet结果集读取数据的方法主要是getXXX() ，他的参数可以使整型表示第几列（是从1开始的），还可以是列名。
-
-
-
-
-·dbcp/c3p0都是数据库连接池来的：
-	db.properties和c3p0.xml都是配置数据库连接池的配置文件；
-
-	创建数据源对象方法：在static静态代码块里面实现初始化数据源；
-
-	dbcp:
-	1.通过BasicDataSource类直接创建数据源对象；
-	2.通过BasicDataSourceFactory工厂类读取配置文件（db.properties）；
-	  其中有使用到Properties以及InputStream in=new Example02().getClass().getClassLoader().gtResourceAsStream("db.properties");
-
-	c3p0:
-	1.通过ComboPooledDataSource()构造方法创建数据源对象；
-	2.通过读取配置文件(c3p0.xml)创建数据源对象；
 
 
 
