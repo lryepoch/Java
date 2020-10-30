@@ -111,19 +111,21 @@ swagger3.0
 
 资源签审系统
 项目描述：统一管理数据库资源、Hive、Hbase、Kafka等大数据资源、云主机资源的申请使用以及单位领导的审批流程
-技术选型：Spring、Springboot、springMVC、Mybatis、Ldap、redis、Maven、Mysql5.7、Git
+技术选型：spring、springboot、springMVC、mybatis、ldap、redis、maven、mysql5.7
 工作职责：1.优化公有云资源的审批流程进行开发；
-			2.对系统的资源回收、权限回收/权限查询进行开发；
-			3.重构虚拟机的创建和查询；
-项目成果：
+		2.对系统用户的权限查询、权限复制、权限回收以及资源回收进行开发；
+		3.重构内网云主机的签审；
+
+项目成果：为部门的日常工作的资源签审流程保驾护航；
 
 
 冰箱产品竞争力评价系统
 项目描述：对市面上各大厂商开发的冰箱产品进行多维度的对比分析，根据已有的市场产品来指导今后冰箱产品的开发
-技术选型：Spring、Springboot、springMVC、Mybatis、Maven、Mysql5.7、Git、lambda表达式；
+技术选型：springboot、springMVC、mybatis、maven、mysql5.7、lambda表达式；
 工作职责：设置计算得分的权重，获取得分的权重；
 			用户给产品评分；
-项目成果：
+		
+项目成果：及时交付系统，保证相关部门对市场冰箱销售情况进行信息化分析；
 
 
 GTSC工程服务管理平台
