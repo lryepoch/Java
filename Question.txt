@@ -114,7 +114,10 @@ swagger3.0
 技术选型：spring、springboot、springMVC、mybatis、ldap、redis、maven、mysql5.7
 工作职责：1.优化公有云资源的审批流程进行开发；
 		2.对系统用户的权限查询、权限复制、权限回收以及资源回收进行开发；
-		3.重构内网云主机的签审；
+			权限查询：mysql/hive/hbase/kafka
+			资源回收：mysql/hive/hbase/kafka
+			权限复制：mysql/hive/hbase/kafka/gpu/virtual/microsoft
+		3.重构内网云主机的签审(mysql)以及生成方式(openstack4j)；
 
 项目成果：为部门的日常工作的资源签审流程保驾护航；
 
@@ -129,10 +132,10 @@ swagger3.0
 
 
 GTSC工程服务管理平台
-1.开发环境：IDEA、JDK1.8、Maven、Mysql5.7、Git
-2.系统架构：Spring、Springboot、springMVC、Mybatis
-3.项目描述：根据商用订单系统、MES系统、ERP系统、派工系统等系统接口，给GTSC系统中的设备全生命周期提供数据支持，主要环节包括设备订单、设备生产、设备出货、开机密码、运行状况等节点
-4.工作职责：对系统接入订单信息、生产信息以及出货信息接口进行开发；
+开发环境：IDEA、JDK1.8、Maven、Mysql5.7、Git
+系统架构：Spring、Springboot、springMVC、Mybatis
+项目描述：根据商用订单系统、MES系统、ERP系统、派工系统等系统接口，给GTSC系统中的设备全生命周期提供数据支持，主要环节包括设备订单、设备生产、设备出货、开机密码、运行状况等节点
+工作职责：对系统接入订单信息、生产信息以及出货信息接口进行开发；
 
 
 
