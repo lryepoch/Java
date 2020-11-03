@@ -1,0 +1,107 @@
+
+·JSON基础知识：
+	1.全称：JavaScript Object Notation --对象表示法。
+	2.JSON 是用于存储和传输数据的格式。	
+        JSON 通常用于服务端向网页传递数据 。
+        JSON 数据可使用 AJAX 进行传输。
+	3.JSON 文件：	JSON 文件的文件类型是 ".json"；	
+                    JSON 文本的 MIME 类型是 "application/json"。
+
+
+·为什么使用 JSON？
+	JSON 比 XML 更小、更快、更易解释。
+    JSON 独立于语言；
+
+
+
+·JSON 语法规则：
+				JSON 语法是 JavaScript 对象表示语法的子集。
+				数据在名称/值对中；
+				数据由逗号分隔；
+				中括号保存数组；
+				大括号保存对象，对象可以包含多个名称/值对。key 必须是字符串，value 可以是合法的 JSON 数据类型（字符串, 数字, 对象, 数组, 布尔值或 null）；
+				eg：
+						{
+								"sites": [
+												{ "name":"菜鸟教程" , "url":"www.runoob.com" }, 
+												{ "name":"google" , "url":"www.google.com" }, 
+												{ "name":"微博" , "url":"www.weibo.com" }
+											]
+						}
+				解析：sites对象是包含3个站点记录（对象）的数组，可以访问sites[0].name；修改sites[0].name="菜鸟教程"。
+
+
+
+·json对象和json字符串的区别：
+	··json 对象
+		var str2 = { "name": "asan", "sex": "man" };
+
+	··json字符串
+		var str1 = '{ "name": "deyuyi", "sex": "man" }';
+
+
+
+
+·JSONObject和JSONArray区别：
+    ··JSONObject的数据是用 {  } 来表示的，例如：{ "id" : "123", "courseID" : "huangt-test", "title" : "提交作业", "content" : null  } 
+
+    ··JSONArray，顾名思义是由JSONObject构成的数组，用  [ { } , { } , ......  , { } ]  来表示
+        例如：[ {  "id" : "123", "courseID" : "huangt-test", "title" : "提交作业" }  ,  {  "content" : null, "beginTime" : 1398873600000  "endTime" } ] 
+    明显的区别，一个最外面用的是 {  }  ，一个最外面用的是 [  ]；
+
+
+
+
+
+·JSON常见数据格式转换：
+	··区别：
+	JSONObject var obj = { "name": "xiaoling", "age": "18" }; 
+
+	JSON字符串 var obj = “{ "name": "xiaoling", "age": "18" }”;
+
+
+	··转换：
+	从json对象中获取某个字段的json数组值：
+	JSONObject jsonObject = JSONObject.parseObject(string); 
+	JSONArray array = jsonObject.getJSONArray("data"); //data对应的是一个json数组
+
+	JSON格式的数据转换成数组格式:
+	JSONArray array = JSONArray.parseArray(jsonString, T.class); 
+	JSONArray array = JSONArray.parseArray(jsonString);
+
+
+	json对象转换成java对象：
+	JSONObject json; 
+	T t = json.toJavaObject(T.class);
+
+	java对象转换json对象：
+	JSONObject jsonObject = (JSONObject)JSON.toJSON(object); 
+	or
+	JSONObject jsonObject = new JSONObject(object); 
+	or
+	JSONObject obj = JSONObject.parseObject(JSONObject.toJSONString(object));
+
+
+	java对象转换成json字符串:
+	String jsonString = JSONObject.toJSONString(object);
+
+	json字符串转换成java对象:
+	T t = JSONObject.parseObject(jsonString, T.class);
+
+	json字符串转换成json对象：
+	JSONObject obj = JSONObject.parseObject(jsonString);
+
+
+
+
+·json传参：
+	{
+	    "id": [
+	        1,
+	        3
+	    ]
+	}
+	public BasicResponse delete(@RequestBody String id) {
+		JSONArray array = JSONObject.parseArray(id);
+		List<Integer> ids = array.subList(0, array.size());
+	}
