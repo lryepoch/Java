@@ -6,7 +6,6 @@
 ·对象拷贝（实体转换器）：
 -----------------------
 	··Apache的BeanUtils、Spring的BeanUtils、Mapstruct：
-
 		1.无论是org.springframework.beans或者org.apache.commons.beanutils，与(Mapstruct)get/set方式相比，都存在性能问题。
 		2.效率由高到底：MapStruct>Spring>Apache。数据量越大，这个性能优势越来越明显；
 

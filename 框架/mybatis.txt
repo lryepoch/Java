@@ -1,6 +1,5 @@
- 
-MyBatis：
 
+------------------------
 ·概念：
 		MyBatis消除了几乎所有的 JDBC 代码和参数的手工设置以及结果集的检索。 MyBatis使用简单的 XML 或注解用于配置和原始映射，将接口和 Java 的 POJO(普通的 Java对象)映射成数据库中的记录。
 		支持普通SQL、存储过程和高级映射的持久层框架；
@@ -118,8 +117,8 @@ MyBatis：
 ·MyBatis之输入(parameterType)与输出(resultType、resultMap)映射
 		··输入映射parameterType
 		··输出映射：
-				···resultType：sql查询的列名要和resultType指定pojo的属性名相同
-				···resultMap：用于别名的配置，实现高级映射【别名+延迟加载】
+			···resultType：sql查询的列名要和resultType指定pojo的属性名相同
+			···resultMap：用于别名的配置，实现高级映射【别名+延迟加载】
 
 		··高级映射：输入映射parameterType而言是没有所谓的高级映射的，也就是说高级映射只针对于输出映射(因为高级映射设计到多张表)。
 
@@ -128,37 +127,19 @@ MyBatis：
 
 ·表间的一对一、一对多、多对多查询解析：
 
-	（1）使用resultType实现一对一映射：
-	（2）使用resultMap实现一对一映射：
-	
-		比较resultType和resultMap完成一对一映射：
-				resultType：要自定义pojo，继承一个已存在的pojo。保证sql查询列和pojo的属性对应，这种方法相对较简单，所以应用广泛。
+	··实现一对一映射，使用resultType和使用resultMap：
+		resultType：要自定义pojo，继承一个已存在的pojo。保证sql查询列和pojo的属性对应，这种方法相对较简单，所以应用广泛。
+		
+		resultMap：使用association完成一对一映射需要配置一个resultMap标签，过程有点复杂。可以配置别名。
+					如果要实现延迟加载，就只能用resultMap实现，如果为了方便对关联信息进行解析，也可以用association将关联信息映射到pojo中方便解析。
+		
 
-				resultMap：使用association完成一对一映射需要配置一个resultMap标签，过程有点复杂。可以配置别名。
-							如果要实现延迟加载，就只能用resultMap实现，如果为了方便对关联信息进行解析，也可以用association将关联信息映射到pojo中方便解析。
+	··多表间的一对多查询：使用collection完成一对多映射。
 
-	（3）多表间的一对多查询：使用collection完成一对多映射。
+	··多表间的多对多查询：一对多是多对多的特例。
 
-	（4）多表间的多对多查询：一对多是多对多的特例。
-
-		插曲：区别一对一和一对多（association与selection区别）
-						public class Student{
-								//学生姓名
-								private String name;
-
-								//学生父亲
-								private Parent p;
-
-								//学生所选课程
-								private List c;
-						}
-
-		小结：查询学生时关联查询其父信息用association：用于映射关联查询单个对象的信息。【一个学生只有一个父亲】
-				  关联查询所选课程时用collection：对关联查询到的多条记录映射到集合对象中。【一个学生要上多门课程】
-
-
-			  单表查询时，可以直接使用mybatis generator生成的xml；
-			  多表查询时，有2种解决方案：1、直接在类中加入另一个类的类名；2、设计一个包装类继承于之前存在的类。
+	··单表查询时，可以直接使用mybatis generator生成的xml；
+	··多表查询时，有2种解决方案：1、直接在类中加入另一个类的类名；2、设计一个包装类继承于之前存在的类。
 
 
 
