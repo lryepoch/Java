@@ -43,5 +43,54 @@
 
 
 
-·ObjectMapper的使用：数据模型转换框架
-eg：字符串转换成map。JSONObject的API也可以；
+·ObjectMapper的使用：数据模型转换框架。可以方便的将模型对象转换为JSON，或者JSON生成相应的模型类。
+
+	··字符串转换成实体：
+		String jsonString = "{\"id\":1001,\"name\":\"Tom\",\"info\":\"一个小男孩\"}";
+		Student student = mapper.readValue(jsonString, Student.class);
+
+	··实体类转字符串：
+		Student student = new Student();
+		student.setId(1002);
+		student.setName("李四");
+		student.setInfo("一个小女孩");
+		String jsonString = mapper.writeValueAsString(student);
+
+	··字符串转List<实体类>：
+		String jsonString = "[
+								{\"id\":1001,\"name\":\"Tom\",\"info\":\"一个小男孩\"}, 
+								{\"id\":1002,\"name\":\"Jane\",\"info\":\"一个小女孩\"}
+							]";
+        Student[] stu = mapper.readValue(jsonString, Student[].class);
+        for (Student student : stu) {
+            System.out.println(student);
+        }
+        String ss = mapper.writeValueAsString(stu);
+
+
+
+
+·Java对象转JSON时如何动态的增删改查属性：
+    ··JSON字符串增加额外字段：
+    	String json = "{\n" +
+        "    \"username\":\"felord.cn\",\n" +
+        "    \"age\":18\n" +
+        "}";
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		ObjectNode jsonNodes = objectMapper.readValue(json, ObjectNode.class);
+		jsonNodes.put("gender", "male");
+		String newJson = objectMapper.writeValueAsString(jsonNodes);
+		// newJson = {"username":"felord.cn","age":18,"gender":"male"}
+
+
+	··对象转JSON时新增字段：
+		User user = new User();
+		user.setUsername("felord.cn");
+		user.setAge(18);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectNode jsonNodes = objectMapper.valueToTree(user);
+		jsonNodes.put("gender", "male");
+		String newJson = objectMapper.writeValueAsString(jsonNodes);
+		// newJson = {"username":"felord.cn","age":18,"gender":"male"}

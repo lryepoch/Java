@@ -1,18 +1,18 @@
 
 ------------------------
 ·概念：
-		MyBatis消除了几乎所有的 JDBC 代码和参数的手工设置以及结果集的检索。 MyBatis使用简单的 XML 或注解用于配置和原始映射，将接口和 Java 的 POJO(普通的 Java对象)映射成数据库中的记录。
-		支持普通SQL、存储过程和高级映射的持久层框架；
+	MyBatis消除了几乎所有的 JDBC 代码和参数的手工设置以及结果集的检索。 MyBatis使用简单的 XML 或注解用于配置和原始映射，将接口和 Java 的 POJO(普通的 Java对象)映射成数据库中的记录。
+	支持普通SQL、存储过程和高级映射的持久层框架；
 
-		主要思想=将SQL语句和程序代码分离，在配置文件中灵活实现SQL语句；
-		对JDBC操作数据库的过程进行封装，开发组只需关注SQL语句即可。
+	主要思想=将SQL语句和程序代码分离，在配置文件中灵活实现SQL语句；
+	对JDBC操作数据库的过程进行封装，开发组只需关注SQL语句即可。
 
 
 
 ·ORM框架
-		·背景：面向对象编程语言和关系型数据库发展不同步情况下的中间解决方案；
-		·好处：采用ORM框架，不再直接访问底层数据库，而是以面向对象的方式来操作持久化对象（即POJO【类似于JavaBean】,完成增删改等操作），ORM框架将这些面向对象操作转换成SQL操作。
-		·现状：当前ORM框架主要有五种：Hibernate(Nhibernate)，iBATIS，mybatis，EclipseLink，JFinal，ORM是通过使用描述对象和数据库之间映射的元数据。可以理解ORM框架可以作为面向对象语言和数据库之间的桥梁。
+	··背景：面向对象编程语言和关系型数据库发展不同步情况下的中间解决方案；
+	··好处：采用ORM框架，不再直接访问底层数据库，而是以面向对象的方式来操作持久化对象（即POJO【类似于JavaBean】,完成增删改等操作），ORM框架将这些面向对象操作转换成SQL操作。
+	··现状：当前ORM框架主要有五种：Hibernate(Nhibernate)，iBATIS，mybatis，EclipseLink，JFinal，ORM是通过使用描述对象和数据库之间映射的元数据。可以理解ORM框架可以作为面向对象语言和数据库之间的桥梁。
 
 
 
@@ -72,26 +72,26 @@
 
 
 ·MyBatis配置文件中的内容和顺序:
-								<configuration>
-										<properties>(属性)：把一些通用的属性值配置在属性文件中，加载到mybatis运行环境内。例如创建db.properties文件，然后在SqlMapperConfig.xml中进行配置。然后在<environments>标签中用${}符号做如下修改。
+	<configuration>
+			<properties>(属性)：把一些通用的属性值配置在属性文件中，加载到mybatis运行环境内。例如创建db.properties文件，然后在SqlMapperConfig.xml中进行配置。然后在<environments>标签中用${}符号做如下修改。
 
-										<setting>(全局配置参数)：包括很多的性能参数(最大线程数、最大等待时间…)，而mybatis没有这些性能参数，由mybatis自动调节。
+			<setting>(全局配置参数)：包括很多的性能参数(最大线程数、最大等待时间…)，而mybatis没有这些性能参数，由mybatis自动调节。
 
-										<typeAliases>(类型别名)：可以将parameterType、resultType中指定的类型通过别名引用。定义别名后这样我们在parameterType和resultType中使用时就不用再繁琐的指定类的全限定类名了。还可以批量别名定义：<package name="domain"/>
+			<typeAliases>(类型别名)：可以将parameterType、resultType中指定的类型通过别名引用。定义别名后这样我们在parameterType和resultType中使用时就不用再繁琐的指定类的全限定类名了。还可以批量别名定义：<package name="domain"/>
 
-										<typeHandlers>(类型处理器)：类型处理器将java类型和jdbc类型进行映射。一般情况下够用。
+			<typeHandlers>(类型处理器)：类型处理器将java类型和jdbc类型进行映射。一般情况下够用。
 
-										<objectFactory>(对象工厂)
+			<objectFactory>(对象工厂)
 
-										<plugins>(插件)
+			<plugins>(插件)
 
-										<environments>(环境集合属性对象)
-												<environment>(环境子属性对象)
-														<transactionManager>(事务管理)
-														<dataSource>(数据源)
-												
-										<mappers>(映射器)：在配置文件中这样配置<mapper class=“mapper.UserMapper”/>，这样的要求需要保证UserMapper.xml文件和UserMapper.java在同一个包下且.xml文件和.java文件名要同名。还可以批量配置：:<package name=“mapper”/>
-								<configuration>
+			<environments>(环境集合属性对象)
+					<environment>(环境子属性对象)
+							<transactionManager>(事务管理)
+							<dataSource>(数据源)
+					
+			<mappers>(映射器)：在配置文件中这样配置<mapper class=“mapper.UserMapper”/>，这样的要求需要保证UserMapper.xml文件和UserMapper.java在同一个包下且.xml文件和.java文件名要同名。还可以批量配置：:<package name=“mapper”/>
+	<configuration>
 
 
 
@@ -114,7 +114,65 @@
 
 
 
-·MyBatis之输入(parameterType)与输出(resultType、resultMap)映射
+·表间一对一、一对多、多对多查询解析：
+
+	··实现一对一映射，使用resultType和使用resultMap：
+		resultType：要自定义pojo，继承一个已存在的pojo。保证sql查询列和pojo的属性对应一致，这种方法相对较简单，所以应用广泛。
+
+		resultMap：使用association完成一对一映射需要配置一个resultMap标签，过程有点复杂。可以配置别名。
+					如果要实现延迟加载，就只能用resultMap实现，如果为了方便对关联信息进行解析，也可以用association将关联信息映射到pojo中方便解析。
+
+	··一对多查询：使用collection完成一对多映射。
+
+	··多对多查询：一对多是多对多的特例。
+
+	··单表查询时，可以直接使用mybatis generator生成的xml；
+	··多表查询时，有2种解决方案：1、直接在类中加入另一个类的类名；2、设计一个包装类继承于之前存在的类。
+
+
+
+
+·<association>和<collection>：
+	
+	第一种方式：查询一般只涉及到主表；（当主表查询条件涉及到辅表，需要关联查询辅表）
+		<association property="类中类的属性名" 
+						column="某id" 
+						javaType="类中类的数据类型" 
+						fetchType="lazy" 
+						select="**.xxxMapper.selectById"/>
+
+		<collection property="类中类的属性名" 
+					column="类和类中类相关联的字段(一般是id)" 
+					ofType="类中类的全限定名" 
+					javaType="类中类的数据类型" 
+					fetchType="lazy"
+					select="**.xxxMapper.selectById"/>
+		
+
+	第二种方式：主表关联查询辅表
+		<association property="类中类的属性名" 
+						column="某id" 
+						javaType="类中类数据类型">
+			<id property="id" column="id" />
+			<result property="name" column="name" />
+			……
+		</association>
+		or
+		<association property="" column="" resultMap=""/>
+
+
+		<collection property="类中类的属性名" 
+					ofType="类中类的全限定名" 
+					fetchType="lazy">
+			<id property="id" column="id" />
+			<result property="name" column="name" />
+			……
+		</collection>
+
+
+
+
+·输入(parameterType)与输出(resultType、resultMap)映射：
 		··输入映射parameterType
 		··输出映射：
 			···resultType：sql查询的列名要和resultType指定pojo的属性名相同
@@ -122,24 +180,6 @@
 
 		··高级映射：输入映射parameterType而言是没有所谓的高级映射的，也就是说高级映射只针对于输出映射(因为高级映射设计到多张表)。
 
-
-
-
-·表间的一对一、一对多、多对多查询解析：
-
-	··实现一对一映射，使用resultType和使用resultMap：
-		resultType：要自定义pojo，继承一个已存在的pojo。保证sql查询列和pojo的属性对应，这种方法相对较简单，所以应用广泛。
-		
-		resultMap：使用association完成一对一映射需要配置一个resultMap标签，过程有点复杂。可以配置别名。
-					如果要实现延迟加载，就只能用resultMap实现，如果为了方便对关联信息进行解析，也可以用association将关联信息映射到pojo中方便解析。
-		
-
-	··多表间的一对多查询：使用collection完成一对多映射。
-
-	··多表间的多对多查询：一对多是多对多的特例。
-
-	··单表查询时，可以直接使用mybatis generator生成的xml；
-	··多表查询时，有2种解决方案：1、直接在类中加入另一个类的类名；2、设计一个包装类继承于之前存在的类。
 
 
 
@@ -180,72 +220,72 @@
 
 
 
-
 ·mybatis持久层缓存：
 
-		··用户查询的数据放在缓存中，不用从数据库中查找，提高了查询效率，解决了高并发系统的性能问题。
+	··用户查询的数据放在缓存中，不用从数据库中查找，提高了查询效率，解决了高并发系统的性能问题。
 
-		··MyBatis提供了一级缓存和二级缓存，MyBatis一级缓存是一个SqlSession级别，SqlSession只能访问自己的一级缓存的数据；二级缓存是跨SqlSession，是mapper级别的缓存，对于mapper级别的缓存不同的Sqlsession是可以共享的。
+	··MyBatis提供了一级缓存和二级缓存，MyBatis一级缓存是一个SqlSession级别，SqlSession只能访问自己的一级缓存的数据；二级缓存是跨SqlSession，是mapper级别的缓存，对于mapper级别的缓存不同的Sqlsession是可以共享的。
 
-		··缓存机制是基于id进行缓存的，mybatis使用hashmap缓存数据时，是使用对象的id作为key，对象作为value的。
+	··缓存机制是基于id进行缓存的，mybatis使用hashmap缓存数据时，是使用对象的id作为key，对象作为value的。
 
-		>一级缓存：同一个sqlsession再次发出相同的sql，就从缓存中取,而不走数据库。如果两次中间出现commit操作（修改、添加、删除），本sqlsession中的一级缓存区域全部清空，下次再去缓存中查询不到所以要从数据库查询，从数据库查询到再写入缓存。即对于查询操作，每次查询都先从缓存中查询，如果缓存中查询到数据则将缓存数据直接返回，如果缓存中查询不到就从数据库查询。
+	>一级缓存：同一个sqlsession再次发出相同的sql，就从缓存中取,而不走数据库。如果两次中间出现commit操作（修改、添加、删除），本sqlsession中的一级缓存区域全部清空，下次再去缓存中查询不到所以要从数据库查询，从数据库查询到再写入缓存。即对于查询操作，每次查询都先从缓存中查询，如果缓存中查询到数据则将缓存数据直接返回，如果缓存中查询不到就从数据库查询。
 
-		一级缓存配置：mybatis默认支持一级缓存不需要配置。
-		注意:mybatis和spring整合后进行mapper代理开发，不支持一级缓存，mybatis和spring整合，spring按照mapper的模板去生成mapper代理对象，模板中在最后统一关闭sqlsession。
+	一级缓存配置：mybatis默认支持一级缓存不需要配置。
+	注意:mybatis和spring整合后进行mapper代理开发，不支持一级缓存，mybatis和spring整合，spring按照mapper的模板去生成mapper代理对象，模板中在最后统一关闭sqlsession。
 
-		>二级缓存：范围是mapper级别（mapper同一个命名空间），mapper以命名空间为单位创建缓存数据结构，结构是map<key、value>。二级缓存是多个sqlsession共享的。
-		过程：每次查询先看是否开启二级缓存，如果开启从二级缓存的数据结构中取缓存数据，如果从二级缓存没有取到，再从一级缓存中找，如果一级缓存也没有，从数据库查询。
+	>二级缓存：范围是mapper级别（mapper同一个命名空间），mapper以命名空间为单位创建缓存数据结构，结构是map<key、value>。二级缓存是多个sqlsession共享的。
+	过程：每次查询先看是否开启二级缓存，如果开启从二级缓存的数据结构中取缓存数据，如果从二级缓存没有取到，再从一级缓存中找，如果一级缓存也没有，从数据库查询。
 
-			二级缓存的配置：不像一级缓存那样mybatis自动开启一级缓存，mybatis是默认关闭二级缓存的，所以我们需要进行两个操作才能开启二级缓存:
-					1.在核心配置文件SqlMapperConfig.xml中加入<setting name="cacheEnabled" value="true"/>，属性值cacheEnabled表示对在此配置文件下的所有cache 进行全局性开/关设置，它的可选值为true｜false,默认值为true。
-					2.在你的Mapper映射文件中添加一行:<cache /> ，表示此mapper开启二级缓存。
+		二级缓存的配置：不像一级缓存那样mybatis自动开启一级缓存，mybatis是默认关闭二级缓存的，所以我们需要进行两个操作才能开启二级缓存:
+				1.在核心配置文件SqlMapperConfig.xml中加入<setting name="cacheEnabled" value="true"/>，属性值cacheEnabled表示对在此配置文件下的所有cache 进行全局性开/关设置，它的可选值为true｜false,默认值为true。
+				2.在你的Mapper映射文件中添加一行:<cache /> ，表示此mapper开启二级缓存。
 
-			二级缓存的禁用：
-			对于变化频率较高的sql，需要禁用二级缓存：在statement中设置useCache=false可以禁用当前select语句的二级缓存，即每次查询都会发出sql去查询，默认情况是true，即该sql使用二级缓存。
-			<select id="findOrderListResultMap" resultMap="ordersUserMap" useCache="false">
+		二级缓存的禁用：
+		对于变化频率较高的sql，需要禁用二级缓存：在statement中设置useCache=false可以禁用当前select语句的二级缓存，即每次查询都会发出sql去查询，默认情况是true，即该sql使用二级缓存。
+		<select id="findOrderListResultMap" resultMap="ordersUserMap" useCache="false">
 
 
-		>刷新缓存：
-		将二级缓存进行刷新操作有两种方式:
-		如果sqlsession操作commit操作，对二级缓存进行刷新（全局清空）。
-		设置statement的flushCache是否刷新缓存，默认值是true。
+	>刷新缓存：
+	将二级缓存进行刷新操作有两种方式:
+	如果sqlsession操作commit操作，对二级缓存进行刷新（全局清空）。
+	设置statement的flushCache是否刷新缓存，默认值是true。
 
 
 
 ·动态sql：使用到了标签。
-		··<if>：条件判断。
-		··<where>：会进行自动判断，这是为了弥补<if>标签的缺陷而使用的，所以两者通常一起使用。
-					如果任何条件都不成立，那么就在sql语句里就不会出现where关键字。
-					如果有任何条件成立，会自动去掉多出来的 and 或者 or。
-				将自定义查询条件查询用户列表和查询用户列表总记录数改为动态sql，需要使用where标签和if标签。where中包含if标签。但是这样会有重复，我们要定义sql片段。然后在where中使用include引用sql片段。
+	··<if>：条件判断。
+	··<where>：会进行自动判断，这是为了弥补<if>标签的缺陷而使用的，所以两者通常一起使用。
+				如果任何条件都不成立，那么就在sql语句里就不会出现where关键字。
+				如果有任何条件成立，会自动去掉多出来的 and 或者 or。
+			将自定义查询条件查询用户列表和查询用户列表总记录数改为动态sql，需要使用where标签和if标签。where中包含if标签。但是这样会有重复，我们要定义sql片段。然后在where中使用include引用sql片段。
 
-		··<set>：与where标签类似的，在update语句里也会碰到多个字段相关的问题。<set>标签嵌套<if>，,<where>标签放在外面。
-		··<foreach>标签通常用于in 这样的语法里，用来遍历parameterType中的集合类型。
-		··<bind>标签就像是再做一次字符串拼接，方便后续使用。
+	··<set>：与where标签类似的，在update语句里也会碰到多个字段相关的问题。<set>标签嵌套<if>，,<where>标签放在外面。
+	··<foreach>标签通常用于in 这样的语法里，用来遍历parameterType中的集合类型。
+	··<bind>标签就像是再做一次字符串拼接，方便后续使用。
 
-		··<trim>：一般用于去除sql语句中多余的and关键字，逗号，或者给sql语句前拼接 “where“、“set“以及“values(“ 等前缀，或者添加“)“等后缀，可用于选择性插入、更新、删除或者条件查询等操作。
-			属性	描述
-			prefix	给sql语句拼接的前缀
-			suffix	给sql语句拼接的后缀
-			prefixOverrides	去除sql语句前面的关键字或者字符，该关键字或者字符由prefixOverrides属性指定，假设该属性指定为"AND"，当sql语句的开头为"AND"，trim标签将会去除该"AND"
-			suffixOverrides	去除sql语句后面的关键字或者字符，该关键字或者字符由suffixOverrides属性指定
+	··<trim>：一般用于去除sql语句中多余的and关键字，逗号，或者给sql语句前拼接 “where“、“set“以及“values(“ 等前缀，或者添加“)“等后缀，可用于选择性插入、更新、删除或者条件查询等操作。
+		属性	描述
+		prefix	给sql语句拼接的前缀
+		suffix	给sql语句拼接的后缀
+		prefixOverrides	去除sql语句前面的关键字或者字符，该关键字或者字符由prefixOverrides属性指定，假设该属性指定为"AND"，当sql语句的开头为"AND"，trim标签将会去除该"AND"
+		suffixOverrides	去除sql语句后面的关键字或者字符，该关键字或者字符由suffixOverrides属性指定
 
 
-		··Mybatis里面没有else标签，但是可以使用<when> <otherwise>标签来达到这样的效果。
-
+	··Mybatis里面没有else标签，但是可以使用<when> <otherwise>标签来达到这样的效果。
 
 
 
 
 ·MyBatis相关概念：
-		日志：log4j
-		事务管理：<transactionManager type="JDBC"/>
-						在Mysql中，只有当表的类型是INNODB的时候，才支持事务.
-		延迟加载：加在<settings>标签中。
+	日志：log4j
+	事务管理：<transactionManager type="JDBC"/>
+					在Mysql中，只有当表的类型是INNODB的时候，才支持事务.
+	延迟加载：加在<settings>标签中。
 
-		一级缓存：Mybatis的一级缓存在session上，只要通过session查过的数据，都会放在session上，下一次再查询相同id的数据，都直接冲缓存中取出来，而不用到数据库里去取了。
-		二级缓存：Mybatis二级缓存是SessionFactory，如果两次查询基于同一个SessionFactory，那么就从二级缓存中取数据，而不用到数据库里去取了。
+	一级缓存：Mybatis的一级缓存在session上，只要通过session查过的数据，都会放在session上，下一次再查询相同id的数据，都直接冲缓存中取出来，而不用到数据库里去取了。
+	二级缓存：Mybatis二级缓存是SessionFactory，如果两次查询基于同一个SessionFactory，那么就从二级缓存中取数据，而不用到数据库里去取了。
+
+
 
 
 ·useGeneratedKeys取值范围true、false，默认值是：false。 
