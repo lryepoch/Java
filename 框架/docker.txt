@@ -1,0 +1,50 @@
+
+·docker概念：
+　　··docker：最早是dotCloud公司出品的一套容器管理工具，但后来Docker慢慢火起来了，连公司名字都从dotCloud改成Docker。
+
+　　··dockerfile：它是Docker镜像的描述文件，可以理解成火箭发射的A、B、C、D……的步骤。
+
+　　··docker镜像：通过Dockerfile做出来的，包含操作系统基础文件和软件运行环境，它使用分层的存储方式。
+
+　　··docker容器：是运行起来的镜像，简单理解，Docker镜像相当于程序，容器相当于进程。
+
+　　··Dockerfile由多条指令组成，每条指令在编译镜像时执行相应的程序完成某些功能，由指令+参数组成，以逗号分隔，
+		#作为注释起始符，虽说指令不区分大小写，但是一般指令使用大些，参数使用小写；
+
+
+
+
+·文件 src/main/docker/Dockerfile
+
+	#使用JDK8环境为基础镜像，如果镜像不是本地的将会从DockerHub进行下载
+	FROM openjdk:8-jdk-alpine
+	/FROM java:8
+
+	#允许指定端口转发(可无)
+	EXPOSE 8080
+
+	#在宿主机的/var/lib/docker目录下创建一个临时文件并把他链接到tomcat容器的工作目录 /tmp
+	VOLUME /tmp
+
+	#项目的jar文件作为"app.jar"添加到容器中。复制文件并且重命名
+	ADD springboot-docker.jar app.jar
+
+	#运行jar包（可无）
+	RUN base -c 'touch /app.jar'
+
+	#用于为docker容器设置环境变量（可无）
+	ENV JAVA_OPTS=""
+
+	#ENTRYPOINT执行项目app.jar。为了缩短Tomcat启动时间，添加一个系统属性指向"/dev/urandom"作为Entropy Source
+	ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+
+
+
+
+
+·部署文件：在服务器新建一个docker文件夹/usr/local/docker，将maven打包好的jar包和Dockerfile文件复制到服务器的docker文件夹下
+·启动打包:
+	docker build -t xxx .       #制作镜像，-t 参数是指定此镜像的tag名，xxx为自定义的镜像名称， . 点代表当前路径下的所有文件
+	docker images                        #命令查看我们制作的镜像
+	docker run -d -p 8080:8085 xxx         #启动容器，-d 指定容器在后台运行，-p 8081:8081 用于将容器内的8081端口映射到主机的8081端口，也可以换成其他本机端口。 

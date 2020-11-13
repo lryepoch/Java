@@ -11,7 +11,7 @@
 
 	··Mapstruct：
 		MapStruct使用注解处理器生成实现类，实现类内部是原生的new对象，然后SetXxx/getXxx方式赋值进行数据拷贝的，类似lombok，看实现类的.class；
-
+        
 	··Spring的BeanUtils：BeanUtils.copyProperties(source, target)对于null值也会直接复制；
 						/**
 					     * 配合beanutils设置对源对象中空的元素不进行复制，避免了目标对象某属性原本不为空，赋值后为空
