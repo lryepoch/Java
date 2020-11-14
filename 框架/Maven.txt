@@ -1,20 +1,25 @@
 
+·maven构建生命周期：
+	[开始]-->[validate]-->[compile]-->[test]-->[package]-->[verify]-->[install]-->[deploy]-->[开始]
+
+
+
 ·常用命令解释：
+	mvn validate	##验证。验证项目是否正确且所有必须信息是可用的
 
-	mvn clean 		##清除。清除target目录下以前编译生成的文件及jar包；
+	mvn compile		##编译。将Java源代码文件.java编译成.class文件(jvm执行.class文件生成机器码文件)；编译生成的.class文件和资源输出到target/classes目录下
 
-	mvn compile		##编译。将Java源文件编译成class文件；编译完成的.class文件和资源输出到target/classes目录下
+	mvn test		##测试。使用适当的单元测试框架（例如JUnit）运行测试
 
-	mvn test-compile	编译测试源码，同上，但输出到target/test-classes目录下
+	mvn package 	##打包。如果不想直接运行.class文件，可以将其打包。.class文件打包完成后，会在/target目录下生成一个jar文件（动态web工程打war包，Java工程打jar包），
+							文件名由<artifactId> 和 <version>组成。
+	mvn verify  	##检查。对集成测试的结果进行检查，以保证质量达标
 
-	mvn test		##测试，并生成测试报告；
-
-	mvn package    ##如果不想直接运行.class文件，可以将其打包：打包完成后，会在target目录下生成一个JAR文件（动态web工程打war包，Java工程打jar包；），文件名由<artifactId> 和 <version>组成。
-
-	mvn install		##安装。项目代码将会经过编译[compile]、测试[test]、打包[package]并拷贝到本地依赖库，提供给其他项目引用。
+	mvn install		##安装。项目代码将会经过编译[compile]、测试[test]、打包[package]即安装到本地仓库，以供其他项目使用
 	
-	mvn deploy		##安装并发布到指定的远程仓库中
+	mvn deploy		##部署。安装并发布到指定远程仓库。/拷贝最终的工程包到远程仓库中，以共享给其他开发人员和工程
 
+	mvn clean 		##清除。清除target目录下以前编译生成的文件及jar包
 
 
 
@@ -46,5 +51,5 @@
 
 
 ·Maven标签：
-<optional>：我们自己的jar需要引用一些别的组件，但是提供给别人调用时，别人其实用不上这部分功能，但是因为你自己的pom中依赖了这些jar，导致别人也得依赖这些jar。
-			设置optional=true，这样外部应用你的依赖时就可以只依赖需要的依赖就可以了。 
+	<optional>：我们自己的jar需要引用一些别的组件，但是提供给别人调用时，别人其实用不上这部分功能，但是因为你自己的pom中依赖了这些jar，导致别人也得依赖这些jar。
+				设置optional=true，这样外部应用你的依赖时就可以只依赖需要的依赖就可以了。 
