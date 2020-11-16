@@ -15,8 +15,8 @@
 　　··docker容器：是运行起来的镜像，简单理解，Docker镜像相当于程序，容器相当于进程。容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。
 					Docker 容器通过 Docker 镜像来创建。
 
-	··docker仓库：镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry 就是这样的服务。一个 Docker Registry 中可以包含多个仓库；每个仓库可以包含多个标签；每个标签对应一个镜像，其中标签可以理解为镜像的版本号。
-	
+	··docker仓库：镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry 就是这样的服务。一个Docker Registry中可以包含多个仓库；每个仓库可以包含多个标签；每个标签对应一个镜像，其中标签可以理解为镜像的版本号。
+
 
 
 
@@ -48,10 +48,29 @@
 
 
 
+·安装docker-ce版本：
+	yum install docker-ce；
+	sudo yum -y install docker-ce；安装最新版本
 
 
-·部署文件：在服务器新建一个docker文件夹/usr/local/docker，将maven打包好的jar包和Dockerfile文件复制到服务器的docker文件夹下
-·启动打包:
-	docker build -t xxx .       #制作镜像，-t 参数是指定此镜像的tag名，xxx为自定义的镜像名称， . 点代表当前路径下的所有文件
-	docker images                        #命令查看我们制作的镜像【查看镜像用docker images命令，查看容器用docker ps命令】
-	docker run -d -p 8080:8085 xxx         #启动容器，-d 指定容器在后台运行，-p 8081:8081 用于将容器内的8081端口映射到主机的8081端口，也可以换成其他本机端口。 
+
+
+·部署文件：一般来说，在服务器新建一个docker文件夹/docker，将maven打包好的jar包和Dockerfile文件复制到该docker文件夹下
+·常见指令:
+	docker build -t xxx .       #制作镜像，-t 参数是指定此镜像的tag名，xxx为自定义的镜像名称， . 代表当前目录，也就是Dockerfile所在的目录
+	docker images                     #命令查看我们制作的镜像【查看镜像用docker images命令，查看容器用docker ps命令】
+	docker run -d -p 8080:8085 xxx    #启动容器，-d 指定容器在后台运行，-p 8081:8081 用于将容器内的8081端口映射到主机的8081端口，也可以换成其他本机端口。 
+	docker kill CONTAINER_ID        #停止指定ID容器
+	docker port CONTAINER_ID		#查看映射端口配置
+
+
+
+·常见两种方式使用docker部署springboot项目：
+	··创建一个文件夹docker 里面放置 Dockerfile和 springBoot打包的项目docker_spring_boot.jar
+		docker build -t docker .
+		docker run -d -p 8080:8080 docker
+	
+	··把整个工程代码拷到centos服务器某个目录下（包括src、target、pom.xml），
+		在该目录下，创建镜像：mvn package docker:build      
+					查看镜像：docker images
+					运行镜像：docker run -d -p 8010:8010 -t springio/gs-spring-boot-docker-master
