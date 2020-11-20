@@ -9,7 +9,7 @@
 	kafka之间是无法互相发现对方的，每个kafka向zk注册，说我是A节点（broker.id），我是B节点，这样组成了一个kafka集群。每个人通过zk来发现彼此。
 
 
-·简单的几个名词： 
+·相关概念： 
 	Broker：一台kafka服务器就是一个broker。一个集群由多个broker组成；
 			一个broker可以容纳多个topic，一个topic会分为多个partition，实际上partition会分布在不同的broker中；即同一份topic会分布在多个不同的broker上，由此得知：Kafka是天然分布式的；
 			已发布的消息保存在一组服务器中，称之为Kafka集群。集群中的每一个服务器都是一个代理（Broker）；
@@ -26,7 +26,7 @@
 
 	Partition：为了实现扩展性，一个非常大的topic可以分布到多个broker（即服务器）上，一个topic可以分为多个partition，每个partition是一个有序的队列。
 				partition中的每条消息都会被分配一个有序的id（offset）。
-				kafka只保证按一个partition中的顺序将消息发给consumer，不保证一个topic的整体（多个partition间）的顺序。
+				partition中的每条消息都会被分配一个有序的id（offset）。kafka只保证按一个partition中的顺序将消息发给consumer，不保证一个topic的整体（多个partition间）的顺序。 
 				生产者往topic里丢数据是存在partition上的，而partition持久化到磁盘是IO顺序访问的，并且是先写缓存，隔一段时间或者数据量足够大的时候才批量写入磁盘的。 
 
 	Offset：kafka的存储文件都是按照offset.kafka来命名，用offset做名字的好处是方便查找。例如你想找位于2049的位置，只要找到2048.kafka的文件即可。
