@@ -3,8 +3,9 @@ SpringMVC注解：
 ---------------------
 
 ·@RequestParam注解：接收请求参数。
-	@RequestParam是位列Controller层，作用是为获取前端参数，方式主要有两种，一种是request.getParameter("name")，另外一种是用注解@RequestParam直接获取，解决的是前后端参数不一致的问题。
-	(@RequestParam（value/name="id"，required=false，defaultValue=1）Integer id)【required默认是true，@RequestParam(required=true)表示当前参数必须传入，不传值会抛出异常。当设置为false时，不传id时不会出错，以defaultValue值显示】
+	@RequestParam 作用是为获取前端参数，方式主要有两种，一种是request.getParameter("name")，另外一种是用注解@RequestParam直接获取，解决的是前后端参数不一致的问题。
+	如果传入参数名字和方法参数名字不一致，可以给@RequestParam的属性赋值。
+	(@RequestParam（value/name="id"，required=false，defaultValue=1）Integer id)【required默认是true，表示当前参数必须传入，不传值会抛出异常。当设置为false时，不传id时不会出错，以defaultValue值显示】
 
 ·@PathVariable
 	这个注解能够识别URL里面的一个模板。
@@ -13,7 +14,7 @@ SpringMVC注解：
 				如果参数名与占位符一致，则可直接使用@PathVariable；如果不一致，则在@PathVariable( )括号内绑定占位符。
 
 	带占位符的URL是Spring3.0新增的功能，该功能在SpringMVC向REST目标挺进发展过程中具有里程碑的意义，
-	通过@PathVariable可以将URL中占位符参数绑定到控制器处理方法的入参中：URL中的{xxx}占位符可以通过@PathVariable(“xxx“)绑定到操作方法的入参中。
+	通过@PathVariable可以将URL中占位符参数绑定到controller处理方法的入参中：URL中的{xxx}占位符可以通过@PathVariable(“xxx“)绑定到操作方法的入参中。
 
 	eg：如果要获取某个id下此条问题答案的查询次数的话，则后台就需要动态获取参数，其注解为@PathVariable，并且requestMapping中的value应为value="/{id}/queryNum"。
 
@@ -47,8 +48,18 @@ SpringMVC注解：
 			@RequestMapping注解：设置访问路径，一般和方法名一致。如果没有写/，会自动加上/。
 
 
+·@RequestHeader：
+	@RequestHeader注解用来将请求头的内容绑定到方法参数上。
+	用法如下：
+		@PostMapping(value = "login")
+		public void login(@RequestHeader("access_token") String accessToken,@RequestParam String name) {
+		    System.out.println("accessToken:" + accessToken);
+		}
+
+
 ·@PathParam
 	这个注解是和spring的pathVariable是一样的，也是基于模板的，但是这个是jboss包下面的一个实现，上面的是spring的一个实现，都要导包。
+
 
 ·@QueryParam
 	@QueryParam是JAX-RS本来就提供的，和Spring的RequestParam作用一致。
