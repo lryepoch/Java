@@ -10,12 +10,12 @@
 
 
 ·相关概念： 
-	Broker：一台kafka服务器就是一个broker。一个集群由多个broker组成；
+	broker：一台kafka服务器就是一个broker。一个集群由多个broker组成；
 			一个broker可以容纳多个topic，一个topic会分为多个partition，实际上partition会分布在不同的broker中；即同一份topic会分布在多个不同的broker上，由此得知：Kafka是天然分布式的；
 			已发布的消息保存在一组服务器中，称之为Kafka集群。集群中的每一个服务器都是一个代理（Broker）；
 			消费者可以订阅一个或多个主题（topic），并从Broker拉数据，从而消费这些已发布的消息；
 
-	Topic：一个队列，主题；
+	topic：一个队列，主题；
 			为了提高一个队列(topic)的吞吐量，kafka会把topic进行分区(Partition)；
 			Topic是Kafka数据写入操作的基本单元，可以指定副本；
 			一个Topic包含一个或多个Partition，建议Topic的时候可以手动指定Partition个数，个数与服务器个数相当；
@@ -24,12 +24,12 @@
 			Consumer订阅消息时，也必须指定订阅哪个Topic的信息；
 			往一个topic丢数据，实际上就是往多个broker的partition存储数据；
 
-	Partition：为了实现扩展性，一个非常大的topic可以分布到多个broker（即服务器）上，一个topic可以分为多个partition，每个partition是一个有序的队列。
+	partition：为了实现扩展性，一个非常大的topic可以分布到多个broker（即服务器）上，一个topic可以分为多个partition，每个partition是一个有序的队列。
 				partition中的每条消息都会被分配一个有序的id（offset）。
 				partition中的每条消息都会被分配一个有序的id（offset）。kafka只保证按一个partition中的顺序将消息发给consumer，不保证一个topic的整体（多个partition间）的顺序。 
 				生产者往topic里丢数据是存在partition上的，而partition持久化到磁盘是IO顺序访问的，并且是先写缓存，隔一段时间或者数据量足够大的时候才批量写入磁盘的。 
 
-	Offset：kafka的存储文件都是按照offset.kafka来命名，用offset做名字的好处是方便查找。例如你想找位于2049的位置，只要找到2048.kafka的文件即可。
+	offset：kafka的存储文件都是按照offset.kafka来命名，用offset做名字的好处是方便查找。例如你想找位于2049的位置，只要找到2048.kafka的文件即可。
 			当然the first offset就是00000000000.kafka。
 			
 			Kafka就是用offset来表示消费者的消费进度到哪了，每个消费者会都有自己的offset。说白了offset就是表示消费者的消费进度。
@@ -38,18 +38,28 @@
 			kafka的topic中的每个消费组消费的下标；说白了offset就是表示消费者的消费进度。
 
 
-	Producer：消息生产者，向broker发消息的客户端；
+	producer：消息生产者，向broker发消息的客户端；
 
-	Consumer：消息消费者，向broker取消息的客户端；
+	consumer：消息消费者，向broker取消息的客户端；
 
-	Message：消息是kafka处理的对象。在kafka中，消息是被发布到broker的topic中。而consumer也是从相应的topic中拿数据。也就是说，message是按topic存储的；
+	message：消息是kafka处理的对象。在kafka中，消息是被发布到broker的topic中。而consumer也是从相应的topic中拿数据。也就是说，message是按topic存储的；
 			 每个消息（也叫记录record，我习惯叫消息）是由一个key，一个value和时间戳构成；
 
-	Consumer Group：将topic消息的广播发给consumer的手段；一个topic可以有多个CG；（消费者组之间从逻辑上它们是独立的）
+	consumer group：将topic消息的广播发给consumer的手段；一个topic可以有多个CG；（消费者组之间从逻辑上它们是独立的）
 					向topic订阅消费消息的单位是 consumers，当然它其中也可以只有一个消费者（consumer）；
 					一个分区(partition)里面的数据只会由分组(cgroup)中的一个消费者处理，同分组的其他消费者不会重复处理，也是为了提高吞吐量；
 					消费者组中的消费者数量<=分区数量；如果大于分区数量，多出来的消费者会处于收不到消息的状态，造成不必要的浪费；
 
+
+	subscribe函数订阅主题：分组下有消费者曾经提交过offset，则从提交过的offset处开始消费；
+							分组下没消费者提交过offset，则从当前添加消息的最后位置开始消费；
+
+	assign函数指定分区：分组下有消费者曾经提交过offset，则从提交过的offset处开始消费；
+						分组下没有消费者提交过offset，则从当前添加消息的最后位置开始消费；
+
+	auto.offset.reset：分组下有消费者曾经提交过offset{earliest/latest}从提交过的offset处开始消费；
+						分组下没有消费者曾经提交过offset{earlist：从分区开头位置开始消费；
+															latest：从当前添加消息的最后位置开始消费}；
 
 
 ·kafka group_id解释：
@@ -68,6 +78,33 @@
 	一个消费者组的一个消费者，可以消费一个topic下的多个分区。
 	同一个topic下的某个分区，可以被多个消费者组、消费者消费。
 
+
+
+
+·更换group.id时 kafka从哪开始消费：
+	设置消费者properties的两个参数：
+		consumer.group.id
+		properties.setProperty("auto.offset.reset", "earliest”) // latest
+
+	注意：只要不更改group.id，每次重新消费kafka，都是从上次消费结束的地方继续开始，不论"auto.offset.reset”属性设置的是什么
+
+	场景一：Kafka上在实时被灌入数据，但kafka上已经积累了两天的数据，如何从最新的offset开始消费？（最新指相对于当前系统时间最新）
+		1.将group.id换成新的名字(相当于加入新的消费组)
+		2.网上文章写还要设置 properties.setProperty("auto.offset.reset", "latest”)
+		实验发现即使不设置这个，只要group.id是全新的，就会从最新的的offset开始消费。
+
+	场景二：kafka在实时在灌入数据，kafka上已经积累了两天的数据，如何从两天前最开始的位置消费？
+		1.将group.id换成新的名字
+		2.properties.setProperty("auto.offset.reset", "earliest”)
+	 
+	场景三：不更改group.id，只是添加了properties.setProperty("auto.offset.reset", "earliest”)，consumer会从两天前最开始的位置消费吗？
+			不会，只要不更改消费组，只会从上次消费结束的地方继续消费
+
+	场景四：不更改group.id，只是添加了properties.setProperty("auto.offset.reset", "latest”)，consumer会从距离现在最近的位置消费吗？
+			不会，只要不更改消费组，只会从上次消费结束的地方继续消费
+
+	应用：正式打包上线前应该使用新的group.id，以便于从kafka最新的位置开始消费。
+			只要将group.id换成全新的，不论"auto.offset.reset”是否设置，设置成什么，都会从最新的位置开始消费
 
 
 
@@ -128,31 +165,30 @@
 		# earlist： 有提交的offset时，从提交的offset开始，无提交的offset时，从头开始消费；
 		# none:  有提交的offset时，从提交的offset开始，存在一个未提交的offset的分区时，抛出异常；
 
-
 	方式：
 	1.指定多主题消费；
-	consumer.subscribe(Arrays.asList("t4","t5"));
+		consumer.subscribe(Arrays.asList("t4","t5"));
 
 	2.指定分区消费；
-	ArrayList<TopicPartition> list = new ArrayList<TopicPartition>();
-    TopicPartition tp = new TopicPartition("t1", 0);
-    TopicPartition tp2 = new TopicPartition("t4", 0);
-    TopicPartition tp3 = new TopicPartition("t4", 1);
-    TopicPartition tp4 = new TopicPartition("t4", 2);
-    list.add(tp);
-    list.add(tp2);
-    list.add(tp3);
-    list.add(tp4);
-    consumer.assign(list);
+		ArrayList<TopicPartition> list = new ArrayList<TopicPartition>();
+	    TopicPartition tp = new TopicPartition("t1", 0);
+	    TopicPartition tp2 = new TopicPartition("t4", 0);
+	    TopicPartition tp3 = new TopicPartition("t4", 1);
+	    TopicPartition tp4 = new TopicPartition("t4", 2);
+	    list.add(tp);
+	    list.add(tp2);
+	    list.add(tp3);
+	    list.add(tp4);
+	    consumer.assign(list);
 
 	3.手动修改偏移量；
-	consumer.commitSync();                //提交当前消费偏移量
-    consumer.commitSync(Map<TopicPartition, OffsetAndMetadata>)    //提交指定偏移量
-    consumer.assign(Arrays.asList(tp));
+		consumer.commitSync();                //提交当前消费偏移量
+	    consumer.commitSync(Map<TopicPartition, OffsetAndMetadata>)    //提交指定偏移量
+	    consumer.assign(Arrays.asList(tp));
 
 	4.seek，修改偏移量搜索指针，顺序读取数据；
-    consumer.assign(Arrays.asList(tp));
-    consumer.seek(tp,0);
+	    consumer.assign(Arrays.asList(tp));
+	    consumer.seek(tp,0);
 
     ··自动提交：自动提交是在kafka拉取到数据之后就直接提交，这样很容易丢失数据，尤其是在需要事物控制的时候；
     ··手动提交：

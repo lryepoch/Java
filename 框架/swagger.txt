@@ -1,2 +1,35 @@
-@Api：修饰类；
-@ApiOperation：修饰方法；
+
+·常用注解
+	@Api：用于修饰Controller类，生成Controller相关文档信息
+			tags：生成的api文档会根据tags分类，直白的说就是这个controller中的所有接口生成的接口文档都会在tags这个list下；
+					tags如果有多个值，会生成多个list，每个list都显示所有接口。
+					@Api(tags = “列表1”)
+					@Api(tags = {“列表1”,“列表2”})
+
+			value：value的作用类似tags,但是不能有多个值
+
+	@ApiOperation：用于修饰Controller类中的方法，生成接口方法相关文档信息
+					value用于方法描述
+					notes用于提示内容
+					tags可以重新分组（视情况而用）
+
+	@ApiParam：用于修饰接口中的参数，生成接口参数相关文档信息
+				使用在方法上或者参数上，字段说明；表示对参数的添加元数据（说明或是否必填等）
+				name–参数名
+				value–参数说明
+				required–是否必填
+				public RequestResult edit(@ApiParam(name = "bis_key", value = "bis_key", required = true) String bisKey,
+								            @ApiParam(name = "title", value = "公告标题", required = true) @RequestParam String title,
+								            @ApiParam(name = "content", value = "公告内容", required = true)  String content){	}
+
+	@ApiModel()：使用在类上，表示对类进行说明，用于参数用实体类接收
+					value–表示对象名
+					description–描述
+
+	@ApiModelProperty：用于修饰实体类的属性，当实体类是请求参数或返回结果时，直接生成相关文档信息
+						value–字段说明
+						name–重写属性名字
+						dataType–重写属性类型
+						required–是否必填
+						example–举例说明
+						hidden–隐藏
