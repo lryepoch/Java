@@ -236,7 +236,24 @@ springboot：
 
 ·@ConfigurationProperties(prefix="")：
 	··大量的参数配置在 application.properties 或 application.yml 文件中，通过 @ConfigurationProperties 注解，我们可以方便的获取这些参数值；
+
 	··可以使用 @Value 注解或着使用 Spring Environment bean 访问这些属性，是这种注入配置方式有时显得很笨重。我们将使用更安全的方式(@ConfigurationProperties )来获取这些属性；
+
+	··通过 @ConfigurationProperties 注解声明配置文件前缀，将配置文件中定义的 ports数组、host及连接池配置信息都将被注入 port、host、poolConfig三个属性中。
+
+	··@EnableConfigurationProperties(Xxx.class)注解的作用是：使使用 @ConfigurationProperties 注解的类生效。
+		说明：如果一个配置类只配置@ConfigurationProperties注解，而没有使用@Component，那么在IOC容器中是获取不到properties 配置文件转化的bean，会报错。说白了 @EnableConfigurationProperties 相当于把使用 @ConfigurationProperties 的类进行了一次注入。没有使用@Component时，需要加上@EnableConfigurationProperties(Xxx.class)。
+
+
+·@ConditionalOnMissingBean(name="redisTemplate")：
+	··Spring容器中如果有一个Bean的name是redisTemplate，那将不需要再执行被此注解修饰的代码块，也就是此方法。
+		注意 ：@ConditionalOnMissingBean只能在@Bean 注释的方法上使用，不能在@Component 注释的类上使用。
+	··@ConditionalOnMissingBean 和 @ConditionalOnBean作用是相反的。
+
+	@ConditionalOnBean         //	当给定的在bean存在时,则实例化当前Bean
+	@ConditionalOnMissingBean  //	当给定的在bean不存在时,则实例化当前Bean
+	@ConditionalOnClass        //	当给定的类名在类路径上存在，则实例化当前Bean
+	@ConditionalOnMissingClass //	当给定的类名在类路径上不存在，则实例化当前Bean
 
 
 

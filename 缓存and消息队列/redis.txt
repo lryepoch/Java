@@ -1,8 +1,8 @@
 
 ----------------------
-·NoSQL：基于内存的数据库，并且提供一定的持久化功能；
+·nosql：基于内存的数据库，并且提供一定的持久化功能；
 
-·Redis技术：
+·redis技术：
 	··它的性能十分优越，可以支持每秒十几万级别的读/写操作，其性能远超数据库；
 	··支持集群、分布式、主从同步等配置，原则上可以无限扩展，让更多的数据存储在内存中；
 	··还支持一定的事务能力，这保证了高并发的场景下数据的安全和一致性。
@@ -25,13 +25,13 @@
 ·redis除了缓存，其他用途有？消息队列
 
 
-·使用Redis进行存储的时候，我们需要从以下几个方面来考虑：
+·使用redis进行存储的时候，我们需要从以下几个方面来考虑：
 	··业务数据常用吗？命中率如何？如果命中率很低，就没有必要写入缓存；
 	··该业务数据是读操作多，还是写操作多？如果写操作多，频繁需要写入数据库，也没有必要使用缓存；
 	··业务数据大小如何？如果要存储几百兆字节的文件，会给缓存带来很大的压力，这样也没有必要；
 
 
-·Redis来应对这样的高并发需求的场合，阐述这个过程：
+·redis来应对这样的高并发需求的场合，阐述这个过程：
 	··当一个请求到达服务器时，只是把业务数据在 Redis 上进行读写，而没有对数据库进行任何的操作，这样就能大大提高读写的速度，从而满足高速响应的需求；
 	··但是这些缓存的数据仍然需要持久化，也就是存入数据库之中，所以在一个请求操作完Redis的读/写之后，会去判断该高速读/写的业务是否结束，这个判断通常会在秒杀商品为0，红包金额为0时成立，如果不成立，则不会操作数据库；如果成立，则触发事件将Redis缓存的数据以批量的形式一次性写入数据库，从而完成持久化的工作。
 
@@ -74,7 +74,7 @@
 		@Cacheable：支持缓存，当被调用后将返回值缓存起来，保证下次利用同样参数执行该方法时可以直接从缓存中获取结果，而不需要再次执行该方法；
 			参数： value/cacheNames缓存名、 key缓存键值、 condition满足缓存条件、unless否决缓存条件 
 	
-				value/cacheNames属性是必须指定的，其表示当前方法的返回值是会被缓存在哪个Cache上的，对应Cache的名称。其可以是一个Cache也可以是多个Cache，当需要指定多个Cache时其是一个数组。
+				value/cacheNames属性是必须指定的，其表示当前方法的返回值是会被缓存在哪个Cache上的，对应Cache的名称。其可以是一个Cache也可以是多个Cache，当需要指定多个Cache时其是一个数组。value和 cacheNames的作用是一样的，都是标识主键。两个属性不能同时定义，只能定义一个，否则会报错。
 
 				key属性是用来指定Spring缓存方法的返回结果时对应的key的。该属性支持SpringEL表达式。当我们没有指定该属性时，Spring将使用默认策略生成key。可以直接使用“#参数名”或者“#p参数index”。
 				如果不填 key ，默认的 key 是当前的方法名，更新缓存时会因为方法名不同而更新失败。
@@ -98,24 +98,34 @@
 		当被缓存对象发生改变时，可以选择更新缓存或者失效缓存，但一般而言，后者优于前者，因为执行速度更快。
 
 	··其他常用功能：
-		1.cacheNames也可以统一写在类上面， @CacheConfig(cacheNames = "product")；
+		1.cacheNames也可以统一写在类上面， @CacheConfig(cacheNames = "product")；具体的方法上就不用写啦。
+			@CacheConfig(cacheNames = "product")
+			public class BuyerOrderController {
+			    @PostMapping("/cancel")
+				@CachePut(key = "456")
+			    public ResultVO cancel(@RequestParam("openid") String openid,
+			                           @RequestParam("orderId") String orderId){}
+
 		2.key也可以动态设置为方法的参数，@Cacheable(cacheNames = "prodcut", key = "#openid")；
-		如果参数是个对象，也可以设置对象的某个属性为 key。比如其中一个参数是 user 对象，key 可以写成 key="#user.id"
+											public ResultVO<OrderDTO> detail(@RequestParam("openid") String openid){}
+			如果参数是个对象，也可以设置对象的某个属性为 key。比如其中一个参数是 user 对象，key 可以写成 key="#user.id"
+
 		3.缓存还可以设置条件；设置当 openid 的长度大于3时才缓存，@Cacheable(cacheNames = "prodcut", key = "#openid", condition = "#openid.length > 3")。
+																	public ResultVO<OrderDTO> detail(@RequestParam("openid") String openid,
+                                 																	@RequestParam("orderId") String orderId){}
+			还可以指定unless即条件不成立时缓存。#result代表返回值，意思是当返回码不等于0时不缓存，也就是等于0时才缓存。
+			@GetMapping("/detail")
+			@Cacheable(cacheNames = "prodcut", key = "#openid", condition = "#openid.length > 3", unless = "#result.code != 0")
+			public ResultVO<OrderDTO> detail(@RequestParam("openid") String openid,
+			                                 @RequestParam("orderId") String orderId){}
 
-		还可以指定 unless 即条件不成立时缓存。#result 代表返回值，意思是当返回码不等于 0 时不缓存，也就是等于 0 时才缓存。@Cacheable(cacheNames = "prodcut", key = "#openid", condition = "#openid.length > 3", unless = "#result.code != 0")
 
 
-
-·@EnableCaching注解：作用是启用缓存注解；
-					是spring framework中的注解驱动的缓存管理功能。自spring版本3.1起加入了该注解。如果你使用了这个注解，那么你就不需要在XML文件中配置cache manager了。
+·@EnableCaching注解：作用是启用缓存注解；是spring framework中的注解驱动的缓存管理功能。
+					自spring版本3.1起加入了该注解。如果你使用了这个注解，那么你就不需要在XML文件中配置cache manager了。
 
 					当你在配置类(@Configuration)上使用@EnableCaching注解时，会触发一个post processor，这会扫描每一个spring bean，查看是否已经存在注解对应的缓存。如果找到了，就会自动创建一个代理拦截方法调用，使用缓存的bean执行处理。
 
-
-
-·SpringBoot自动帮我们在容器中生成了一个RedisTemplate和一个StringRedisTemplate。但是，这个RedisTemplate的泛型是<Object,Object>，写代码不方便，需要写好多类型转换的代码；我们需要一个泛型为<	String,Object>形式的RedisTemplate。并且，这个RedisTemplate没有设置数据存在Redis时，key及value的序列化方式。
-  	看到这个@ConditionalOnMissingBean注解后，就知道如果Spring容器中有了RedisTemplate对象了，这个自动配置的RedisTemplate不会实例化。因此我们可以直接自己写个配置类，配置RedisTemplate。
 
 
 
@@ -164,25 +174,28 @@
 
 
 
-· 通过源码可以看出，SpringBoot自动帮我们在容器中生成了一个RedisTemplate和一个StringRedisTemplate。但是，这个RedisTemplate的泛型是<Object,Object>，写代码不方便，需要写好多类型转换的代码；我们需要一个泛型为<String,Object>形式的RedisTemplate。并且，这个RedisTemplate没有设置数据存在Redis时，key及value的序列化方式。
-    看到这个@ConditionalOnMissingBean注解后，就知道如果Spring容器中有了RedisTemplate对象了，这个自动配置的RedisTemplate不会实例化。因此我们可以直接自己写个配置类，配置RedisTemplate。
 
-    StringRedisTemplate构建的时候默认设置了所有的序列化方式为String，也就是说StringRedisTemplate的数据格式都是String。	RedisTemplate没有设置的话就都是JDK。
+·StringRedisTemplate 与 RedisTemplate ：
 
+	··通过源码可以看出，SpringBoot自动帮我们在容器中生成了一个 RedisTemplate 和一个 StringRedisTemplate。
+		但是，这个RedisTemplate的泛型是<Object,Object>，写代码不方便，需要写好多类型转换的代码；
+		我们需要一个泛型为<String,Object>形式的RedisTemplate。并且，这个RedisTemplate没有设置数据存在Redis时，key及value的序列化方式。
 
+	    看到这个@ConditionalOnMissingBean注解后，就知道如果Spring容器中有了RedisTemplate对象了，这个自动配置的RedisTemplate不会实例化。
+	    因此我们可以直接自己写个配置类，配置RedisTemplate。
 
+	    StringRedisTemplate构建的时候默认设置了所有的序列化方式为String，也就是说StringRedisTemplate的数据格式都是String。RedisTemplate没有设置的话就都是JDK。
 
+	··区别：
+		1.StringRedisTemplate 继承了 RedisTemplate。
 
-·StringRedisTemplate 与 RedisTemplate 的区别：
-	1.StringRedisTemplate 继承了 RedisTemplate。
+		2.RedisTemplate 是一个泛型类，而 StringRedisTemplate 则不是。
 
-	2.RedisTemplate 是一个泛型类，而 StringRedisTemplate 则不是。
+		3.StringRedisTemplate 只能对 key=String，value=String 的键值对进行操作，RedisTemplate 可以对任何类型的 key-value 键值对操作。
 
-	3.StringRedisTemplate 只能对 key=String，value=String 的键值对进行操作，RedisTemplate 可以对任何类型的 key-value 键值对操作。
+		4.他们各自序列化的方式不同，但最终都是得到了一个字节数组，殊途同归，StringRedisTemplate使用的是 StringRedisSerializer类；RedisTemplate 使用的是 JdkSerializationRedisSerializer类。反序列化，则是一个得到 String，一个得到 Object。
 
-	4.他们各自序列化的方式不同，但最终都是得到了一个字节数组，殊途同归，StringRedisTemplate 使用的是 StringRedisSerializer 类；RedisTemplate 使用的是 JdkSerializationRedisSerializer 类。反序列化，则是一个得到 String，一个得到 Object。
-
-	5.两者的数据是不共通的，StringRedisTemplate 只能管理 StringRedisTemplate 里面的数据，RedisTemplate 只能管理 RedisTemplate中 的数据。
+		5.两者的数据是不共通的，StringRedisTemplate 只能管理 StringRedisTemplate 里面的数据，RedisTemplate 只能管理 RedisTemplate中 的数据。
 
 
 

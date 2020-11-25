@@ -57,7 +57,7 @@
 	assign函数指定分区：分组下有消费者曾经提交过offset，则从提交过的offset处开始消费；
 						分组下没有消费者提交过offset，则从当前添加消息的最后位置开始消费；
 
-	auto.offset.reset：分组下有消费者曾经提交过offset{earliest/latest}从提交过的offset处开始消费；
+	auto.offset.reset：分组下有消费者曾经提交过offset{earliest/latest}，从提交过的offset处开始消费；
 						分组下没有消费者曾经提交过offset{earlist：从分区开头位置开始消费；
 															latest：从当前添加消息的最后位置开始消费}；
 

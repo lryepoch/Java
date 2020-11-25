@@ -111,7 +111,7 @@ docker
 
 资源签审系统
 项目描述：统一管理数据库资源、Hive、Hbase、Kafka等大数据资源、云主机资源的申请使用以及单位领导的审批流程
-技术选型：spring、springboot、springMVC、mybatis、ldap、redis、maven、mysql5.7
+技术选型：spring、springboot、springMVC、mybatis、ldap、redis、maven、mysql5.7、jwt、shell script
 工作职责：1.优化公有云资源的审批流程进行开发；
 		2.对系统用户的权限查询、权限复制、权限回收以及资源回收进行开发；
 			权限查询：mysql/hive/hbase/kafka
