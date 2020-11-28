@@ -1,11 +1,12 @@
 
 ·JSON基础知识：
-	1.全称：JavaScript Object Notation --对象表示法。
-	2.JSON 是用于存储和传输数据的格式。	
-        JSON 通常用于服务端向网页传递数据 。
-        JSON 数据可使用 AJAX 进行传输。
-	3.JSON 文件：	JSON 文件的文件类型是 ".json"；	
-                    JSON 文本的 MIME 类型是 "application/json"。
+	··全称：JavaScript Object Notation--对象表示法。
+
+	··JSON 是用于存储和传输数据的格式。	
+        JSON 通常用于服务端向网页传递数据；JSON 数据可使用 AJAX 进行传输。
+
+	··JSON 文件：JSON 文件的文件类型是 ".json"；	
+                 JSON 文本的 MIME 类型是 "application/json"。
 
 
 ·为什么使用 JSON？

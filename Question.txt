@@ -117,7 +117,7 @@ docker
 			权限查询：mysql/hive/hbase/kafka
 			资源回收：mysql/hive/hbase/kafka
 			权限复制：mysql/hive/hbase/kafka/gpu/virtual/microsoft
-		3.重构内网云主机的签审(mysql)以及生成方式(openstack4j)、统计；
+		3.重构内网云主机的签审(mysql)以及生成方式(openstack4j)、统计；线程池创建多台，ThreadLocal复用
 		4.重构GPU的签审、统计代码；
 
 项目成果：为部门的日常工作的资源签审流程保驾护航；

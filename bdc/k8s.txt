@@ -1,12 +1,19 @@
 
-·k8s常用命令整理：
+·k8s常用指令：
 	套路：kubectl get/delete/exec/create/logs/edit/patch 等等
 	
 	kubectl get pod --all-namespaces       #查看全部命名空间
+
 	kubectl get nodes 			#查看节点
+
 	kubectl get ns （namespace） #查看命名空间
+
 	kubectl cluster-info 		#查看集群的信息，主要是host
+
 	kubectl get svc (service ) 		#获取服务
+
 	kubectl get deployment 			#获取部署
+
 	kubectl get cs 				#获取集群健康状态
+	
 	kubectl describe ns xxx     #查看指定namespace的详细信息
