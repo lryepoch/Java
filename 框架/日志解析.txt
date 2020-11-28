@@ -48,8 +48,10 @@
 
  
 ·常见日志框架：
-	日志门面：JCL/SLF4J/jboss-logging
+	日志门面：JCL/SLF4J/jboss-logging       #日志门面得依靠日志实现，搭配干活。日志框架不同，但通过转换包可以生成相同的日志门面。
 	日志实现：log4j/log4j2/logback/JUL
+
+    Spring Boot框架默认的日志门面是：slf4j,  默认的日志实现是：logback
 
 
 
