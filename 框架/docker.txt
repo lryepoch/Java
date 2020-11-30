@@ -61,7 +61,7 @@
 	yum install docker-ce；
 	sudo yum -y install docker-ce；安装最新版本
 
-·部署文件：一般来说，在服务器新建一个docker文件夹/docker，将maven打包好的jar包和Dockerfile文件复制到该docker文件夹下
+·部署文件：一般来说，在服务器新建一个docker文件夹/docker，将maven打包好的jar包和Dockerfile文件都复制到该docker文件夹下
 ·设置docker镜像：vi  /etc/docker/daemon.json
 ·常见指令:
 	docker build -t xxx .       #制作镜像，-t 参数是指定此镜像的tag名，xxx为自定义的镜像名称， . 代表当前目录，也就是Dockerfile所在的目录
@@ -104,7 +104,7 @@
 		docker build -t docker .
 		docker run -d -p 8080:8080 docker
 	
-	··把整个工程代码拷到centos服务器某个目录下（包括src、target、pom.xml），
+	··把整个工程代码拷到centos服务器某个目录下（包括src、pom.xml），服务器需要提前安装好maven。
 		在该目录下，创建镜像：mvn package docker:build      
 					查看镜像：docker images
 					运行镜像：docker run -d -p 8010:8010 -t springio/gs-spring-boot-docker-master
