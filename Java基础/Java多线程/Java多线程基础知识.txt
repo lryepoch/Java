@@ -5,7 +5,24 @@
 ·Java多线程的实现：
 	首先：创建并启动线程的过程为：定义线程—》实例化线程—》启动线程。
 	
-	一 、定义线程： 1、扩展java.lang.Thread类。 2、实现java.lang.Runnable接口。
+	一 、定义线程：
+		1、扩展java.lang.Thread类。 
+
+		2、实现java.lang.Runnable接口。
+		··实现步骤：
+			定义类实现Runnable接口；
+			覆盖接口中的run方法。将线程任务代码定义到run方法中；
+			创建Thread类的对象；
+			将Runnable接口的子类对象作为参数传递给Thread类的构造函数；
+			调用Thread类的start方法开启线程。
+
+		··这种方式的好处： 
+			1. 实现Runnable接口避免了单继承的局限性，所以较为常用。 
+			2. 实现Runnable接口的方式，更加的符合面向对象，线程分为两部分，一部分线程对象，一部分线程任务。
+
+			继承Thread类：run方法在Thread里。线程对象和线程任务耦合在一起。一旦创建Thread类的子类对象，既是线程对象，又有线程任务。 
+			实现Runnable接口：run方法在Runnable里。将线程任务单独分离出来封装成对象（Runnable接口类型），用Runnable来标明线程任务，用Thread来明确线程对象。Runnable接口对线程对象和线程任务进行解耦。
+
 
 		>创建线程的三种方式的对比
 		1. 采用实现 Runnable、Callable 接口的方式创建多线程时，线程类只是实现了 Runnable 接口或 Callable 接口，还可以继承其他类。

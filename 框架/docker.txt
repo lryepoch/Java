@@ -62,11 +62,11 @@
 	sudo yum -y install docker-ce；安装最新版本
 
 ·部署文件：一般来说，在服务器新建一个docker文件夹/docker，将maven打包好的jar包和Dockerfile文件都复制到该docker文件夹下
-·设置docker镜像：vi  /etc/docker/daemon.json
+·设置docker镜像地址：vi  /etc/docker/daemon.json
 ·常见指令:
-	docker build -t xxx .       #制作镜像，-t 参数是指定此镜像的tag名，xxx为自定义的镜像名称， . 代表当前目录，也就是Dockerfile所在的目录
-	docker images                     #命令查看镜像
-	docker ps 					#列出容器
+	docker build -t xxx .       #制作镜像，-t 参数是指定此镜像的tag名，xxx为自定义的镜像名称，. 代表当前目录，也就是Dockerfile所在的目录
+	docker images               #查看镜像
+	docker ps 					#查看容器
 	docker run -d -p 8080:8085 xxx    #启动容器，-d 指定容器在后台运行，-p 8080:8085 用于将容器内的8085端口映射到宿主机的8080端口，也可以换成其他本机端口。 
 									【-P将容器内部开放的网络端口随机映射到宿主机的一个端口上；
 									  -p指定要映射的端口，一个指定端口上只可以绑定一个容器；】
@@ -98,7 +98,6 @@
 
 
 
-
 ·常见两种方式使用docker部署springboot项目：
 	··创建一个文件夹docker里面放置 Dockerfile和 springBoot打包的项目docker_spring_boot.jar
 		docker build -t docker .
@@ -108,3 +107,12 @@
 		在该目录下，创建镜像：mvn package docker:build      
 					查看镜像：docker images
 					运行镜像：docker run -d -p 8010:8010 -t springio/gs-spring-boot-docker-master
+
+
+
+·常见docker端口包括：
+	2375：未加密的docker socket，远程root无密码访问主机
+	2376：tls加密套接字，很可能这是您的CI服务器4243端口作为https 443端口的修改
+	2377：群集模式套接字，适用于群集管理器，不适用于docker客户端
+	5000：docker注册服务
+	4789和7946：覆盖网络
