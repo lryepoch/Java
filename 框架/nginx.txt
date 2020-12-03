@@ -48,3 +48,69 @@
 	与此同时，前端原本为 127.0.0.1:8089/xx/profile 的网址，则应改为打开127.0.0.1:8088/xx/profile
 
 	这样，相当于对前后端的操作都是在8088端口下进行操作的，所以接就能完美解决前后端分离的项目中的跨域问题啦
+
+
+
+
+·nginx跨域配置：
+	server {
+	  listen       80;
+	  server_name  api.abc.com;
+
+	  # 是否允许请求带有验证信息
+	  add_header Access-Control-Allow-Credentials true;
+	  # 允许跨域访问的域名,可以是一个域的列表，空格隔开，也可以是通配符*（不建议）
+	  add_header Access-Control-Allow-Origin  http://card.abc.com;
+	  # 允许使用的请求方法，以逗号隔开，可以用 *
+	  add_header Access-Control-Allow-Methods 'POST,GET,OPTIONS,PUT,DELETE';
+	  # 预检命令的缓存，如果不缓存每次会发送两次请求，单位为秒。
+	  # 第一次是浏览器使用OPTIONS方法发起一个预检请求，第二次才是真正的异步请求
+	  add_header Access-Control-Max-Age 3600;
+
+	  # 允许脚本访问的返回头
+	  add_header Access-Control-Allow-Headers 'Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Requested-With';
+	  # 允许自定义的头部，以逗号隔开,大小写不敏感
+	  add_header Access-Control-Expose-Headers 'WWW-Authenticate,Server-Authorization';
+
+	  # OPTIONS类的请求，是跨域先验请求
+	  if ($request_method = 'OPTIONS') {
+	     return 204; # http状态码 204 （无内容） 服务器成功处理了请求，但没有返回任何内容。可以返回 200
+	  }
+	  location / {
+	    # proxy_pass http://127.0.0.1:3000;
+	  }
+	  location /card {
+	    proxy_pass http://127.0.0.1:3001;
+	  }
+	  location /music {
+	    proxy_pass http://127.0.0.1:3002;
+	  }
+	}
+
+
+
+·关于CORS：
+	CORS是一个W3C标准，全称是"跨域资源共享"（Cross-origin resource sharing）。
+
+	它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。
+
+	CORS需要浏览器和服务器同时支持。目前，所有浏览器都支持该功能，IE浏览器不能低于IE10。
+
+	整个CORS通信过程，都是浏览器自动完成，不需要用户参与。对于开发者来说，CORS通信与同源的AJAX通信没有差别，代码完全一样。浏览器一旦发现AJAX请求跨源，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。
+
+	因此，实现CORS通信的关键是服务器。只要服务器实现了CORS接口，就可以跨源通信。
+
+
+
+·解决跨域请求：
+	··要么后端代码cors处理；
+		跨域资源共享：
+		从 ajax 里拿其它服务器的资源。
+		可以看到，这个主要是为了解决前端人员的问题。但 ajax 里其实就有一个 url 参数，所以反向代理也能解决这个问题。
+		是在被访问的服务器上配置（允许访问其他的服务器）。
+
+	··要么nginx配置；
+		反向代理：
+		将一台服务器作为网关和代理服务器，负责将请求转发到子系统（其它服务器）
+		从用户的角度看，我只访问了一个域名，但其实可能你访问了很多服务器
+		是在访问其它服务器的服务器上配置（要转发到的服务器）
