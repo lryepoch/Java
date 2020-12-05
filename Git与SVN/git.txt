@@ -207,6 +207,7 @@
 	　4.现在，我们回到dev分支上干活了。工作现场还在，Git把stash内容存在某个地方了，但是需要恢复一下，有2个方法：
 	
 			　　首先可能需要列举隐藏现场：$ git stash list
+				查看某个stash具体内容：git stash show -p stash@{0}
 
 			　　1)$ git stash apply恢复，恢复后，stash内容并不删除，你需要使用命令$ git stash drop来删除。
 			　　2)另一种方式是使用$ git stash pop，恢复的同时把stash内容也删除了。

@@ -32,26 +32,87 @@
 ·文件src/main/docker/Dockerfile。每一个指令都会在镜像上创建一个新的层，每一个指令的前缀都必须是大写的。
 	Dockerfile的基本指令有十三个，分别是：FROM、MAINTAINER、RUN、CMD、EXPOSE、ENV、ADD、COPY、ENTRYPOINT、VOLUME、USER、WORKDIR、ONBUILD。
 
-	#使用JDK8环境为基础镜像，如果镜像不是本地的将会从DockerHub进行下载
-	FROM java:8
+	#指定基础镜像，必须为第一个命令。如果镜像不是本地的将会从DockerHub进行下载
+	>FROM java:8
 
-	#允许指定端口转发(可无)
-	EXPOSE 8080
+	#维护者信息
+	>MAINTAINER: lryepoch
 
-	#在宿主机的/var/lib/docker目录下创建一个临时文件并把他链接到tomcat容器的工作目录 /tmp
-	VOLUME /tmp
+	#指定与外界交互的端口
+	注：
+　　EXPOSE并不会让容器的端口访问到主机。要使其可访问，需要在docker run运行容器时通过-p来发布这些端口，或通过-P参数来发布EXPOSE导出的所有端口
+	>EXPOSE 8080
 
-	#项目的jar文件作为"app.jar"添加到容器中。复制文件并且重命名
-	ADD springboot-docker.jar app.jar
+	#指定持久化目录。在宿主机的/var/lib/docker目录下创建一个临时文件并把他链接到tomcat容器的工作目录 /tmp
+	>VOLUME /tmp
 
-	#运行jar包（可无）
-	RUN base -c 'touch /app.jar'
+	#将本地文件添加到容器中，tar类型文件会自动解压(网络压缩资源不会被解压)，可以访问网络资源，类似wget。此处是项目jar文件作为"app.jar"添加到容器中。
+	>ADD springboot-docker-1.0.SNAPSHOT.jar app.jar
 
-	#用于为docker容器设置环境变量（可无）
-	ENV JAVA_OPTS=""
+	#功能类似ADD，但是是不会自动解压文件，也不能访问网络资源
+	>COPY target/springboot-docker-1.0.SNAPSHOT.jar demo.jar
 
-	#ENTRYPOINT执行项目app.jar。为了缩短Tomcat启动时间，添加一个系统属性指向"/dev/urandom"作为Entropy Source
-	ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+	#构建镜像时执行的命令。此处运行jar包
+	>RUN base -c 'touch /app.jar'
+
+	#为docker容器设置环境变量
+	>ENV JAVA_OPTS="xxx"
+
+	#构建容器后调用，也就是在容器启动时才进行调用
+	>CMD echo "This is a test."
+
+	#配置容器，使其可执行化。配合CMD可省去"application"，只使用参数。ENTRYPOINT执行项目app.jar。为了缩短Tomcat启动时间，添加一个系统属性指向"/dev/urandom"作为Entropy Source
+	>ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+	#用于为镜像添加元数据
+	>LABEL version="1.0" description="这是一个Web服务器" by="IT笔录"
+
+	#工作目录，类似于cd命令
+	>WORKDIR /a   #这时工作目录为/a
+
+	#指定运行容器时的用户名或UID，后续的RUN也会使用指定用户
+	>USER user:group
+
+	#用于指定传递给构建运行时的变量
+	>ARG build_user=www
+
+	#用于设置镜像触发器
+	>ONBUILD ADD . /app/src     注：当所构建的镜像被用做其他镜像的基础镜像，该镜像中的触发器将会被钥触发
+
+	eg:
+		# This my first nginx Dockerfile
+		# Version 1.0
+
+		# Base images 基础镜像
+		FROM centos
+
+		#MAINTAINER 维护者信息
+		MAINTAINER tianfeiyu 
+
+		#ENV 设置环境变量
+		ENV PATH /usr/local/nginx/sbin:$PATH
+
+		#ADD  文件放在当前目录下，拷过去会自动解压
+		ADD nginx-1.8.0.tar.gz /usr/local/  
+		ADD epel-release-latest-7.noarch.rpm /usr/local/  
+
+		#RUN 执行以下命令 
+		RUN rpm -ivh /usr/local/epel-release-latest-7.noarch.rpm
+		RUN yum install -y wget lftp gcc gcc-c++ make openssl-devel pcre-devel pcre && yum clean all
+		RUN useradd -s /sbin/nologin -M www
+
+		#WORKDIR 相当于cd
+		WORKDIR /usr/local/nginx-1.8.0 
+
+		RUN ./configure --prefix=/usr/local/nginx --user=www --group=www --with-http_ssl_module --with-pcre && make && make install
+
+		RUN echo "daemon off;" >> /etc/nginx.conf
+
+		#EXPOSE 映射端口
+		EXPOSE 80
+
+		#CMD 运行以下命令
+		CMD ["nginx"]
 
 
 
@@ -59,14 +120,22 @@
 
 ·安装docker-ce版本：
 	yum install docker-ce；
-	sudo yum -y install docker-ce；安装最新版本
+	yum -y install docker-ce；#安装最新版本
 
-·部署文件：一般来说，在服务器新建一个docker文件夹/docker，将maven打包好的jar包和Dockerfile文件复制到该docker文件夹下
-·设置docker镜像：vi  /etc/docker/daemon.json
+·彻底卸载docker：
+	yum list installed | grep docker 
+	yum remove xxx -y
+
+	rm -rf /etc/systemd/system/docker.service.d
+	rm -rf /var/lib/docker
+	rm -rf /var/run/docker
+
+·部署文件：一般来说，在服务器新建一个docker文件夹/docker，将maven打包好的jar包和Dockerfile文件都复制到该docker文件夹下
+·设置docker镜像地址：vi  /etc/docker/daemon.json
 ·常见指令:
-	docker build -t xxx .       #制作镜像，-t 参数是指定此镜像的tag名，xxx为自定义的镜像名称， . 代表当前目录，也就是Dockerfile所在的目录
-	docker images                     #命令查看镜像
-	docker ps 					#列出容器
+	docker build -t xxx .       #制作镜像，-t 参数是指定此镜像的tag名，xxx为自定义的镜像名称，. 代表当前目录，也就是Dockerfile所在的目录
+	docker images               #查看镜像
+	docker ps -a				#查看容器
 	docker run -d -p 8080:8085 xxx    #启动容器，-d 指定容器在后台运行，-p 8080:8085 用于将容器内的8085端口映射到宿主机的8080端口，也可以换成其他本机端口。 
 									【-P将容器内部开放的网络端口随机映射到宿主机的一个端口上；
 									  -p指定要映射的端口，一个指定端口上只可以绑定一个容器；】
@@ -75,36 +144,73 @@
 	docker kill CONTAINER_ID        #停止指定ID容器
 	docker port CONTAINER_ID		#查看映射端口配置
 
-	docker start 		#启动一个或多个已经被停止的容器
-	docker restart 		#重启容器
-	docker create 		#创建一个新的容器但不启动它
-	docker exec 		#在运行的容器中执行命令
-	docker commit 		#从容器创建一个新的镜像
+	docker create [contianer_name]		#创建一个新的容器但不启动它
+	docker start [contianer_name]		#启动一个或多个已经被停止的容器
+	docker restart [contianer_name]		#重启容器
+	docker pause [contianer_name]		#暂停容器
+	docker unpause [contianer_name]		#恢复容器
+	docker stop [contianer_name]		#停止容器
 
-	docker pull xxx		# 从镜像仓库中拉取或者更新指定镜像
-	docker push xxx			#将本地的镜像上传到镜像仓库,要先登陆到镜像仓库
-	docker search xxx			#从Docker Hub查找镜像
-	docker info 			#显示 Docker 系统信息，包括镜像和容器数
-	docker version 			#显示 Docker 版本信息。
+	docker inspect [contianer_name]		#检查这个容器里的各项信息
+	docker exec -it [contianer_name] /bin/bash 		#进入容器，就是进入启动的运行Tomcat的Linux。
+	docker commit [contianer_name] [repository]		#根据容器创建一个新的镜像
 
-	docker stop $(docker ps -a -q)		#停止所有的容器
-	docker rm $(docker ps -a -q)		#删除所有的容器（只删除单个时把后面的变量改为image id即可）
+	docker pull xxx		#从镜像仓库中拉取或者更新指定镜像
+	docker push xxx		#将本地的镜像上传到镜像仓库,要先登陆到镜像仓库
+	docker search xxx	#从Docker Hub查找镜像
+	docker info 		#显示 Docker 系统信息，包括镜像和容器数
+	docker version 		#显示 Docker 版本信息。
 
-	docker rmi $(docker images -q)		#删除全部的images
-	docker rmi <image id>		#删除指定id的镜像
-	docker rmi $(docker images | grep "^" | awk "{print $3}")   	#想要删除untagged images，也就是那些id为的image的话可以用
-	docker rmi -f $(docker images -q)		#当要删除的iamges和其他的镜像有关联而无法删除时，可通过 -f 参数强制删除
+	docker stop $(docker ps -a -q)		#停止所有容器
+	docker rm $(docker ps -a -q)		#删除所有容器，可通过添加 -f 参数强制删除
+	docker rm <container id>				#删除指定id容器
+
+	docker rmi $(docker images -q)		#删除全部镜像
+	docker rmi -f $(docker images -q)	#当要删除的iamges和其他的镜像有关联而无法删除时，可通过 -f 参数强制删除
+	docker rmi <image id>				#删除指定id镜像
 
 
 
 
+·常见方式使用docker部署springboot项目：
+	··idea使用docker插件一键部署；
 
-·常见两种方式使用docker部署springboot项目：
 	··创建一个文件夹docker里面放置 Dockerfile和 springBoot打包的项目docker_spring_boot.jar
-		docker build -t docker .
-		docker run -d -p 8080:8080 docker
+		docker build -t xxx .
+		docker run -d -p 8080:8080 xxx
 	
-	··把整个工程代码拷到centos服务器某个目录下（包括src、target、pom.xml），
-		在该目录下，创建镜像：mvn package docker:build      
+	··把整个工程代码拷到centos服务器某个目录下（包括src、pom.xml），服务器需要提前安装好maven。
+		在该目录下，创建镜像：mvn package xxx:build      
 					查看镜像：docker images
 					运行镜像：docker run -d -p 8010:8010 -t springio/gs-spring-boot-docker-master
+
+
+
+·常见docker端口包括：
+	2375：未加密的docker socket，远程root无密码访问主机
+	2376：tls加密套接字，很可能这是您的CI服务器4243端口作为https 443端口的修改
+	2377：群集模式套接字，适用于群集管理器，不适用于docker客户端
+	5000：docker注册服务
+	4789和7946：覆盖网络
+
+
+
+
+·不通过docker hub怎样把docker image进行共享？
+	1.主机A有镜像nginx，版本为v1.0版本。执行命令：
+	docker save nginx:v1.0 -o /root/nginx.tar ---> 将nginx:v1.0保存为nginx.tar包
+	2.通过scp命令将nginx.tar包拷贝给主机B。
+	3.在主机B上执行命令：
+	docker load -i /root/nginx.tar ---> 从nginx.tar包load为镜像nginx:v1.0
+
+	注意：执行docker save nginx:v1.0 -o /root/nginx.tar命令，如果不加版本v1.0，会将主机A上所有版本nginx镜像都save到一个nginx.tar包。
+
+
+
+
+·使用export/import导出和导入docker容器：
+	导出容器：docker export [container id] > xxx.tar
+	导入容器：cat xxx.tar | docker import - cai/demo:v2.1.30
+	也可以通过指定 URL 或者某个目录来导入：docker import http://example.com/exampleimage.tgz example/imagerepo
+
+	注：用户既可以使用docker load 来导入镜像存储文件到本地镜像库，也可以使用docker import 来导入一个容器快照到本地镜像库。这两者的区别在于容器快照文件将丢弃所有的历史记录和元数据信息（即仅保存容器当时的快照状态），而镜像存储文件将保存完整记录，体积也要大。此外，从容器快照文件导入时可以重新指定标签等元数据信息。

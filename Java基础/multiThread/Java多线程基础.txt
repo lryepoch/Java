@@ -5,7 +5,24 @@
 ·Java多线程的实现：
 	首先：创建并启动线程的过程为：定义线程—》实例化线程—》启动线程。
 	
-	一 、定义线程： 1、扩展java.lang.Thread类。 2、实现java.lang.Runnable接口。
+	一 、定义线程：
+		1、扩展java.lang.Thread类。 
+
+		2、实现java.lang.Runnable接口。
+		··实现步骤：
+			定义类实现Runnable接口；
+			覆盖接口中的run方法。将线程任务代码定义到run方法中；
+			创建Thread类的对象；
+			将Runnable接口的子类对象作为参数传递给Thread类的构造函数；
+			调用Thread类的start方法开启线程。
+
+		··这种方式的好处： 
+			1. 实现Runnable接口避免了单继承的局限性，所以较为常用。 
+			2. 实现Runnable接口的方式，更加的符合面向对象，线程分为两部分，一部分线程对象，一部分线程任务。
+
+			继承Thread类：run方法在Thread里。线程对象和线程任务耦合在一起。一旦创建Thread类的子类对象，既是线程对象，又有线程任务。 
+			实现Runnable接口：run方法在Runnable里。将线程任务单独分离出来封装成对象（Runnable接口类型），用Runnable来标明线程任务，用Thread来明确线程对象。Runnable接口对线程对象和线程任务进行解耦。
+
 
 		>创建线程的三种方式的对比
 		1. 采用实现 Runnable、Callable 接口的方式创建多线程时，线程类只是实现了 Runnable 接口或 Callable 接口，还可以继承其他类。
@@ -140,7 +157,7 @@
 	进入时，执行 monitorenter，将计数器 +1，释放锁 monitorexit 时，计数器-1；当一个线程判断到计数器为 0 时，则当前锁空闲，可以占用；反之，当前线程进入等待状态。
 
 	含义：（monitor 机制）
-	Synchronized 是在（获取）加锁，加对象锁，对象锁是一种重量锁（monitor），synchronized 的锁机制会根据线程竞争情况在运行时会有偏向锁（单一线程）、轻量锁（多个线程访问 synchronized 区域）、自旋锁、对象锁（重量锁，多个线程存在竞争的情况）等。
+	Synchronized 是在（获取）加锁，加对象锁，对象锁是一种重量锁（monitor），synchronized的锁机制会根据线程竞争情况在运行时会有偏向锁（单一线程）、轻量锁（多个线程访问 synchronized 区域）、自旋锁、对象锁（重量锁，多个线程存在竞争的情况）等。
 
 	Synchronized获取锁的方式，Jvm使用了锁升级的优化方式，就是先使用偏向锁优先同一线程再次获取锁。如果失败，就升级为Cas轻量级锁。如果再失败会短暂自旋，防止线程被系统挂起。最后如果以上都失败就是升级为重量级锁。
 
@@ -150,66 +167,57 @@
 
 
 ·ThreadLocal详解：同一个线程下，变量跨类跨方法调用！！！！！！
-
->背景：
+	
+	>背景：
 		多线程下，有时候遇到的问题：
 			1、一个线程操作读取到另外一个线程的数据。
 			2、在同一个线程之内，多个方法读取到的同一个数据不一样。
 
-
-
->ThreadLocal设计的初衷：
+	>ThreadLocal设计的初衷：
 		··ThreadLocal类在多线程环境下访问时，能保证各个线程里的变量相对独立于其他线程内的变量。ThreadLocal实例通常来说都是private static类型的，用于关联线程和线程的上下文。 
+
 		··ThreadLocal的作用是提供线程内的局部变量，这种变量在线程的生命周期内起作用，减少同一个线程内多个函数或者组件之间一些公共变量的传递的复杂度。 
 
+		··Java中的ThreadLocal类允许我们创建只能被同一个线程读写的变量。因此，如果一段代码含有一个ThreadLocal变量的引用，即使两个线程同时执行这段代码，它们也无法访问到对方的ThreadLocal变量。
 
+	>ThreadLocal的工作原理：
+		··ThreadLocal类用于创建一个线程本地变量；线程内共享，线程间互斥；Threadlocal使用弱引用的ThreadLocalMap保存不同的Threadlocal变量。
 
->ThreadLocal的工作原理：
+		··Map.Entry的作用。Map.Entry是为了更方便的输出map键值对。一般情况下，要输出Map中的key和value是先得到key的集合keySet()，然后再迭代每个key得到每个value。values()方法是获取集合中的所有值，不包含键，没有对应关系。而Entry可以一次性获得这两个值。
 
-	··ThreadLocal类用于创建一个线程本地变量；线程内共享，线程间互斥；Threadlocal使用弱引用的ThreadLocalMap保存不同的Threadlocal变量。
+		··ThreadLocal是如何为每个线程创建变量的副本的？
+			首先，在每个线程Thread内部有一个（ThreadLocal.ThreadLocalMap类型）的成员变量threadLocals（相当于entrySet），这个threadLocals就是用来存储实际的变量副本的，键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。通过ThreadLocal的get()方法可以获取该线程变量的本地副本，在get()之前要先set()，否则就要重写initialValue()。
 
-	··Map.Entry的作用。Map.Entry是为了更方便的输出map键值对。一般情况下，要输出Map中的key和value是先得到key的集合keySet()，然后再迭代（循环）由每个key得到每个value。values()方法是获取集合中的所有值，不包含键，没有对应关系。而Entry可以一次性获得这两个值。
+			初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。
 
-	··ThreadLocal是如何为每个线程创建变量的副本的？
-		首先，在每个线程Thread内部有一个（ThreadLocal.ThreadLocalMap类型）的成员变量threadLocals（相当于entrySet），这个threadLocals就是用来存储实际的变量副本的，键值为当前ThreadLocal变量，value为变量副本（即	T类型的变量）。通过ThreadLocal的get()方法可以获取该线程变量的本地副本，在get（）之前要先set（），否则就要重写initialValue（）。
+	>ThreadLocal的作用：
+		··ThreadLocal是用来维护本地线程的变量，并不能解决线程间共享变量的并发问题。
+			ThreadLocal只是一个工具，一个往各个线程的ThreadLocal.ThreadLocalMap中table的某一位置set一个值的工具而已。
+			ThreadLocal是各线程将值存入该线程的map中，以ThreadLocal自身作为key，需要用时获得线的是该程之前存入的值。如果存入的是共享变量，那取出的也是共享变量，并发问题还是存在的。
 
-		初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。
+		··ThreadLocal和多线程并发没有什么关系！
+			ThreadLocal模式是为了解决单线程内的跨类跨方法调用的。ThreadLocal不是用来解决对象共享访问问题的，而主要是提供了保持对象的方法和避免参数传递的方便的对象访问方式。一般情况下，通过ThreadLocal.set() 到线程中的对象是该线程自己使用的对象，其他线程是不需要访问的，也访问不到的。各个线程中访问的是不同的对象。
+			同步与ThreadLocal是解决多线程中数据访问问题的两种思路，前者是数据共享的思路，后者是数据隔离的思路。
 
-
-
->ThreadLocal的作用：
-
-	··ThreadLocal是用来维护本地线程的变量，并不能解决共享变量的并发问题。
-		ThreadLocal是各线程将值存入该线程的map中，以ThreadLocal自身作为key，需要用时获得的是该线程之前存入的值。如果存入的是共享变量，那取出的也是共享变量，并发问题还是存在的。
-
-	··ThreadLocal和多线程并发没有什么关系！
-		ThreadLocal模式是为了解决 单线程内的 跨类跨方法 调用的。ThreadLocal不是用来解决对象共享访问问题的，而主要是提供了保持对象的方法和避免参数传递的方便的对象访问方式。一般情况下，通过ThreadLocal.set() 到线程中的对象是该线程自己使用的对象，其他线程是不需要访问的，也访问不到的。各个线程中访问的是不同的对象。
-
-
-
->ThreadLocal的使用场景：
-
-		··使用ThreadLocal的场景最好满足两个条件，一是该对象不需要在多线程之间共享；
-																				二是该对象需要在线程内被传递。
+	>ThreadLocal的使用场景：
+		··使用ThreadLocal的场景最好满足两个条件，一是该对象不需要在多线程之间共享；二是该对象需要在线程内被传递。
 
         ··数据库连接：在多线程中，如果使用懒汉式的单例模式创建Connection对象，由于该对象是共享的，那么必须要使用同步方法保证线程安全。
-						        这样当一个线程在连接数据库时，那么另外一个线程只能等待，这样就造成性能降低。
-						        如果改为哪里要连接数据库，就进行连接，那么就会频繁的对数据库进行连接，性能还是不高。
-						        这时使用ThreadLocal就可以既可以保证线程安全又可以让性能不会太低。但是ThreadLocal的缺点时占用了较多的空间。
+				        这样当一个线程在连接数据库时，那么另外一个线程只能等待，这样就造成性能降低。
+				        如果改为哪里要连接数据库，就进行连接，那么就会频繁的对数据库进行连接，性能还是不高。
+				        这时使用ThreadLocal就可以既可以保证线程安全又可以让性能不会太低。但是ThreadLocal的缺点是占用了较多的空间。
 
 	        注意：数据库连接时之所以使用threadlocal是因为数据库连接池，连接池里面很多connection，导致同一个事务（可理解为涉及多个DAO）每次获取的connection不是同一个。
 	        		  所以为了解决这个问题，就用threadlocal，把当前的connection放到当前线程里，如果是这个线程就获取得到对应的connection。 
 
+	    ··何时以及如何使用ThreadLocal变量？一种可能的（也是常见的）用法是当有一些线程不安全的对象，但您希望避免同步访问该对象。这时可以为每个线程提供它自己的对象实例。
 
->参考：
+	>参考：
 		1、ThreadLocal的类声明：public class ThreadLocal<T>		从中可以看出ThreadLocal并没有继承自Thread，也没有实现Runnable接口。
+			ThreadLocal没有实现任何接口。
+			ThreadLocal并不是一个Thread，而是Thread的局部变量。
 
-				ThreadLocal没有实现任何接口。
-				ThreadLocal并不是一个Thread，而是Thread的局部变量。
-
-		2、ThreadLocal类为每一个线程都维护了自己独有的变量拷贝。所以ThreadLocal重要作用并不在于多线程间的数据共享，而是数据的独立；由于每个线程在访问该变量时，读取和修改的，都是自己独有的那一份变量拷贝，不会被其他线程访问，变量被彻底封闭在每个访问的线程中。
-
-
+		2、ThreadLocal类为每一个线程都维护了自己独有的变量拷贝。所以ThreadLocal作用并不在于多线程间的数据共享，而是数据的独立；由于每个线程在访问该变量时，读取和修改的，都是自己独有的那一份变量拷贝，不会被其他线程访问，变量被彻底封闭在每个访问的线程中。
 
 
 

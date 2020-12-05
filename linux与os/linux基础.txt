@@ -107,6 +107,16 @@
 		reboot        				#重启计算机
 		halt             			#关闭计算机
 
+		查看防火墙的状态的命令为：sudo systemctl status firewalld
+
+		打开防火墙的方式有两种，一种是打开后重启会恢复回原来的状态，命令为：sudo systemctl start firewalld
+
+		另一种是打开后重启不会恢复到原来的状态，命令为：sudo systemctl enable firewalld，这种方式输入命令后要重启系统才会生效。
+
+		关闭防火墙的方式也有两种，和打开相对应，命令分别为：sudo systemctl stop firewalld；sudo systemctl disable firewalld
+
+
+
 
 
 

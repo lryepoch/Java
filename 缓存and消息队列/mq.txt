@@ -106,8 +106,8 @@
 
 ·常见消息中间件MQ介绍
 	··RocketMQ：
-		阿里系下开源的一款分布式、队列模型的消息中间件，原名Metaq，3.0版本名称改为RocketMQ，是阿里参照kafka设计思想使用java实现的一套mq。同时将阿里系内部多款mq产品（Notify、metaq）进行整合，只维护核心功能，去除了所有其他运行时依赖，保证核心功能最简化，在此基础上配合阿里上述其他开源产品实现不同场景下mq的架构，目前主要多用于订单交易系统。
-		具有以下特点：
+		···阿里系下开源的一款分布式、队列模型的消息中间件，原名Metaq，3.0版本名称改为RocketMQ，是阿里参照kafka设计思想使用java实现的一套mq。同时将阿里系内部多款mq产品（Notify、metaq）进行整合，只维护核心功能，去除了所有其他运行时依赖，保证核心功能最简化，在此基础上配合阿里上述其他开源产品实现不同场景下mq的架构，目前主要多用于订单交易系统。
+		···具有以下特点：
 					能够保证严格的消息顺序
 					提供针对消息的过滤功能
 					提供丰富的消息拉取模式
@@ -118,22 +118,52 @@
 					https://rocketmq.apache.org/docs/motivation/
 
 	··RabbitMQ：
-		使用Erlang编写的一个开源的消息队列，本身支持很多的协议：AMQP，XMPP, SMTP,STOMP，也正是如此，使的它变的非常重量级，更适合于企业级的开发。同时实现了Broker架构，核心思想是生产者不会将消息直接发送给队列，消息在发送给客户端时先在中心队列排队。对路由(Routing)，负载均衡(Load balance)、数据持久化都有很好的支持。多用于进行企业级的ESB整合。
+		···使用Erlang编写的一个开源的消息队列，本身支持很多的协议：AMQP，XMPP, SMTP,STOMP，也正是如此，使的它变的非常重量级，更适合于企业级的开发。同时实现了Broker架构，核心思想是生产者不会将消息直接发送给队列，消息在发送给客户端时先在中心队列排队。对路由(Routing)，负载均衡(Load balance)、数据持久化都有很好的支持。多用于进行企业级的ESB整合。
 
-		---------------------
-		与activemq不一样， rabbitmq 使用的是一种叫做 AMQP 的协议来通信。 AMQP 是 dvanced Message Queuing Protocol 的缩写。协议内容我们就没必要深入研究了，简单地说，通过这种协议，可以处理更为复杂的业务需求。
+		···与activemq不一样， rabbitmq 使用的是一种叫做 AMQP 的协议来通信。 AMQP 是 dvanced Message Queuing Protocol 的缩写。协议内容我们就没必要深入研究了，简单地说，通过这种协议，可以处理更为复杂的业务需求。
 
-		与 ActiveMQ 拿到消息就直接放在队列等待消费者拿走不同， Rabbit 拿到消息之后，会先交给 交换机 （Exchange）, 然后交换机再根据预先设定的不同绑定( Bindings )策略，来确定要发给哪个队列。
-		如图所示，比起 ActiveMQ 多了 Exchange 和 Bindings。正是由于有了 Exchange 和 Bindings， RabbitMQ 就可以灵活地支撑各种模式。
+		···谈到队列服务, 会有三个概念： 发消息者、队列、收消息者，RabbitMQ 在这个基本概念之上, 多做了一层抽象, 在发消息者和 队列之间, 加入了交换器 (Exchange). 这样发消息者和队列就没有直接联系, 转而变成发消息者把消息给交换器, 交换器根据调度策略再把消息再给队列。
 
-		RabbitMQ提供了四种Exchange模式：fanout,direct,topic,header。 header模式在实际使用中较少。
+		···与 ActiveMQ 拿到消息就直接放在队列等待消费者拿走不同， Rabbit 拿到消息之后，会先交给 交换机 （Exchange）, 然后交换机再根据预先设定的不同绑定( Bindings )策略，来确定要发给哪个队列。比起 ActiveMQ 多了 Exchange 和 Bindings。正是由于有了 Exchange 和 Bindings， RabbitMQ 就可以灵活地支撑各种模式。
+
+		···RabbitMQ提供了4种Exchange模式：direct，fanout，topic，header。header模式在实际使用中较少。
+
+			direct：消息中的路由键(routing key)如果和Bindding中的binding key一致，交换器就将消息发送到相应的队列中。完全匹配，单播的模式。
+					Direct Exchange 是 RabbitMQ 默认的交换机模式，也是最简单的模式，根据key全文匹配去寻找队列。
+
+			fanout：每个发到fanout类型交换器的消息都会分到所有绑定的队列上，并不处理路由键。fanout类型转发消息是最快的。
+					Fanout Exchange 消息广播的模式，不管路由键或者是路由模式，会把消息发给绑定给它的全部队列，如果配置了 routing_key 会被忽略。
+
+			topic：topic交换器通过模式匹配分配消息的路由键属性，将路由键和路由模式进行匹配，此时队列需要绑定到一个模式上。
+					模式会识别两个通配符：# 匹配0个或多个单词，* 匹配一个单词。
+
+		···解决RabbitMQ重启后，消息丢失的问题?/rabbitmq持久化?
+			交换器(Exchange)的持久化：channel.exchangeDeclare(EXCHANGE_NAME, "direct", true);
+			队列(Queue)的持久化：channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+			消息(Message)的持久化：String message = "durable exchange test";
+									AMQP.BasicProperties props = new AMQP.BasicProperties().builder().deliveryMode(2).build();
+									channel.basicPublish(EXCHANGE_NAME, "", props, message.getBytes());
+
+		···ACK确认机制：
+			1.什么是消息确认ACK？如果在处理消息的过程中，消费者的服务器在处理消息时出现异常，那么可能这条正在处理的消息没有完成消息消费，数据就会丢失。为了确保数据不会丢失RabbitMQ支持消息确认-ACK。
+
+			2.ACK的消息确认机制：
+				ACK机制是消费者从RabbitMQ收到消息并处理完成后，反馈给RabbitMQ的，RabbitMQ收到反馈后才将此消息从队列中删除。
+				如果一个消费者在处理消息出现了网络不稳定、服务器异常等现象，会将消息重新放入队列中。
+				如果在集群的情况下，RabbitMQ会立即将这个消息推送给这个在线的其他消费者，这种机制保证了在消费者服务端故障的时候，不会丢失任何消息和任务。
+				消息永远不会从RabbitMQ中删除：只有当消费者正确发送ACK反馈，RabbitMQ确认收到后，消息才会从RabbitMQ服务器的数据中删除。
+				消息的ACK确认机制默认是打开的。
+
+
 
 
 	··ActiveMQ：
-		Apache下的一个子项目。使用Java完全支持JMS1.1和J2EE 1.4规范的 JMS Provider实现，少量代码就可以高效地实现高级应用场景。可插拔的传输协议支持，比如：in-VM, TCP, SSL, NIO, UDP, multicast, JGroups and JXTA transports。RabbitMQ、ZeroMQ、ActiveMQ均支持常用的多种语言客户端 C++、Java、.Net,、Python、 Php、 Ruby等。
+		Apache下的一个子项目。使用Java完全支持JMS1.1和J2EE1.4规范的JMS Provider实现，少量代码就可以高效地实现高级应用场景。可插拔的传输协议支持，比如：in-VM, TCP, SSL, NIO, UDP, multicast, JGroups and JXTA transports。RabbitMQ、ZeroMQ、ActiveMQ均支持常用的多种语言客户端 C++、Java、.Net,、Python、 Php、 Ruby等。
+
 
 	··Redis：
 		使用C语言开发的一个Key-Value的NoSQL数据库，开发维护很活跃，虽然它是一个Key-Value数据库存储系统，但它本身支持MQ功能，所以完全可以当做一个轻量级的队列服务来使用。对于RabbitMQ和Redis的入队和出队操作，各执行100万次，每10万次记录一次执行时间。测试数据分为128Bytes、512Bytes、1K和10K四个不同大小的数据。实验表明：入队时，当数据比较小时Redis的性能要高于RabbitMQ，而如果数据大小超过了10K，Redis则慢的无法忍受；出队时，无论数据大小，Redis都表现出非常好的性能，而RabbitMQ的出队性能则远低于Redis。
+
 
 	··Kafka：
 		Apache下的一个子项目，使用scala实现的一个高性能分布式Publish/Subscribe消息队列系统，具有以下特性：
@@ -148,10 +178,9 @@
 	··ZeroMQ：
 		号称最快的消息队列系统，专门为高吞吐量/低延迟的场景开发，在金融界的应用中经常使用，偏重于实时数据通信场景。ZMQ能够实现RabbitMQ不擅长的高级/复杂的队列，但是开发人员需要自己组合多种技术框架，开发成本高。因此ZeroMQ具有一个独特的非中间件的模式，更像一个socket library，你不需要安装和运行一个消息服务器或中间件，因为你的应用程序本身就是使用ZeroMQ API完成逻辑服务的角色。但是ZeroMQ仅提供非持久性的队列，如果down机，数据将会丢失。如：Twitter的Storm中使用ZeroMQ作为数据流的传输。
 
-		ZeroMQ套接字是与传输层无关的：ZeroMQ套接字对所有传输层协议定义了统一的API接口。默认支持 进程内(inproc) ，进程间(IPC) ，多播，TCP协议，在不同的协议之间切换只要简单的改变连接字符串的前缀。可以在任何时候以最小的代价从进程间的本地通信切换到分布式下的TCP通信。ZeroMQ在背后处理连接建立，断开和重连逻辑。
+		ZeroMQ套接字是与传输层无关的：ZeroMQ套接字对所有传输层协议定义了统一的API接口。默认支持进程内(inproc)，进程间(IPC)，多播，TCP协议，在不同的协议之间切换只要简单的改变连接字符串的前缀。可以在任何时候以最小的代价从进程间的本地通信切换到分布式下的TCP通信。ZeroMQ在背后处理连接建立，断开和重连逻辑。
 
 		特性：
-
 		无锁的队列模型：对于跨线程间的交互（用户端和session）之间的数据交换通道pipe，采用无锁的队列算法CAS；在pipe的两端注册有异步事件，在读或者写消息到pipe的时，会自动触发读写事件。
 		批量处理的算法：对于批量的消息，进行了适应性的优化，可以批量的接收和发送消息。
 		多核下的线程绑定，无须CPU切换：区别于传统的多线程并发模式，信号量或者临界区，zeroMQ充分利用多核的优势，每个核绑定运行一个工作者线程，避免多线程之间的CPU切换开销。
