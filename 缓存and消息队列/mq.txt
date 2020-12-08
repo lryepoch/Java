@@ -116,7 +116,7 @@
 					亿级消息堆积能力
 					官方提供了一些不同于kafka的对比差异： 
 					https://rocketmq.apache.org/docs/motivation/
-
+					
 	··RabbitMQ：
 		···使用Erlang编写的一个开源的消息队列，本身支持很多的协议：AMQP，XMPP, SMTP,STOMP，也正是如此，使的它变的非常重量级，更适合于企业级的开发。同时实现了Broker架构，核心思想是生产者不会将消息直接发送给队列，消息在发送给客户端时先在中心队列排队。对路由(Routing)，负载均衡(Load balance)、数据持久化都有很好的支持。多用于进行企业级的ESB整合。
 
