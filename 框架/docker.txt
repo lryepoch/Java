@@ -133,9 +133,10 @@
 ·部署文件：一般来说，在服务器新建一个docker文件夹/docker，将maven打包好的jar包和Dockerfile文件都复制到该docker文件夹下
 ·设置docker镜像地址：vi  /etc/docker/daemon.json
 ·常见指令:
-	docker build -t xxx .       #制作镜像，-t 参数是指定此镜像的tag名，xxx为自定义的镜像名称，. 代表当前目录，也就是Dockerfile所在的目录
+	docker build -t xxx .       #制作镜像，-t 表示指定镜像仓库名称/镜像名称:镜像标签。 . 表示使用当前目录下的Dockerfile文件
 	docker images               #查看镜像
-	docker ps -a				#查看容器
+	docker ps                   #查看运行中的容器
+	docker ps -a				#查看所有容器
 	docker run -d -p 8080:8085 xxx    #启动容器，-d 指定容器在后台运行，-p 8080:8085 用于将容器内的8085端口映射到宿主机的8080端口，也可以换成其他本机端口。 
 									【-P将容器内部开放的网络端口随机映射到宿主机的一个端口上；
 									  -p指定要映射的端口，一个指定端口上只可以绑定一个容器；】
@@ -149,7 +150,8 @@
 	docker restart [contianer_name]		#重启容器
 	docker pause [contianer_name]		#暂停容器
 	docker unpause [contianer_name]		#恢复容器
-	docker stop [contianer_name]		#停止容器
+	docker stop [contianer_name]或者docker stop c5f5d5125587		#停止容器
+	docker kill $ContainerName          # 强制停止容器
 
 	docker inspect [contianer_name]		#检查这个容器里的各项信息
 	docker exec -it [contianer_name] /bin/bash 		#进入容器，就是进入启动的运行Tomcat的Linux。
@@ -214,3 +216,150 @@
 	也可以通过指定 URL 或者某个目录来导入：docker import http://example.com/exampleimage.tgz example/imagerepo
 
 	注：用户既可以使用docker load 来导入镜像存储文件到本地镜像库，也可以使用docker import 来导入一个容器快照到本地镜像库。这两者的区别在于容器快照文件将丢弃所有的历史记录和元数据信息（即仅保存容器当时的快照状态），而镜像存储文件将保存完整记录，体积也要大。此外，从容器快照文件导入时可以重新指定标签等元数据信息。
+
+
+
+
+
+
+-----------------------
+## Docker环境安装
+	安装`yum-utils`：yum install -y yum-utils device-mapper-persistent-data lvm2
+
+	为yum源添加docker仓库位置：yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+	安装docker服务：yum install docker-ce
+
+	启动docker服务：systemctl start docker
+
+
+## Docker镜像常用命令
+
+### 搜索镜像：docker search java
+
+### 下载镜像：docker pull java:8
+
+### 查看镜像版本
+	由于`docker search`命令只能查找出是否有该镜像，不能找到该镜像支持的版本，所以我们需要通过`Docker Hub`来搜索支持的版本。
+	进入`Docker Hub`的官网，地址：https://hub.docker.com
+	然后搜索需要的镜像：
+	查看镜像支持的版本：
+
+	进行镜像的下载操作：docker pull nginx:1.17.0
+
+### 列出镜像：docker images
+
+### 删除镜像：
+	指定名称删除镜像：docker rmi java:8
+
+	指定名称删除镜像（强制）：docker rmi -f java:8
+
+	删除所有没有引用的镜像：docker rmi `docker images | grep none | awk '{print $3}'`
+	强制删除所有镜像：docker rmi -f $(docker images)
+
+### 打包镜像
+
+# -t 表示指定镜像仓库名称/镜像名称:镜像标签 .表示使用当前目录下的Dockerfile文件docker build -t mall/mall-admin:1.0-SNAPSHOT .
+
+
+## Docker容器常用命令
+
+### 新建并启动容器
+
+docker run -p 80:80 --name nginx \-e TZ="Asia/Shanghai" \-v /mydata/nginx/html:/usr/share/nginx/html \-d nginx:1.17.0
+
+- \-p：将宿主机和容器端口进行映射，格式为：宿主机端口:容器端口；
+- \--name：指定容器名称，之后可以通过容器名称来操作容器；
+- \-e：设置容器的环境变量，这里设置的是时区；
+- \-v：将宿主机上的文件挂载到宿主机上，格式为：宿主机文件目录:容器文件目录；
+- \-d：表示容器以后台方式运行。
+
+### 列出容器
+
+列出运行中的容器：
+
+docker ps
+
+列出所有容器：
+
+docker ps -a
+
+### 停止容器
+
+注意：`$ContainerName`表示容器名称，`$ContainerId`表示容器ID，可以使用容器名称的命令，基本也支持使用容器ID，比如下面的停止容器命令。
+
+docker stop $ContainerName(or $ContainerId)
+
+例如：
+
+docker stop nginx#或者docker stop c5f5d5125587
+
+### 强制停止容器
+
+docker kill $ContainerName
+
+### 启动容器
+
+docker start $ContainerName
+
+### 进入容器
+先查询出容器的`pid`：docker inspect --format "{{.State.Pid}}" $ContainerName
+根据容器的pid进入容器：nsenter --target "$pid" --mount --uts --ipc --net --pid
+
+### 删除容器
+
+删除指定容器：docker rm $ContainerName
+按名称通配符删除容器，比如删除以名称`mall-`开头的容器：docker rm `docker ps -a | grep mall-* | awk '{print $1}'`
+强制删除所有容器：docker rm -f $(docker ps -a -q)
+
+### 查看容器的日志
+查看容器产生的全部日志：docker logs $ContainerName
+动态查看容器产生的日志：docker logs -f $ContainerName
+
+### 查看容器的IP地址：docker inspect --format '{{ .NetworkSettings.IPAddress }}' $ContainerName
+
+### 修改容器的启动方式
+
+# 将容器启动方式改为always：docker container update --restart=always $ContainerName
+
+### 同步宿主机时间到容器：docker cp /etc/localtime $ContainerName:/etc/
+
+
+### 指定容器时区
+docker run -p 80:80 --name nginx \-e TZ="Asia/Shanghai" \-d nginx:1.17.0
+
+
+### 查看容器资源占用状况
+查看指定容器资源占用状况，比如cpu、内存、网络、io状态：docker stats $ContainerName
+
+查看所有容器资源占用情况：docker stats -a
+
+### 查看容器磁盘使用情况：docker system df
+
+### 执行容器内部命令：docker exec -it $ContainerName /bin/bash
+
+
+### 指定账号进入容器内部
+
+
+# 使用root账号进入容器内部：docker exec -it --user root $ContainerName /bin/bash
+
+
+### 查看所有网络：docker network ls
+
+
+### 创建外部网络：docker network create -d bridge my-bridge-network
+
+
+### 指定容器网络：docker run -p 80:80 --name nginx \--network my-bridge-network \-d nginx:1.17.0
+
+
+## 修改镜像的存放位置
+
+	查看Docker镜像的存放位置：docker info | grep "Docker Root Dir"
+	关闭Docker服务：systemctl stop docker
+
+	先将原镜像目录移动到目标目录：mv /var/lib/docker /mydata/docker
+	建立软连接：ln -s /mydata/docker /var/lib/docker
+
+

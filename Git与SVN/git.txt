@@ -66,19 +66,19 @@
 
 
 -----------------------------------
-·使用git同步，基本步骤：
+·使用git同步，基本步骤：Git跟踪并管理的是修改，而非文件。
 
 	1.在github上新建一个远程仓库；
 
-	2.本地新建文件夹，即为工作区workspace；
+	2.本地新建文件夹，即为工作区[Working Directory]；
 
-	3.$ git init                      ##把这个文件夹变成git可管理的仓库；
+	3.$ git init                      ##把这个文件夹变成git可管理的仓库，表现为生成一个.git文件，这个文件代表版本库；
 
-	4.把项目粘贴到工作区workspace；
+	4.把项目移动到工作区；
 
-	5.$ git add 文件名		/ $ git add .					##添加到暂存区index/stage，或(git add .)把该目录下的所有文件添加到暂存区，注意点是用空格隔开的；
+	5.$ git add <file>		/ $ git add .		##把要提交的所有修改放到暂存区[Stage]；或(git add .)把该目录下的所有文件添加到暂存区，注意点是用空格隔开的；
 
-	6.$ git commit (指定文件) -m "注释内容"							##把项目提交到本地仓库repository；
+	6.$ git commit <file> -m "注释内容"							##一次性把暂存区的所有修改提交到本地仓库repository，此时暂存区就变空了；
 
 	7.$ git remote add origin git@github.com:用户名/仓库名.git 				##将本地仓库和远程仓库进行关联；【之前已有，就不需要运行这行了】
 
@@ -91,6 +91,19 @@
 
 		这是由于你新创建的那个仓库里面的 README 文件不在本地仓库目录中，这时我们可以通过以下命令先将内容合并一下：
 		$ git pull --rebase origin master【作用：拉取远程的文件把本地的覆盖，再上传】
+
+
+
+						add (-u)                commit                           push
+[working directory] --------------> [stage] --------------> [repository] ------------------> [remote]
+		---------------------------------------------------------->
+		                           commit -a
+		<----------------------------    <----------------------     <----------------------------
+					checkout                		reset                 fetch/clone
+		<-------------------------------------------------------
+								checkout -- <file>
+	    <-----------------------------------------------------------------------------------------
+		 										 pull/rebase
 
 
 
@@ -177,6 +190,7 @@
 
 	··查看分支合并图：$ git log --graph [--pretty=oneline --abbrev-commit]
 
+<<<<<<< HEAD
 	··强制拉取并覆盖本地代码【放弃本地的修改，用远程的库的内容】：git fetch --all        				#从远程仓库下载最新版本
 															git reset --hard origin/master      #将本地设为刚获取的最新的内容
 															git pull
@@ -185,6 +199,12 @@
 					git add .
 					git commit -m "your comment"
 					git push -u origin master -f / git push -f origin master
+=======
+	··强制拉取并覆盖本地代码（放弃本地的修改，用远程的库的内容）：git fetch --all
+																	git reset --hard origin/master
+																	git pull
+	··强制提交到远程仓库：$ git push -u origin master -f
+>>>>>>> 16d8d1af83d4bc5eea65eae3eaecd247fdd35110
 
 
 
@@ -328,6 +348,7 @@
 	git diff XX 							##查看XX文件修改了哪些内容
 	git diff                                 ##显示暂存区和工作区的差异
 	git diff HEAD                       ##显示工作区与当前分支最新commit之间的差异
+	git diff HEAD -- <file>			##查看工作区和版本库里面最新版本的区别
 	git log 									##查看历史记录
 	git log --oneline                  ##简化日志
 	git log -n5 --oneline           	##查看前5个日志
@@ -335,7 +356,7 @@
 
 
 	版本回滚：
-	git reset HEAD                                        ##恢复暂存区和HEAD一致
+	git reset HEAD                                        ##恢复暂存区和HEAD一致，HEAD指的是最新版本
 	git reset HEAD -- 文件名									##恢复暂存区指定文件与HEAD一致
 	git reset --hard HEAD                                    	##回退到指定commit
 	git reset --hard HEAD^ / git reset --hard HEAD~ 			##回退到上一个版本
@@ -345,7 +366,7 @@
 
 	分支管理：
 	git checkout –b dev 												##创建dev分支 并切换到dev分支上【-b参数是指创建并切换】
-	git checkout -- XX 													##把XX文件在工作区的修改全部撤销，恢复工作区与暂存区一致
+	git checkout -- <file>												##把<file>文件在工作区的修改全部撤销，恢复工作区与暂存区一致
 	git checkout [master(分支名)]										##切换回master分支
 	git merge dev 														##在当前的分支上合并dev分支
 
@@ -373,8 +394,15 @@
 	git remote –v 					##查看当前项目的远程git地址，确定地址是否正确
 
 
-	git push -u origin master -f    ##强制提交到远程仓库；
+	git rebase -i dev 	#可以将dev分支合并到当前分支。这里的”-i“是指交互模式，就是说你可以干预rebase这个事务的过程，包括设置commit message，暂停commit等等。
+	
+	git rebase dev         #将dev分支合并到当前分支
 
+	在rebase的过程中，也许会出现冲突(conflict)。在这种情况，Git会停止rebase并会让你去解决 冲突；在解决完冲突后，用"git-add"命令去更新这些内容的索引(index), 然后，你无需执行 git-commit，只要执行：$ git rebase --continue，这样git会继续应用(apply)余下的补丁。
+
+	git rebase –abort 		#在任何时候，可以用--abort参数来终止rebase的行动，并且分支会回到rebase开始前的状态。
+
+	在使用git pull命令的时候，可以使用--rebase参数，即 git pull --rebase。这里表示把本地的当前分支里每个提交(commit)取消掉，并且把它们临时 保存为补丁(patch)(这些补丁放到".git/rebase"目录中)，然后把本地的当前分支更新 为最新的"origin"分支，最后把保存的这些补丁应用到本地的当前分支上。
 
 
 
