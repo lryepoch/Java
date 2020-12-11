@@ -341,7 +341,7 @@ public class TestController {
 
 lombok：
 ----------------------------
-	@Accessors：Accessor的中文含义是存取器，@Accessors用于配置getter和setter方法的生成结果，下面介绍三个属性：
+·@Accessors：Accessor的中文含义是存取器，@Accessors用于配置getter和setter方法的生成结果，下面介绍三个属性：
 
 	··fluent的中文含义是流畅的，设置为true，则getter和setter方法的方法名都是基础属性名，且setter方法返回当前对象。如下
 
@@ -389,16 +389,21 @@ lombok：
 
 
 
-·@PostConstruct注解：好多人以为是Spring提供的。其实是Java自己的注解。
 
-	··Java中该注解的说明：@PostConstruct注解被用来修饰一个非static的void()方法。被@PostConstruct修饰的方法只会被服务器执行一次。
+Java：
+--------------------
+·@PostConstruct注解：好多人以为是Spring提供的，其实是Java自己的注解。
 
-	··通常我们会是在Spring框架中使用到@PostConstruct注解。
-	从依赖注入的字面意思就可以知道，要将对象b注入到对象a，那么首先就必须得生成对象a和对象b，才能执行注入。所以，如果一个类A中有个成员变量b被@Autowried注解，那么@Autowired注入是发生在A的构造方法执行完之后的。
-	如果想在A生成对象时完成某些初始化操作，而偏偏这些初始化操作又依赖于依赖注入，那么就无法在构造函数中实现。
-	为此，可以使用@PostConstruct注解一个方法来完成初始化，@PostConstruct注解的方法将会在依赖注入完成后被自动调用。
+	··其作用就是完成依赖注入后，在对象的非静态的void方法内执行特定任务，以确保在对象使用之前可以将任务执行效果使用起来。被@PostConstruct修饰的方法只会被服务器执行一次。
 
-	··该注解的方法在整个Bean初始化中的执行顺序为：Constructor(构造方法) -> @Autowired(依赖注入) -> @PostConstruct(注释的方法)
+	··通常我们在Spring框架中使用到@PostConstruct注解。
+		从依赖注入的字面意思就可以知道，要将对象b注入到对象a，那么首先就必须得生成对象a和对象b，才能执行注入。
+		所以，如果一个类A中有个成员变量b被@Autowried注解，那么@Autowired注入是发生在A的构造方法执行完之后的。
+
+		如果想在A生成对象时完成某些初始化操作，而偏偏这些初始化操作又依赖于依赖注入，那么就无法在构造函数中实现。
+		为此，可以使用@PostConstruct注解一个方法来完成初始化，@PostConstruct注解的方法将会在依赖注入完成后被自动调用。
+
+	··该注解的方法在整个Bean初始化中的执行顺序为：Constructor(构造方法) -> @Autowired(依赖注入) -> @PostConstruct(注释的方法) -> 静态方法
 
 	··因为当调用构造函数时，bean还没有初始化-即没有注入依赖项。在@PostConstruct方法完全初始化bean，您可以使用依赖项。
 

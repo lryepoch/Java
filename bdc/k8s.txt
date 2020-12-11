@@ -13,7 +13,7 @@
 	kubectl get svc (service ) 		#获取服务
 
 	kubectl get deployment 			#获取部署
-
+	
 	kubectl get cs 				#获取集群健康状态
 	
 	kubectl describe ns xxx     #查看指定namespace的详细信息
