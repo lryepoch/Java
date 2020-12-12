@@ -39,9 +39,9 @@
 
 			对于null的处理：PropertyUtils支持为null的场景；
 							BeanUtils对部分属性不支持null，具体如下：
-								a.  java.util.Date类型不支持,但是它的自类java.sql.Date是被支持的。java.util.Date直接copy会报异常；
-								b.  Boolean，Integer，Long等不支持，会将null转化为0；
-								c.  String支持，转化后依然为null。
+								a.java.util.Date类型不支持,但是它的自类java.sql.Date是被支持的。java.util.Date直接copy会报异常；
+								b.Boolean，Integer，Long等不支持，会将null转化为0；
+								c.String支持，转化后依然为null。
 
 		3.BeanUtils的高级功能org.apache.commons.beanutils.Converter接口可以自定义类型转化，也可以对部分类型数据的null值进行特殊处理，如
 		ConvertUtils.register(new DateConverter(null), java.util.Date.class)；但是PropertyUtils没有。
@@ -222,9 +222,7 @@ class C {
 	··不回滚：当发生异常后，使用了catch捕获了且没有手动回滚。
 	··回滚：
 			1.@Transactional(rollbackFor = { Exception.class })。在默认不写@Transactional(rollbackFor = Exception.class)，默认回滚RuntimeException ；
-			
 			2.方法抛异常；
-
 			3.try catch 捕获异常，手动回滚。这种方法相比于不回滚的那种写法，只是在catch作用域内多加入了一行代码：
 				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
