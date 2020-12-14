@@ -305,8 +305,21 @@ class C {
 
 
 
-·控制台打印mybatis注解sql：logging.level.com.example.cache.mapper = debug
+·控制台打印mybatis注解sql：logging.level.com.example.cache.mapper = debug 
 
 
 
-·System.getproperty(user.dir) linux下获取是当前用户的文件夹根路径。例如：root用户获取是的/root/路径，其他用户获取的是/home/xxxx/路径。
+·System.getProperty(user.dir)：
+    linux下获取是当前用户的文件夹根路径。例如：root用户获取是的/root/路径，其他用户获取的是/home/xxxx/路径。
+    jar包位置在哪，启动就在哪。System.getproperty(user.dir)就指向哪。
+
+
+
+·Java支持3个通用位置来查找资源：
+    ··在当前的工作目录。这是你的命令提示符和System.getProperty("user.dir")返回的地方，但是你不能依赖那些与文件系统中的任何文件夹位置相关的文件，特别是与你自己的系统上的项目结构无关。
+    如果你的程序有一个命令行界面并寻找一些默认的文件名来处理，你应该只使用它。
+    
+    ··在用户家这就是你打电话时System.getProperty("user.home")。在Unix上，这转移到$HOMEWindows上并在Windows上转移%USERPROFILE%。 这是在运行时更改文件或保存用户特定内容的最佳位置。
+    
+    ··在自己的代码位置。与你的课程相同的软件包中的资源可以访问，getClass().getResource("filenameWithoutPath")但通常你会将资源放在应用程序根目录中的特殊文件夹中，并像下面这样访问它：getClass().getResource("/relative/path/from/src/root/filenameWithoutPath")。
+    在你的IDE中，这个特殊的文件夹应该是project/src/main/resources。

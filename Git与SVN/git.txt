@@ -82,6 +82,8 @@
 
 	7.$ git remote add origin git@github.com:用户名/仓库名.git 				##将本地仓库和远程仓库进行关联；【之前已有，就不需要运行这行了】
 
+	git push --set-upstream origin main
+
 	8.$ git push （-u） origin master		##将本地仓库repository主分支master内容提交到远程仓库origin的master分支，由于新建的远程仓库是空的，所以要加上-u这个参数，等远程仓库里面有了内容之后，下次再从本地库上传内容的时候，可去掉-u。
 
 	>>另外，这里有个坑需要注意一下，就是在第1步创建远程仓库的时候，如果你勾选了Initialize this repository with a 

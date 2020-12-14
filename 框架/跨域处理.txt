@@ -1,0 +1,48 @@
+
+·java后台解决跨域问题：解决跨域问题的方式有很多，这里主要是添加注解的方式和采用添加拦截器的方法：
+
+	方法一、spring boot中只用在Controller类上添加一个“@CrossOrigin“注解就可以实现对当前controller的跨域访问了，当然这个标签也可以加到方法上。
+			注意：“@CrossOrigin“注解要求jdk1.8以上版本。eg：@CrossOrigin(origins = "*", maxAge = 3600) //* 可以改成ip地址
+
+	方法二、采用添加拦截器的方法。
+	@Configuration
+	public class WebConfig extends WebMvcConfigurerAdapter {
+	    @Autowired
+	    private EnvConfig envConfig;
+	    @Override
+	    public void addInterceptors(InterceptorRegistry registry) {
+	        registry.addInterceptor(new HandlerInterceptor() {
+	            @Override
+	            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+	                    throws Exception {
+	                boolean isTrue = envConfig.getIsDev();//判断是测试服才需要解决跨域问题
+	                if (isTrue) {
+	                    response.addHeader("Access-Control-Allow-Origin", "*");
+	　　　　　　　　　　   response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+	                    response.addHeader("Access-Control-Allow-Headers",
+	                            "Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,token");
+	                }
+	                return true;
+	            }
+
+	            @Override
+	            public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+	                    ModelAndView modelAndView) throws Exception {
+
+	            }
+
+	            @Override
+	            public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+	                    Exception ex) throws Exception {
+	            }
+	        });
+	    }
+	}
+
+
+
+注意：跨域并不是请求发不出去，请求能发出去，服务端能收到请求并正常返回结果，只是结果被浏览器拦截了。之所以会跨域，是因为受到了同源策略的限制，同源策略要求源相同才能正常进行通信，即协议、域名、端口号都完全一致。
+
+
+
+·同源策略：同domain（或ip）,同端口，同协议视为同一个域，一个域内的脚本仅仅具有本域内的权限，可以理解为本域脚本只能读写本域内的资源，而无法访问其它域的资源。这种安全限制称为同源策略。 

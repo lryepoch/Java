@@ -168,7 +168,7 @@ docker
 
 GTSC工程服务管理平台
 项目描述：根据商用订单系统、MES系统、ERP系统、派工系统等系统接口，给GTSC工程服务管理平台中空调设备的全生命周期提供数据支持，主要环节包括设备订单、设备生产、设备出货、开机密码、运行状况
-技术选型：springboot、springMVC、mybatis、maven、mysql5.7、jdbc
+技术选型：springboot、springMVC、mybatis、maven、mysql5.7、jdbc、设计模式
 工作职责：
 1.定时从接口同步商用订单数据到数据库，从而给GTSC系统提供完整订单数据；
 2.对GTSC系统接入订单信息、生产信息以及出货信息接口进行开发；
