@@ -343,6 +343,9 @@
 	git clone -b dev https://github.com/tugenhua0707/test.git 				##拉取远程指定分支
 	git branch dev origin/dev                                     ##基于远端的dev分支，本地创建dev分支
 
+	git rm ss.c                                 ##删除文件
+	git rm -r aaa                               ##删除文件夹
+
 
 	git status 								##查看有变更的文件，显示工作目录和暂存区的状态。使用此命令能看到那些修改被暂存到了（绿色）, 哪些没有, 哪些文件没有被Git tracked到（红色）。
 	git diff XX 							##查看XX文件修改了哪些内容
