@@ -14,14 +14,8 @@
 ·mybatis foreach item与index：item代表的是list里面的各个成员，就是一个别名，而index则表示迭代的次数，简单说就是找#{item}这个值找了几次。
 
 
-·jks证书的绝对路径如何优化成相对路径；
-	InputStream resourceAsStream = JksConfig.class.getResourceAsStream("/cm-auto-in_cluster_truststore.jks");
 
-	props.load(new FileInputStream("db.properties")); 是读取当前目录的db.properties文件；
 
-	getClass.getResourceAsStream("db.properties"); 是读取当前类所在位置一起的db.properties文件；
-
-	getClass.getResourceAsStream("/db.properties"); 是读取ClassPath的根的db.properties文件,注意ClassPath如果是多个路径或者jar文件的,只要在任意一个路径目录下或者jar文件里的根下都可以,如果存在于多个路径下的话,按照ClassPath中的先后顺序,使用先找到的,其余忽略；
 
 
 
@@ -81,3 +75,25 @@
 ·分页：
 	1.使用分页插件pageHelper，还是要传入currentPage、pageSize；
 	2.数据库分页则根据传入currentPage、pageSize，sql语句中：limit (currentPage-1)*pageSize, pageSize；
+
+
+
+
+·jks证书的绝对路径如何优化成相对路径；
+	InputStream resourceAsStream = JksConfig.class.getResourceAsStream("/cm-auto-in_cluster_truststore.jks");
+
+	props.load(new FileInputStream("db.properties")); 是读取当前目录的db.properties文件；
+
+	getClass.getResourceAsStream("db.properties"); 是读取当前类所在位置一起的db.properties文件；
+
+	getClass.getResourceAsStream("/db.properties"); 是读取ClassPath的根的db.properties文件，注意ClassPath如果是多个路径或者jar文件的，只要在任意一个路径目录下或者jar文件里的根下都可以，如果存在于多个路径下的话，按照ClassPath中的先后顺序，使用先找到的，其余忽略；
+
+
+·System.getProperty(user.dir)：
+    linux下获取是当前用户的文件夹根路径。例如：root用户获取是的/root/路径，其他用户获取的是/home/xxx/路径。
+    jar包位置在哪，启动就在哪。System.getproperty(user.dir)就指向哪。
+
+
+
+
+·解决springboot读取jar包中文件的问题：

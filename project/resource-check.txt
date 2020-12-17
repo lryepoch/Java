@@ -309,9 +309,7 @@ class C {
 
 
 
-·System.getProperty(user.dir)：
-    linux下获取是当前用户的文件夹根路径。例如：root用户获取是的/root/路径，其他用户获取的是/home/xxxx/路径。
-    jar包位置在哪，启动就在哪。System.getproperty(user.dir)就指向哪。
+
 
 
 
