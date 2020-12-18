@@ -144,3 +144,13 @@ Map getSsoOut(String url){
 	5.app系统拿到ST后，从后台向SSO发送请求，验证ST是否有效；
 	6.验证通过后，app系统将登录状态写入session并设置app域下的Cookie；
 	7.至此，跨域单点登录就完成了，当我们再访问app系统时，app就是登录的。
+
+
+
+
+
+
+·单点登录的方法中callback字符串：
+	如何生成的？
+	随机生成的，前端通过账号密码访问【OAUTH】http://172.21.1.144:8080/static/login.html获取到callback，
+	然后带着callback回调后台地址http://172.21.1.144:8080/applicationIndex/sso/login?callback=
