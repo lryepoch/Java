@@ -6,6 +6,14 @@ SpringMVC注解：
 	@RequestParam 作用是为获取前端参数，方式主要有两种，一种是request.getParameter("name")，另外一种是用注解@RequestParam直接获取，解决的是前后端参数不一致的问题。
 	如果传入参数名字和方法参数名字不一致，可以给@RequestParam的属性赋值。
 	(@RequestParam（value/name="id"，required=false，defaultValue=1）Integer id)【required默认是true，表示当前参数必须传入，不传值会抛出异常。当设置为false时，不传id时不会出错，以defaultValue值显示】
+	postman传入参数时，参数显示在url上。此时，get和post请求皆可。
+
+	另外，
+	post 提交的数据应该放在 body 中。
+	get 提交的数据应该放在 url 中。
+	当然，你 post 提交的时候也可以在 url 上携带参数。
+	headers 是放一些描述信息的，比如你说的 cookie，还是比如说 content-type 、contentlength 之类的。
+
 
 ·@PathVariable
 	这个注解能够识别URL里面的一个模板。
