@@ -207,6 +207,24 @@ Spring：
 	3、@ComponentScan注解默认扫描启动类所在的包，该包下的类如果注入到了IOC容器中，那么在该启动类就能获取注入的bean。然后用@EnableConfigurationProperties注解使@ConfigurationProperties注解生效。因此在该启动类中就可以获取刚才application.properties配置文件转化的bean了。另外，只使用@SpringBootApplication一个注解也是可以的，因为@SpringBootApplication注解中已经包含了@ComponentScan和@EnableConfigurationProperties注解。
 
 
+·@Mapper和@MapperScan：
+	@Mapper
+	作用：用在接口类上，在编译之后会生成相应的接口实现类
+	位置：对应的某个接口类上面
+	如果每个接口类 都要 @Mapper 注解，是重复而无聊的工作，解决这个问题用 @MapperScan 。
+
+	@MapperScan
+	作用：扫描指定包下所有的接口类，然后所有接口在编译之后都会生成相应的实现类
+	位置：是在 SpringBootApplication 启动类上面添加 。
+	SpringBootApplication 上添加 @MapperScan("com.aop8.demo.mapper") 注解，会扫描 com.aop8.demo.mapper 包下面所有的接口类，在编译之后都会生成相应的实现类。
+
+	@MapperScan 也支持多个包的扫描。@MapperScan({"com.aop8.emp.mapper","com.aop8.dep.mapper"})
+	@MapperScan 支持表达式，扫描包和其子包中的类。@MapperScan({"com.aop8.*.mapper","com.baidu.*.mapper"})   	
+
+	总结：
+	@Mapper 是对单个接口类的注解。单个操作。
+	@MapperScan 是对整个包下的所有的接口类的注解。是批量的操作。使用 @MapperScan 后，接口类 就不需要使用 @Mapper 注解。
+
 
 
 

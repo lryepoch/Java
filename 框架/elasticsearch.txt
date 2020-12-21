@@ -1,10 +1,53 @@
 
-·Elasticsearch 是一个分布式、可扩展、实时的搜索与数据分析引擎。 它能从项目一开始就赋予你的数据以搜索、分析和探索的能力，可用于实现全文搜索和实时数据统计。
+·Elasticsearch是一个分布式、可扩展、实时的搜索与数据分析引擎。它能从项目一开始就赋予你的数据以搜索、分析和探索的能力，可用于实现全文搜索和实时数据统计。
 
 
 
 
 ·常用注解：
-	@Document：标示映射到Elasticsearch文档上的领域对象；
-	@Id：表示是文档的id，文档可以认为是mysql中表行的概念；
-	@Field：为文档自动指定元数据类型
+	@Document：标示映射到Elasticsearch文档上的领域对象
+			public @interface Document {
+			  //索引库名次，mysql中数据库的概念
+			    String indexName();
+			  //文档类型，mysql中表的概念
+			    String type() default "";
+			  //默认分片数
+			    short shards() default 5;
+			  //默认副本数量
+			    short replicas() default 1;
+			}
+
+
+	@Id：表示是文档的id，文档可以认为是mysql中表行的概念
+	public @interface Id {
+	}
+
+
+	@Field：
+	public @interface Field {
+	  //文档中字段的类型
+	    FieldType type() default FieldType.Auto;
+	  //是否建立倒排索引
+	    boolean index() default true;
+	  //是否进行存储
+	    boolean store() default false;
+	  //分词器名次
+	    String analyzer() default "";
+	}
+
+	//为文档自动指定元数据类型
+	public enum FieldType {
+	    Text,//会进行分词并建了索引的字符类型
+	    Integer,
+	    Long,
+	    Date,
+	    Float,
+	    Double,
+	    Boolean,
+	    Object,
+	    Auto,//自动判断字段类型
+	    Nested,//嵌套对象类型
+	    Ip,
+	    Attachment,
+	    Keyword//不会进行分词建立索引的类型
+	}
