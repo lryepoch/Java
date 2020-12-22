@@ -72,6 +72,7 @@
             <artifactId>commons-beanutils</artifactId>
             <version>1.8.3</version>
         </dependency>
+        此外，利用 BeanUtils 将 Map 与 Bean 进行相互转换（把 map 值放入 Bean 的属性中）
 
         <!-- mapstruct依赖 -->
         <dependency>

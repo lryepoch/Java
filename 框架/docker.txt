@@ -138,13 +138,22 @@
 	docker images               #查看镜像
 	docker ps                   #查看运行中的容器
 	docker ps -a				#查看所有容器
-	docker run --name container_name -p 8080:8085 image_name
 	docker run -d -p 8080:8085 xxx    #启动容器，-d 指定容器在后台运行，-p 8080:8085 用于将容器内的8085端口映射到宿主机的8080端口，也可以换成其他本机端口。 
 									【-P将容器内部开放的网络端口随机映射到宿主机的一个端口上；
 									  -p指定要映射的端口，一个指定端口上只可以绑定一个容器；】
+	docker run -p 80:80 --name nginx \
+	-e TZ="Asia/Shanghai" \
+	-v /mydata/nginx/html:/usr/share/nginx/html \
+	-d nginx:1.17.0
+	
+	-p：将宿主机和容器端口进行映射，格式为：宿主机端口:容器端口；
+	--name：指定容器名称，之后可以通过容器名称来操作容器；
+	-e：设置容器的环境变量，这里设置的是时区；
+	-v：将宿主机上的文件挂载到宿主机上，格式为：宿主机文件目录:容器文件目录；
+	-d：表示容器以后台方式运行。
+
 
 	--------------------------------					  
-	docker kill CONTAINER_ID        #停止指定ID容器
 	docker port CONTAINER_ID		#查看映射端口配置
 
 	docker create [contianer_name]		#创建一个新的容器但不启动它
@@ -154,6 +163,8 @@
 	docker unpause [contianer_name]		#恢复容器
 	docker stop [contianer_name]或者docker stop c5f5d5125587		#停止容器
 	docker kill $ContainerName          # 强制停止容器
+	docker kill CONTAINER_ID        #强制停止指定ID容器
+
 
 	docker inspect [contianer_name]		#检查这个容器里的各项信息
 	docker exec -it [contianer_name] /bin/bash 		#进入容器，就是进入启动的运行Tomcat的Linux。
@@ -242,6 +253,8 @@
 		然后 service docker start 重新启动，Docker 的路径就改成 /home/lib/docker 了。
 
 
+
+·Docker Compose是一个用于定义和运行多个docker容器应用的工具。使用Compose你可以用YAML文件来配置你的应用服务，然后使用一个命令，你就可以部署你配置的所有服务了。
 
 
 -----------------------
