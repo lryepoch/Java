@@ -4,7 +4,7 @@
 	··运行在服务器端的js。
 	··加载模块，使用模块的方法。
 	··npm是node.js的包管理器，可以上传或者下载。使用 npm 命令安装模块。
-	··模块放在node_modules 目录中，因此在代码中只需要通过 require('express') 的方式就好，无需指定第三方包路径。 
+	··模块放在node_modules目录中，因此在代码中只需要通过 require('express') 的方式就好，无需指定第三方包路径。 
 	··使用package.json：package.json位于模块的目录下，用于定义包的属性。看下express包的package.json文件，位于node_modules/express/package.json内容。
 
 

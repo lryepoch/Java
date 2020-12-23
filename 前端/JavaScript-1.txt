@@ -1,8 +1,6 @@
 
----------------------------------
-
-
---引入JavaScript的方式：
+----------------------
+·引入JavaScript的方式：
 	1.使用<script>标签在HTML网页中插入JavaScript代码。<script type="text/javascript">……</script>；
 	2.单独创建一个JavaScript文件(简称JS文件),其文件后缀通常为.js，然后将JS代码直接写在JS文件中。
 	注意：在JS文件中，不需要<script>标签,直接编写JavaScript代码就可以了。
@@ -11,7 +9,7 @@
 
 
 
---JS在页面中的位置：
+·JS在页面中的位置：
 	我们可以将JavaScript代码放在html文件中任何位置，但是我们一般放在网页的head或者body部分。
 
 	放在<head>部分
@@ -23,13 +21,13 @@
 
 
 
---注释：
+·注释：
 	单行注释，在注释内容前加符号 “//”；
 	多行注释以"/*"开始，以"*/"结束。
 
 
 
---变量名可以任意取名，但要遵循命名规则：使用关键字var
+·变量名可以任意取名，但要遵循命名规则：使用关键字var
 
     1.变量必须使用字母、下划线(_)或者美元符($)开始。
     2.然后可以使用任意多个英文字母、数字、下划线(_)或者美元符($)组成。
@@ -42,7 +40,7 @@
 
 
 
---JS中如何输出空格：
+·JS中如何输出空格：
 	在写JS代码的时候，大家可以会发现这样现象:
 	document.write("   1      2                3  ");
 	结果: 1 2 3
@@ -61,7 +59,7 @@
 
  
 
- --JavaScript 可以通过不同的方式来输出数据：
+·JavaScript 可以通过不同的方式来输出数据：
     a、使用 window.alert() 弹出警告框。
     b、使用 document.write() 方法将内容写到 HTML 文档中。
     c、使用 innerHTML 写入到 HTML 元素。eg：document.getElementById(“id”).innerHTML；
@@ -69,7 +67,7 @@
 
 
 
---JavaScript 消息框：
+·JavaScript 消息框：
 	可以在 JavaScript 中创建三种消息框：
 	警告框：alert("显示的·警告信息)；折行警告框：即换行 + '\n' + 。警告框经常用于确保用户可以得到某些信息。当警告框出现后，用户需要点击确定按钮才能继续进行操作。
 	确认框：confirm("提问的问题")；如果用户点击确认，那么返回值为 true。如果用户点击取消，那么返回值为 false。
@@ -78,31 +76,45 @@
 
 
 
---打开新窗口（window.open）；
+·打开新窗口（window.open）；
 	关闭窗口（window.close）；
 
---------------------------------------
 
---DOM操作：
-	---通过ID获取元素： document.getElementById(“id”) ；
+
+
+
+----------------------
+·DOM操作：
+	··通过ID获取元素： document.getElementById(“id”) ；
 		注：获取的元素是一个对象Object，如想对元素进行操作，我们要通过它的属性或方法。
 
-	---innerHTML 属性用于获取或替换 HTML 元素的内容。eg：Object.innerHTML
+	··innerHTML 属性用于获取或替换 HTML 元素的内容。eg：Object.innerHTML
 		注意:
 		1.Object是获取的元素对象，如通过document.getElementById("ID")获取的元素。
 		2.注意书写，innerHTML区分大小写。
 
-	---改变 HTML 样式：
+	··改变 HTML 样式：
 		Object.style.property=new style;
 
-	---显示和隐藏（display属性）		Object.style.display = value
+	··显示和隐藏（display属性）		Object.style.display = value
 		取值：
 			none：隐藏；
 			block：显示（块级元素）；
 
-	---控制类名（className 属性）：className 属性设置或返回元素的class 属性。
+	··控制类名（className 属性）：className 属性设置或返回元素的class 属性。
 
 		object.className = classname
 		作用:
 		1.获取元素的class 属性
 		2. 为网页内的某个元素指定一个css样式来更改该元素的外观
+
+
+
+
+
+·不用纠结为什么没有body、html、或者其他什么标签。
+	标签的作用就是告诉浏览器该怎么显示标签内的内容。
+	所有的标签都要经过浏览器进行解析，换句话说，就算没有任何标签，浏览器也是要进行显示的。
+
+
+·返回上一步：<a href="#" onClick="javascript:history.back()">返回</a>
