@@ -242,3 +242,39 @@
 	2.如果用户长时间没有访问服务器，超过了会话最大超时时间 ，服务器就会自动销毁超时的session。
 
 	应用场景：在线人数的统计；
+
+
+
+
+·SpringBoot读取properties或者application.yml配置文件中的数据：
+
+1、使用@Value注解读取。前提：当前类是一个组件；
+
+2、使用@ConfigurationProperties注解读取方式。
+@Component
+@ConfigurationProperties(prefix = "user")
+
+3、读取指定文件
+3.1、@PropertySource+@Value注解读取方式
+在resources下新建配置config/db-config.properties 
+注意：@PropertySource不支持yml文件读取。
+@Component
+@PropertySource(value = { "config/db-config.properties" })
+
+3.2、@PropertySource+@ConfigurationProperties注解读取方式
+@Component
+@ConfigurationProperties(prefix = "db")
+@PropertySource(value = { "config/db-config.properties" })
+
+4、使用Environment读取
+@Autowired
+private Environment environment;
+
+//读取配置类 CEnvironment读取方式
+@RequestMapping(value = "/getConfigenv")
+public String getConfigenv() {
+return "获取的配置信息 :" +
+    " name=" + environment.getProperty("user.name") +
+    " address=" + environment.getProperty("user.address") +
+    " , company=" + environment.getProperty("user.company");
+}
