@@ -31,14 +31,15 @@
 ·创建vue项目命令：
 	··vue init webpack <project_name>		#创建vue项目【在项目中创建webpack】
 	··cnpm install							#安装依赖包（会生成node_modules文件夹）
-	··cnpm run dev							#启动运行vue项目
-	··cnpm run build							#打包上线，生成dist文件夹（包含static文件夹和index.html文件）
+	··cnpm run dev	/	npm run serce		#启动运行vue项目【主要看package.json文件中的配置】
+	··cnpm run build						#打包上线，生成dist文件夹（包含static文件夹和index.html文件）
 
 	cnpm cache clean --force				#清除npm缓存
 	cnpm audit fix			#检测项目依赖中的漏洞并自动安装需要更新的有漏洞的依赖，而不必再自己进行跟踪和修复。
 	cnpm audit				#允许开发人员分析复杂的代码，并查明特定的漏洞和缺陷。
 
 	如果 npm audit fix，之后还是有问题，可能是不能自动 fix，尽量不要 --force 强制 fix。可以先 npm update，然后 npm audit 查看详情，再手动安装相关库。
+
 
 
 
