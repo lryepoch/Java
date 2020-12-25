@@ -97,3 +97,8 @@
 
 
 ·解决springboot读取jar包中文件的问题：
+ClassPathResource resource = new ClassPathResource("static/office_template/word_replace_tpl.docx");
+File sourceFile = resource.getFile();
+InputStream fis = resource.getInputStream();
+
+resource.getFile()期望资源本身在文件系统上可用，即不能嵌套在jar文件中。这就是为什么当您在STS中运行应用程序时它可以工作，但是一旦您构建了应用程序并从可执行jar中运行它后，它就无法工作。建议不要使用getFile()访问资源的内容，getInputStream()而应使用。这样一来，无论资源位于何处，都可以读取其内容。

@@ -19,5 +19,3 @@ web服务器：一般指像nginx，apache这类的服务器，他们一般只能
 	把精力放在html5，css3，jquery，angularjs，bootstrap，reactjs，vuejs，webpack，less/sass，gulp，nodejs，Google V8引擎，javascript多线程，模块化，面向切面编程，设计模式，浏览器兼容性，性能优化等等。
 
 	前端追求的是：页面表现，速度流畅，兼容性，用户体验等等。
-
-

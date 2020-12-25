@@ -1,278 +1,64 @@
 
-<!--mybatis-plus 与mybatis依赖冲突-->
-<dependency>
-    <groupId>com.baomidou</groupId>
-    <artifactId>mybatis-plus-boot-starter</artifactId>
-    <version>3.1.2</version>
-</dependency>
-<dependency>
-    <groupId>com.baomidou</groupId>
-    <artifactId>mybatis-plus-generator</artifactId>
-    <version>3.1.2</version>
-</dependency>
-<dependency>
-    <groupId>org.freemarker</groupId>
-    <artifactId>freemarker</artifactId>
-    <version>2.3.28</version>
-</dependency>
+·mybatis的缺点：
+    1.mybatis sql工作量很大，尤其是字段多的时候。虽然说单表的增删改查操作可以通过mybatis generator工具来生成（或者自己写模板工具生成），但项目开发的过程中总免不了要新添加新字段，这些工具就帮不了我了，我得把新字段写到原来的所有增删改查的sql中。这是个痛苦的过程，特别是当你重复了很多次之后。
+
+    2.mybatis的单表操作也是贼麻烦的事，因为筛选的条件可能会各种各样，所以你不得不写很多动态sql来兼容查询条件，这也让我不能集中精力去处理业务。
 
 
 
+·mybatis plus：是一个 Mybatis 的增强工具，在 Mybatis 的基础上只做增强不做改变，为简化开发、提高效率而生。
 
-原：
---------------------------------------------------------------------------------
-package com.leayun.dubhe.utils;
+·mybatis plus的特性：
+    1.mybatis-plus不仅仅封装了基本的CRUD操作，内置了防SQL注入操作、常用的分页插件，还有我最喜欢的ActiveRecord模式
+    用过jfinal的人应该都知道ActiveRecord是啥。Active Record 是一种数据访问设计模式，它可以帮助你实现数据对象Object到关系数据库的映射。
 
-import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.generator.AutoGenerator;
-import com.baomidou.mybatisplus.generator.InjectionConfig;
-import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import org.apache.commons.lang3.StringUtils;
-import java.util.ArrayList;
-import java.util.Scanner;
-
-
- /**
- * @author masterlai
- * @since 2019/9/26
- * mybatis-plus代码生成器
- */
-public class CodeGenerator {
-    /**
-     * 读取控制台内容
-     */
-    private static String scanner(String tip) {
-        System.out.println("请输入" + tip + "：");
-        Scanner scanner = new Scanner(System.in);
-        if (scanner.hasNext()) {
-            String ipt = scanner.next();
-            if (StringUtils.isNotEmpty(ipt)) {
-                return ipt;
-            }
-        }
-        throw new MybatisPlusException("请输入正确的" + tip + "！");
-    }
-
-    public static void main(String[] args) {
-
-        // 代码生成器
-        AutoGenerator mpg = new AutoGenerator();
-
-        // 全局配置
-        GlobalConfig gc = new GlobalConfig();
-        String projectPath = System.getProperty("user.dir");
-        gc.setOutputDir(projectPath + "/authserver/src/main/java");
-        gc.setAuthor("masterlai");
-        gc.setOpen(false);
-        mpg.setGlobalConfig(gc);
-
-        // 数据源配置
-        DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:postgresql://10.2.22.4:5432/dubhe_authserver?useUnicode=true&characterEncoding=utf-8");
-        dsc.setDriverName("org.postgresql.Driver");
-        dsc.setUsername("dubhe");
-        dsc.setPassword("leayun@dubhe");
-        mpg.setDataSource(dsc);
-
-        // 包配置
-        PackageConfig pc = new PackageConfig();
-        pc.setModuleName(scanner("模块名"));
-        pc.setParent("com.leayun.dubhe");
-        pc.setController("controller");
-        pc.setEntity("entity");
-        pc.setMapper("mapper");
-        mpg.setPackageInfo(pc);
-
-        // 自定义配置
-        InjectionConfig cfg = new InjectionConfig() {
-            @Override
-            public void initMap() {
-                // to do nothing
-            }
-        };
-
-
-		// 如果模板引擎是 freemarker
-        String templatePath = "/templates/mapper.xml.ftl";
-        // 如果模板引擎是 velocity
-        //String templatePath = "/templates/mapper.xml.vm";
-
-        // 自定义输出配置
-        ArrayList<FileOutConfig> focList = new ArrayList<>();
-        // 自定义配置会被优先输出
-        focList.add(new FileOutConfig(templatePath) {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                // 自定义输出文件名
-                return projectPath + "/authserver/src/main/resources/mapper/" + pc.getModuleName()
-                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
-            }
-        });
-        cfg.setFileOutConfigList(focList);
-        mpg.setCfg(cfg);
-
-        // 配置模板
-        TemplateConfig templateConfig = new TemplateConfig();
-        templateConfig.setXml(null);
-        mpg.setTemplate(templateConfig);
-
-        // 策略配置
-        StrategyConfig strategy = new StrategyConfig();
-        strategy.setNaming(NamingStrategy.underline_to_camel);
-        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setEntityLombokModel(true);
-        strategy.setRestControllerStyle(true);
-        // 写于父类中的公共字段
-        strategy.setSuperEntityColumns("id");
-        strategy.setInclude(scanner("表名(逗号分隔)").split(","));
-        strategy.setControllerMappingHyphenStyle(true);
-        strategy.setTablePrefix(pc.getModuleName() + "_");
-        mpg.setStrategy(strategy);
-        mpg.setTemplateEngine(new FreemarkerTemplateEngine());
-        mpg.execute();
-    }
-}
-
-
- 改：
-----------------------------------------------------------------------
-import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.generator.AutoGenerator;
-import com.baomidou.mybatisplus.generator.InjectionConfig;
-import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-
-import java.util.ArrayList;
-import java.util.Scanner;
-
-/**
- * @author 260408
- * @create by 260408 on 2019-11-08 16:29
- */
-public class CodeGenerator {
-
-    private static String scanner(String tip) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("请输入" + tip + "：");
-        if (scanner.hasNext()) {
-            String ipt = scanner.next();
-            if (StringUtils.isNotEmpty(ipt)) {
-                return ipt;
-            }
-        }
-        throw new MybatisPlusException("请输入正确的" + tip + "！");
-    }
-
-    public static void main(String[] args) {
-
-        // 代码生成器
-        AutoGenerator mpg = new AutoGenerator();
-
-        // 全局配置
-        GlobalConfig gc = new GlobalConfig();
-
-        //user.dir：这是用户的根目录
-        String projectPath = System.getProperty("user.dir");
-
-        //生成文件的输出目录
-        gc.setOutputDir(projectPath + "/src/main/java");
-
-        //是否覆盖已有文件
-        gc.setFileOverride(true);
-
-        gc.setAuthor("li");
-
-        //是否打开输出目录，默认为true
-        gc.setOpen(false);
-
-        mpg.setGlobalConfig(gc);
-
-
- // 数据源配置
-        DataSourceConfig dsc = new DataSourceConfig();
-        try {
-            dsc.setUrl("jdbc:mysql://localhost:3306/fridge?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=UTC");
-            dsc.setDriverName("com.mysql.cj.jdbc.Driver");
-            dsc.setUsername("root");
-            dsc.setPassword("123456");
-            mpg.setDataSource(dsc);
-        } catch (Exception e) {
-            throw new RuntimeException("数据源配置错误");
-        }
-
-        // 包配置
-        PackageConfig pc = new PackageConfig();
+    常用注解：
+    @TableName ：表名注解；
+    @TableId ：主键注解；
+        @TableId(value = “id”,type = IdType.INPUT) 
+        主键生成方式类型如下（IdType）：
         
-        //pc.setModuleName(scanner("模块名"));
-
-        pc.setParent("com.gree.fridge");
-        pc.setController("controller");
-        pc.setEntity("entity");
-        pc.setMapper("dao");
-        mpg.setPackageInfo(pc);
-
-        //自定义配置
-        InjectionConfig cfg = new InjectionConfig() {
-            @Override
-            public void initMap() {
-                // to do nothing
-            }
-        };
-
-        // 如果模板引擎是 freemarker
-        String templatePath = "/templates/mapper.xml.ftl";
-
-        // 如果模板引擎是 velocity
-        //String templatePath = "/templates/entity.xml.vm";
-
-        // 自定义输出配置
-        ArrayList<FileOutConfig> focList = new ArrayList<>();
-
-        // 自定义配置会被优先输出
-        focList.add(new FileOutConfig(templatePath) {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                // 自定义输出文件名
-                return projectPath + "/src/main/resources/mapping/" /*+ pc.getModuleName() + "/"*/ + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
-            }
-        });
-
-        cfg.setFileOutConfigList(focList);
-        mpg.setCfg(cfg);
-
-        // 配置模板
-        TemplateConfig templateConfig = new TemplateConfig();
-        templateConfig.setXml(null);
-        mpg.setTemplate(templateConfig);
+                AUTO(0, “数据库ID自增”),
+                INPUT(1, “用户输入ID”),
+                ID_WORKER(2, “全局唯一ID”),
+                UUID(3, “全局唯一ID”),
+                NONE(4, “该类型为未设置主键类型”),
+                ID_WORKER_STR(5, “字符串全局唯一ID”);
 
 
- // 策略配置
-        StrategyConfig strategy = new StrategyConfig();
-        strategy.setNaming(NamingStrategy.underline_to_camel);
-        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+    @Version :乐观锁标记注解；
+    @TableField ：字段注解；
+    @KeySequence ：序列主键策略注解；
 
-        strategy.setEntityLombokModel(true);    //是否为lombok模型
 
-        strategy.setRestControllerStyle(true);  //生成@RestController控制器
+    2.当数据库的表字段名是驼峰命名时无需注解处理。
+    或者全局配置： 下划线命名 dbColumnUnderline 设置 true , 大写 isCapitalMode 设置 true。使用mp代码生成器自动生成主体后直接覆盖原来的就行了，减少人工的失误，方便快捷。
 
-        strategy.setSuperEntityColumns("id");   // 写于父类中的公共字段
+    3.简化CURD：
+    喜欢ActiveRecord的模式写法，因为我不用注入userMapper，new了一个对象之后直接调用方法操作就行了复杂的查询也很简单，新建一个EntityWrapper作为查询对象，Wrapper接口封装了很多常用的方法。几乎sql能写出来的条件调用Wrapper的方法就能表现出来。
 
-        strategy.setInclude(scanner("表名(逗号分隔)").split(","));
 
-        strategy.setControllerMappingHyphenStyle(true);     //驼峰转接字符
 
-        strategy.setTablePrefix(pc.getModuleName() + "_");      //表前缀
-        mpg.setStrategy(strategy);
 
-        mpg.setTemplateEngine(new FreemarkerTemplateEngine());  //设置模板引擎类型
-        mpg.execute();
-    }
-}
+
+·虽然Mybatis Plus帮我们提供了大量的默认方法，但我们为了实现多表关联查询，或者根据不同的查询条件传参，实现不同的动态SQL。在这种情况下我们还是需要自定义SQL。
+
+
+
+
+
+
+·条件构造器queryWrapper和updateWrapper：
+    ··QueryWrapper： Entity 对象封装操作类。
+        CarEntity Entity = this.carMapper.selectOne(new QueryWrapper<CarEntity>()
+                                            .lambda()
+                                            .eq(CarEntity::getTerminalid, tEntity.getTerminalid()));
+
+
+    ··UpdateWrapper ： Update 条件封装，用于Entity对象更新操作；不是用lambda语法。
+        UpdateWrapper<CarEntity> ew = new UpdateWrapper<>();
+        ew.lambda().set(CarEntity::getTerminalcode,null)
+                .set(CarEntity::getTerminalid,null)
+                .set(CarEntity::getModifiedon,LocalDateTime.now())
+                .eq(CarEntity::getCarid,cEntity.getCarid());
+        this.carMapper.update(null, ew);
