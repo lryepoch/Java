@@ -17,7 +17,7 @@
     @TableId ：主键注解；
         @TableId(value = “id”,type = IdType.INPUT) 
         主键生成方式类型如下（IdType）：
-        
+
                 AUTO(0, “数据库ID自增”),
                 INPUT(1, “用户输入ID”),
                 ID_WORKER(2, “全局唯一ID”),
@@ -62,3 +62,40 @@
                 .set(CarEntity::getModifiedon,LocalDateTime.now())
                 .eq(CarEntity::getCarid,cEntity.getCarid());
         this.carMapper.update(null, ew);
+
+
+
+
+·QueryWrapper
+    最基础的使用方式是这样
+    // 查询条件构造器
+    QueryWrapper<BannerItem> wrapper = new QueryWrapper<>();
+    wrapper.eq("banner_id", id);
+
+    // 查询操作
+    List<BannerItem> bannerItems = bannerItemMapper.selectList(wrapper);
+
+    然后我们可以引入lambda，避免我们在代码中写类似的于banner_id的硬编码
+
+    QueryWrapper<BannerItem> wrapper = new QueryWrapper<>();
+    wrapper.lambda().eq(BannerItem::getBannerId, id);
+    List<BannerItem> bannerItems = bannerItemMapper.selectList(wrapper);
+
+·LambdaQueryWrapper
+    为了简化lambda的使用，我们可以改写成LambdaQueryWrapper构造器，语法如下：
+    LambdaQueryWrapper<BannerItem> wrapper = new QueryWrapper<BannerItem>().lambda();
+    wrapper.eq(BannerItem::getBannerId, id);
+    List<BannerItem> bannerItems = bannerItemMapper.selectList(wrapper);
+
+    我们可以再次将QueryWrapper<BannerItem>.lambda()简化，变成这个样子
+
+    LambdaQueryWrapper<BannerItem> wrapper = new LambdaQueryWrapper<>();
+    wrapper.eq(BannerItem::getBannerId, id);
+    List<BannerItem> bannerItems = bannerItemMapper.selectList(wrapper);
+
+    链式查询
+    MyBatis-Plus还提供了一种链式查询的方式，和上面的代码效果一样。
+    但是这种写法偏向于炫技，可读性没有上面的代码强，大家可以根据需要自行选择方式。
+    List<BannerItem> bannerItems = new LambdaQueryChainWrapper<>(bannerItemMapper)
+                            .eq(BannerItem::getBannerId, id)
+                            .list();
