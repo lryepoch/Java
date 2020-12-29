@@ -99,3 +99,7 @@
     List<BannerItem> bannerItems = new LambdaQueryChainWrapper<>(bannerItemMapper)
                             .eq(BannerItem::getBannerId, id)
                             .list();
+
+
+
+·BaseMapper？
