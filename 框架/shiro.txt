@@ -88,11 +88,15 @@
 
 	5、Authenticator会把相应的token传入Realm，从Realm获取身份验证信息，如果没有返回/抛出异常表示身份验证失败了。此处可以配置多个Realm，将按照相应的顺序及策略进行访问。
 
+	doGetAuthenticationInfo()方法：
+		大致流程为：登录——>拿账号密码检验———>用着token的账号通过你的sql查询对象——>比对数据是否一致——>通过还是抛各种异常
+		而在shiroConfig中，基于url过滤时authc即可访问
 
 
 ·shiro授权过程：访问控制，即应用中控制谁访问哪些资源；
-
 				在用户认证通过后(注意只有当用户认证通过后才能对用户进行授权)，系统对用户访问资源进行控制，用户具有资源的访问权限方可访问。
+
+				授权管理：是否登录——>是/否——（是）—>查询role/perm添加到subject——>过滤器校验该url需要权限——>可以访问/权限不足
 
 	创建SecurityManager
 	主体授权
@@ -117,7 +121,7 @@
 	6、如果比对后，isPermitted中"permission串"在realm查询到权限数据中，说明用户访问permission串有权限，否则 没有权限，抛出异常。（permission串即URL）
 
 
-	Shiro支持三种方式的授权： 
+	Shiro支持几种方式的授权： 
 	1.编程式：通过写if/else授权代码块完成： 
 		Subject subject = SecurityUtils.getSubject();  
 		if(subject.hasRole(“admin”)) {  
@@ -126,21 +130,22 @@
 		    //无权限  
 		}   
 	
-	2.注解式：通过在执行的Java方法上放置相应的注解完成： 
-		//@RequiresPermissions("userInfo:del")
+	2.注解式：通过在执行的Java方法上放置相应的注解完成： 没有权限将抛出相应的异常。
+
+		@RequiresRoles("TEACHER")  //这个注解表示：该方法需要TEACHER这个角色才能访问
+		注解方式以硬编码的形式来授权，一旦权限发生变动就需要，修改代码，然后重新部署，这就比较麻烦，不灵活。
+
+		@RequiresPermissions("PLAY_GAME") // 这个注解表示：该方法需要PLAY_GAME这个权限才能访问
 		
-		@RequiresRoles("admin")  
-		public void hello() {  
-		    //有权限  
-		}   
-		没有权限将抛出相应的异常；
+		@RequiresRoles(value={"admin","user"},logical = Logical.OR)
+    	@RequiresPermissions(value={"add","update"},logical = Logical.AND)
 
 	3.JSP/GSP标签：在JSP/GSP页面通过相应的标签完成：
 		<shiro:hasRole name="admin">  
 		<!— 有权限 —>  
 		</shiro:hasRole>   
 
-
+	4.采用自定义URL过滤器的方式来实现，权限可以自由随意配置/分配，无需改动代码，更加灵活。
 
 
 ·shiro加密：
