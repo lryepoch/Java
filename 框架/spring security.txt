@@ -1,1 +1,28 @@
 
+·自定义配置这三个方法来自定义我们的安全访问策略：
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userService).passwordEncoder(new PasswordEncoder() {
+	            //加密
+	            @Override
+	            public String encode(CharSequence charSequence) {
+	                return DigestUtils.md5DigestAsHex(charSequence.toString().getBytes());
+	            }
+
+	            //密码匹配
+	            @Override
+	            public boolean matches(CharSequence charSequence, String s) {
+	                return s.equals(DigestUtils.md5DigestAsHex(charSequence.toString().getBytes()));
+	            }
+	    });
+	}
+	配置全局的认证相关的信息，其实就是AuthenticationProvider和UserDetailsService，前者是认证服务提供商，后者是用户详情查询服务；
+
+
+	protected void configure(HttpSecurity http) throws Exception {
+	}
+	具体的权限控制规则配置。一个这个配置相当于xml配置中的一个标签。各种具体的认证机制的相关配置
+
+
+	public void configure(WebSecurity webSecurity) throws Exception {
+	}
+	全局请求忽略规则配置（比如说静态文件，比如说注册页面）、全局HttpFirewall配置、是否debug配置、全局SecurityFilterChain配置

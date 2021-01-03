@@ -64,6 +64,7 @@
 
 		通过realm从数据库中查询用户信息，所以realm的作用可想而知：根据token中的身份信息去查询数据库（入门程序我们使用ini配置文件模拟数据库）。如果查到用户则返回认证信息，如果查询不到就返回null。
 
+	··多Realm：与单一realm相同，首先根据不同的登录认证要求创建不同的realm。如支持多用户类型认证,系统用户,第三方用户等,其中认证的字段有所不同,比如,系统用户使用账号和密码登录,第三方用户使用手机号/验证码或邮箱之类的认证,不同的用户类型所使用的登录页和主页都不一样,而且在认证失败后都跳转到各自的登录页。
 
 
 ·shiro认证过程：【登录】
@@ -120,32 +121,42 @@
 
 	6、如果比对后，isPermitted中"permission串"在realm查询到权限数据中，说明用户访问permission串有权限，否则 没有权限，抛出异常。（permission串即URL）
 
+ 
+	权限控制通常有两类做法：
+		角色授权：不同身份的用户登录，我们现在不同的操作菜单（没有权限的菜单不现实）。粗粒度的，范围较大。角色针对访问页面，权限针对方法！
+		权限授权：对所有用户显示所有菜单，当用户点击菜单以后再验证当前用户是否有此权限，如果没有则提示权限不足。细粒度的。
 
-	Shiro支持几种方式的授权： 
-	1.编程式：通过写if/else授权代码块完成： 
+	1.代码级别权限控制：通过写if/else授权代码块完成： 
 		Subject subject = SecurityUtils.getSubject();  
 		if(subject.hasRole(“admin”)) {  
 		    //有权限  
 		} else {  
 		    //无权限  
 		}   
-	
-	2.注解式：通过在执行的Java方法上放置相应的注解完成： 没有权限将抛出相应的异常。
+		if(subject.isPermitted("sys:k:find")){
+		    System.out.println("----------->查询客户信息");
+		    return "customer_list";
+		}else{
+		    return "lesspermission";
+		}	
 
-		@RequiresRoles("TEACHER")  //这个注解表示：该方法需要TEACHER这个角色才能访问
-		注解方式以硬编码的形式来授权，一旦权限发生变动就需要，修改代码，然后重新部署，这就比较麻烦，不灵活。
-
-		@RequiresPermissions("PLAY_GAME") // 这个注解表示：该方法需要PLAY_GAME这个权限才能访问
-		
+	2.方法注解权限控制：通过在执行的Java方法上放置相应的注解完成： 没有权限将抛出相应的异常。AuthorizationAttributeSourceAdvisor && DefaultAdvisorAutoProxyCreator
+			注解方式以硬编码的形式来授权，一旦权限发生变动就需要，修改代码，然后重新部署，这就比较麻烦，不灵活。
 		@RequiresRoles(value={"admin","user"},logical = Logical.OR)
     	@RequiresPermissions(value={"add","update"},logical = Logical.AND)
 
-	3.JSP/GSP标签：在JSP/GSP页面通过相应的标签完成：
+	3.JSP/HTML标签：在页面通过相应的标签完成权限控制
 		<shiro:hasRole name="admin">  
-		<!— 有权限 —>  
-		</shiro:hasRole>   
+			<!— 有权限 —>  
+		</shiro:hasRole>  
+
+		<shiro:hasPermission name="sys:c:save">
+    		<dd><a href="javascript:;">入库</a></dd>
+		</shiro:hasPermission>
 
 	4.采用自定义URL过滤器的方式来实现，权限可以自由随意配置/分配，无需改动代码，更加灵活。
+		filterMap.put("/c_add.html","perms[sys:c:save]");
+
 
 
 ·shiro加密：
@@ -207,3 +218,40 @@
 	其中声明了一个静态属性，三个静态方法：
 	静态属性 securityManager：用来存储当前应用中全局唯一的一个SecurityManager。
 	getSubject 静态方法：这个是 Shiro 中最核心的方法了，用来获取 Subject
+
+
+
+
+·subject如何获取登录用户信息？
+
+	shiro管理登录，获取登录信息的方式常用的是：
+	Subject sub = SecurityUtils.getSubject(); Object obj = sub.getPrincipal();
+	这里的 obj 是字符串，还是某个实体，取决于 ShiroRealm 类的设置值，代码如下：
+
+		@Override protected AuthenticationInfo
+		doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+			System.out.println("获取登录者信息-->MyShiroRealm.doGetAuthenticationInfo()");
+			UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+			String userS = token.getUsername(); 
+			User user = userService.findByName(userS);
+			if (user != null) { 
+				LoginInfo info = new LoginInfo();
+				info.setName(user.getName()); 
+				info.setLoginId(user.getId); 
+				return new SimpleAuthenticationInfo(info, user.getPassword(), getName()); 
+			} 
+			return null; 
+		}
+	如果像上面这样设置，读取登录信息就是：LoginInfo login = (LoginInfo) SecurityUtils.getSubject().getPrincipal();
+
+
+	如果设置登录信息的地方如下：
+		@Override protected AuthenticationInfo
+		doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+			System.out.println("获取登录者信息-->MyShiroRealm.doGetAuthenticationInfo()");
+			UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+			String userS = token.getUsername(); 
+			User user = userService.findByName(userS);
+			return new SimpleAuthenticationInfo(users, user.getPassword(), getName());
+		}
+	读取登录信息就是：String loginName = (String) SecurityUtils.getSubject().getPrincipal();
