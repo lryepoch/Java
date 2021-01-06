@@ -1,15 +1,19 @@
 
 ·JWT:
-    JWT(JSON Web Token)是一个开放标准（RFC 7519），它定义了一种紧凑且独立的方式，可以在各个系统之间用JSON作为对象安全地传输信息，并且可以保证所传输的信息不会被篡改。
+    JWT是JSON WEB TOKEN的缩写，它是基于 RFC 7519 标准定义的一种可以安全传输的的JSON对象，由于使用了数字签名，所以是可信任和安全的。可以在各个系统之间用JSON作为对象安全地传输信息，并且可以保证所传输的信息不会被篡改。
 
     ··由三部分组成: 头信息（header）, 消息体（payload）和签名（signature）；
-        ···header 包含两部分，令牌token的类型和使用的加密算法。如 {typ: "jwt", alg: "HS256"}：头部用于描述关于该JWT的最基本的信息；
+        ···header包含两部分，令牌token的类型和使用的加密算法。如 {typ: "jwt", alg: "HS256"}：头部用于描述关于该JWT的最基本的信息；
 
-        ···Payload 负载就是存放有效信息的地方，有效信息被分为标准中注册的声明、公共的声明和私有的声明；
+        ···payload负载就是存放有效信息的地方，有效信息被分为标准中注册的声明、公共的声明和私有的声明；
+            payload中可以用于存放用户名、token的生成时间和过期时间：{"sub":"admin","created":1489079981393,"exp":1489684781}
 
-        ···Signature 这一部分指将Header和Payload使用"."连接而成的字符串，通过密钥secret和加盐算法进行编码后生成的签名即一个新的字符串。
-            将这个新字符串拼接在“header.payload."之后，形成完整的JWT。
+        ···signature这一部分指将header和payload使用"."连接而成的字符串，通过密钥secret和加盐算法进行编码后生成的签名即一个新的字符串。
+            signature将这个新字符串拼接在“header.payload."之后，形成完整的JWT。
             secret密钥保存在服务端，不会发送给任何人，所以 JWT 的传输方式是很安全的。签名的作用就是为了防止恶意篡改数据；
+
+            //secret为加密算法的密钥
+            String signature = HMACSHA512(base64UrlEncode(header) + "." +base64UrlEncode(payload), secret);
 
         最后，三部分使用.连接成字符串，就是要返回给浏览器的token， 浏览器一般会将这个 token 存储在 localStorge 以备其他需要验证用户的请求使用。
         需要注意的是，JWT的内容并不是加密的，只是简单的Base64编码。也就是说，JWT一旦泄露，里面的信息可以被轻松获取，因此不应该用JWT保存任何敏感信息。
@@ -118,193 +122,193 @@
 
 
 
-
+·关于token的一种生成方式：
 1、导入依赖
-<dependency>
-    <groupId>com.auth0</groupId>
-    <artifactId>java-jwt</artifactId>
-    <version>3.8.0</version>
-</dependency>
+    <dependency>
+        <groupId>com.auth0</groupId>
+        <artifactId>java-jwt</artifactId>
+        <version>3.8.0</version>
+    </dependency>
 
 
 2、生成Token，有两种方式：
 
-HS256 方式
-try {
-    Algorithm algorithm = Algorithm.HMAC256("secret");
-    String token = JWT.create()
-                .withIssuer("rstyro")   //发布者
-                .withSubject("test")    //主题
-                .withAudience(audience)     //观众，相当于接受者
-                .withIssuedAt(new Date())   // 生成签名的时间
-                .withExpiresAt(DateUtils.offset(new Date(),2, Calendar.MINUTE))    // 生成签名的有效期,分钟
-                .withClaim("data", JSON.toJSONString("Object")) //自定义字段存数据
-                .withNotBefore(new Date())  //生效时间
-                .withJWTId(UUID.randomUUID().toString())    //编号
-                .sign(algorithm);
-} catch (JWTCreationException exception){
-    //签名不匹配
-}
+    HS256 方式
+    try {
+        Algorithm algorithm = Algorithm.HMAC256("secret");
+        String token = JWT.create()
+                    .withIssuer("rstyro")   //发布者
+                    .withSubject("test")    //主题
+                    .withAudience(audience)     //观众，相当于接受者
+                    .withIssuedAt(new Date())   // 生成签名的时间
+                    .withExpiresAt(DateUtils.offset(new Date(),2, Calendar.MINUTE))    // 生成签名的有效期,分钟
+                    .withClaim("data", JSON.toJSONString("Object")) //自定义字段存数据
+                    .withNotBefore(new Date())  //生效时间
+                    .withJWTId(UUID.randomUUID().toString())    //编号
+                    .sign(algorithm);
+    } catch (JWTCreationException exception){
+        //签名不匹配
+    }
 
 
-RS256 方式
-RSAPublicKey publicKey = //Get the key instance
-RSAPrivateKey privateKey = //Get the key instance
-try {
-    Algorithm algorithm = Algorithm.RSA256(publicKey, privateKey);
-    String token = JWT.create()
-                .withIssuer("rstyro")   //发布者
-                .withSubject("test")    //主题
-                .withAudience(audience)     //观众，相当于接受者
-                .withIssuedAt(new Date())   // 生成签名的时间
-                .withExpiresAt(DateUtils.offset(new Date(), 2, Calendar.HOUR_OF_DAY))    // 生成签名的有效期,小时
-                .withClaim("data", JSON.toJSONString("Object")) //自定义字段存数据
-                .withNotBefore(new Date())  //生效时间
-                .withJWTId(UUID.randomUUID().toString())    //编号
-                .sign(algorithm);
-} catch (JWTCreationException exception){
-    //签名不匹配
-}
+    RS256 方式
+    RSAPublicKey publicKey = //Get the key instance
+    RSAPrivateKey privateKey = //Get the key instance
+    try {
+        Algorithm algorithm = Algorithm.RSA256(publicKey, privateKey);
+        String token = JWT.create()
+                    .withIssuer("rstyro")   //发布者
+                    .withSubject("test")    //主题
+                    .withAudience(audience)     //观众，相当于接受者
+                    .withIssuedAt(new Date())   // 生成签名的时间
+                    .withExpiresAt(DateUtils.offset(new Date(), 2, Calendar.HOUR_OF_DAY))    // 生成签名的有效期,小时
+                    .withClaim("data", JSON.toJSONString("Object")) //自定义字段存数据
+                    .withNotBefore(new Date())  //生效时间
+                    .withJWTId(UUID.randomUUID().toString())    //编号
+                    .sign(algorithm);
+    } catch (JWTCreationException exception){
+        //签名不匹配
+    }
 
 
 3、校验 Token
-片段代码如下：
+    片段代码如下：
 
-if("RS256".equalsIgnoreCase(jwtdto.getAlg())){
-    algorithm = Algorithm.RSA256(CreateSecrteKey.getRSA256Key().getPublicKey(), null);
-}else {// hs256 的方式
-    algorithm = Algorithm.HMAC256(secret);
-}
-JWTVerifier verifier = JWT.require(algorithm)
-        .withIssuer("rstyro")
-        .build();
-try {
-    verify = verifier.verify(jwtdto.getToken());
-}catch (TokenExpiredException ex){
-    throw new ApiException(ApiResultEnum.TOKEN_EXPIRED);
-}catch (JWTVerificationException ex){
-    throw new ApiException(ApiResultEnum.SIGN_VERIFI_ERROR );
-}
-
-
-因为 RS256 加密，需要一个公私钥对，我们可以通过 KeyPairGenerator 随机获取一个公私钥对，工具类如下：
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-import top.lrshuai.jwt.entity.RSA256Key;
-
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * 抄录地址：https://www.cnblogs.com/only-jlk/p/5960900.html
- */
-public class CreateSecrteKey {
-
-    public static final String KEY_ALGORITHM = "RSA";
-    private static final String PUBLIC_KEY = "RSAPublicKey";
-    private static final String PRIVATE_KEY = "RSAPrivateKey";
-
-    private static RSA256Key rsa256Key;
-
-    //获得公钥
-    public static String getPublicKey(Map<String, Object> keyMap) throws Exception {
-        //获得map中的公钥对象 转为key对象
-        Key key = (Key) keyMap.get(PUBLIC_KEY);
-        //byte[] publicKey = key.getEncoded();
-        //编码返回字符串
-        return encryptBASE64(key.getEncoded());
+    if("RS256".equalsIgnoreCase(jwtdto.getAlg())){
+        algorithm = Algorithm.RSA256(CreateSecrteKey.getRSA256Key().getPublicKey(), null);
+    }else {// hs256 的方式
+        algorithm = Algorithm.HMAC256(secret);
     }
-    public static String getPublicKey(RSA256Key rsa256Key) throws Exception {
-        //获得map中的公钥对象 转为key对象
-        Key key = rsa256Key.getPublicKey();
-        //byte[] publicKey = key.getEncoded();
-        //编码返回字符串
-        return encryptBASE64(key.getEncoded());
+    JWTVerifier verifier = JWT.require(algorithm)
+            .withIssuer("rstyro")
+            .build();
+    try {
+        verify = verifier.verify(jwtdto.getToken());
+    }catch (TokenExpiredException ex){
+        throw new ApiException(ApiResultEnum.TOKEN_EXPIRED);
+    }catch (JWTVerificationException ex){
+        throw new ApiException(ApiResultEnum.SIGN_VERIFI_ERROR );
     }
 
-    //获得私钥
-    public static String getPrivateKey(Map<String, Object> keyMap) throws Exception {
-        //获得map中的私钥对象 转为key对象
-        Key key = (Key) keyMap.get(PRIVATE_KEY);
-        //byte[] privateKey = key.getEncoded();
-        //编码返回字符串
-        return encryptBASE64(key.getEncoded());
-    }
-    //获得私钥
-    public static String getPrivateKey(RSA256Key rsa256Key) throws Exception {
-        //获得map中的私钥对象 转为key对象
-        Key key = rsa256Key.getPrivateKey();
-        //byte[] privateKey = key.getEncoded();
-        //编码返回字符串
-        return encryptBASE64(key.getEncoded());
-    }
 
-    //解码返回byte
-    public static byte[] decryptBASE64(String key) throws Exception {
-        return (new BASE64Decoder()).decodeBuffer(key);
-    }
+    因为 RS256 加密，需要一个公私钥对，我们可以通过 KeyPairGenerator 随机获取一个公私钥对，工具类如下：
 
-    //编码返回字符串
-    public static String encryptBASE64(byte[] key) throws Exception {
-        return (new BASE64Encoder()).encodeBuffer(key);
-    }
+    import sun.misc.BASE64Decoder;
+    import sun.misc.BASE64Encoder;
+    import top.lrshuai.jwt.entity.RSA256Key;
 
-    //map对象中存放公私钥
-    public static Map<String, Object> initKey() throws Exception {
-        //  /** RSA算法要求有一个可信任的随机数源 */
-        //获得对象 KeyPairGenerator 参数 RSA 1024个字节
-        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance(KEY_ALGORITHM);
-        keyPairGen.initialize(1024);
-        //通过对象 KeyPairGenerator 生成密匙对 KeyPair
-        KeyPair keyPair = keyPairGen.generateKeyPair();
-
-        //通过对象 KeyPair 获取RSA公私钥对象RSAPublicKey RSAPrivateKey
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        //公私钥对象存入map中
-        Map<String, Object> keyMap = new HashMap<String, Object>(2);
-        keyMap.put(PUBLIC_KEY, publicKey);
-        keyMap.put(PRIVATE_KEY, privateKey);
-        return keyMap;
-    }
+    import java.security.Key;
+    import java.security.KeyPair;
+    import java.security.KeyPairGenerator;
+    import java.security.interfaces.RSAPrivateKey;
+    import java.security.interfaces.RSAPublicKey;
+    import java.util.HashMap;
+    import java.util.Map;
 
     /**
-     * 获取公私钥
-     * @return
-     * @throws Exception
+     * 抄录地址：https://www.cnblogs.com/only-jlk/p/5960900.html
      */
-    public static synchronized RSA256Key getRSA256Key() throws Exception {
-        if(rsa256Key == null){
-            synchronized (RSA256Key.class){
-                if(rsa256Key == null) {
-                    rsa256Key = new RSA256Key();
-                    Map<String, Object> map = initKey();
-                    rsa256Key.setPrivateKey((RSAPrivateKey) map.get(CreateSecrteKey.PRIVATE_KEY));
-                    rsa256Key.setPublicKey((RSAPublicKey) map.get(CreateSecrteKey.PUBLIC_KEY));
+    public class CreateSecrteKey {
+
+        public static final String KEY_ALGORITHM = "RSA";
+        private static final String PUBLIC_KEY = "RSAPublicKey";
+        private static final String PRIVATE_KEY = "RSAPrivateKey";
+
+        private static RSA256Key rsa256Key;
+
+        //获得公钥
+        public static String getPublicKey(Map<String, Object> keyMap) throws Exception {
+            //获得map中的公钥对象 转为key对象
+            Key key = (Key) keyMap.get(PUBLIC_KEY);
+            //byte[] publicKey = key.getEncoded();
+            //编码返回字符串
+            return encryptBASE64(key.getEncoded());
+        }
+        public static String getPublicKey(RSA256Key rsa256Key) throws Exception {
+            //获得map中的公钥对象 转为key对象
+            Key key = rsa256Key.getPublicKey();
+            //byte[] publicKey = key.getEncoded();
+            //编码返回字符串
+            return encryptBASE64(key.getEncoded());
+        }
+
+        //获得私钥
+        public static String getPrivateKey(Map<String, Object> keyMap) throws Exception {
+            //获得map中的私钥对象 转为key对象
+            Key key = (Key) keyMap.get(PRIVATE_KEY);
+            //byte[] privateKey = key.getEncoded();
+            //编码返回字符串
+            return encryptBASE64(key.getEncoded());
+        }
+        //获得私钥
+        public static String getPrivateKey(RSA256Key rsa256Key) throws Exception {
+            //获得map中的私钥对象 转为key对象
+            Key key = rsa256Key.getPrivateKey();
+            //byte[] privateKey = key.getEncoded();
+            //编码返回字符串
+            return encryptBASE64(key.getEncoded());
+        }
+
+        //解码返回byte
+        public static byte[] decryptBASE64(String key) throws Exception {
+            return (new BASE64Decoder()).decodeBuffer(key);
+        }
+
+        //编码返回字符串
+        public static String encryptBASE64(byte[] key) throws Exception {
+            return (new BASE64Encoder()).encodeBuffer(key);
+        }
+
+        //map对象中存放公私钥
+        public static Map<String, Object> initKey() throws Exception {
+            //  /** RSA算法要求有一个可信任的随机数源 */
+            //获得对象 KeyPairGenerator 参数 RSA 1024个字节
+            KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+            keyPairGen.initialize(1024);
+            //通过对象 KeyPairGenerator 生成密匙对 KeyPair
+            KeyPair keyPair = keyPairGen.generateKeyPair();
+
+            //通过对象 KeyPair 获取RSA公私钥对象RSAPublicKey RSAPrivateKey
+            RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+            RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+            //公私钥对象存入map中
+            Map<String, Object> keyMap = new HashMap<String, Object>(2);
+            keyMap.put(PUBLIC_KEY, publicKey);
+            keyMap.put(PRIVATE_KEY, privateKey);
+            return keyMap;
+        }
+
+        /**
+         * 获取公私钥
+         * @return
+         * @throws Exception
+         */
+        public static synchronized RSA256Key getRSA256Key() throws Exception {
+            if(rsa256Key == null){
+                synchronized (RSA256Key.class){
+                    if(rsa256Key == null) {
+                        rsa256Key = new RSA256Key();
+                        Map<String, Object> map = initKey();
+                        rsa256Key.setPrivateKey((RSAPrivateKey) map.get(CreateSecrteKey.PRIVATE_KEY));
+                        rsa256Key.setPublicKey((RSAPublicKey) map.get(CreateSecrteKey.PUBLIC_KEY));
+                    }
                 }
             }
+            return rsa256Key;
         }
-        return rsa256Key;
-    }
 
-    public static void main(String[] args) {
-        Map<String, Object> keyMap;
-        try {
-            keyMap = initKey();
-            String publicKey = getPublicKey(keyMap);
-            System.out.println("公钥：\n"+publicKey);
-            String privateKey = getPrivateKey(keyMap);
-            System.out.println("私钥：\n"+privateKey);
-        } catch (Exception e) {
-            e.printStackTrace();
+        public static void main(String[] args) {
+            Map<String, Object> keyMap;
+            try {
+                keyMap = initKey();
+                String publicKey = getPublicKey(keyMap);
+                System.out.println("公钥：\n"+publicKey);
+                String privateKey = getPrivateKey(keyMap);
+                System.out.println("私钥：\n"+privateKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-}
 
 
