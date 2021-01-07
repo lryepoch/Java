@@ -192,7 +192,6 @@
 
 	··查看分支合并图：$ git log --graph [--pretty=oneline --abbrev-commit]
 
-<<<<<<< HEAD
 	··强制拉取并覆盖本地代码【放弃本地的修改，用远程的库的内容】：git fetch --all        				#从远程仓库下载最新版本
 															git reset --hard origin/master      #将本地设为刚获取的最新的内容
 															git pull
@@ -201,12 +200,7 @@
 					git add .
 					git commit -m "your comment"
 					git push -u origin master -f / git push -f origin master
-=======
-	··强制拉取并覆盖本地代码（放弃本地的修改，用远程的库的内容）：git fetch --all
-																	git reset --hard origin/master
-																	git pull
-	··强制提交到远程仓库：$ git push -u origin master -f
->>>>>>> 16d8d1af83d4bc5eea65eae3eaecd247fdd35110
+
 
 
 
