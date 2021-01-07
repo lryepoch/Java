@@ -45,6 +45,7 @@
 
 
 
+·官方表示，mybatis plus 提供3.x支持Lambda表达式。
 
 
 
