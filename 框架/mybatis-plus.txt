@@ -46,6 +46,7 @@
 
 
 ·官方表示，mybatis plus 提供3.x支持Lambda表达式。
+·MyBatis-Plus默认配置策略是：当更新数据库值时，传过来的字段为NULL时，则忽略更新。
 
 
 
