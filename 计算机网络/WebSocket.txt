@@ -1,6 +1,6 @@
 
 ·WebSocket是一种在单个TCP连接上进行全双工通信的协议。
-	WebSocket使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据。在WebSocket API中，浏览器和服务器只需要完成一次握手，两者就可以直接创建持久化的连接，并进行双向数据传输。
+	WebSocket使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据。在WebSocketAPI中，浏览器和服务器只需要完成一次握手，两者就可以直接创建持久化的连接，并进行双向数据传输。
 
 
 ·背景：
@@ -33,3 +33,9 @@
 	··Websocket 通过HTTP/1.1 协议的101状态码进行握手。
 
 	··为了创建Websocket连接，需要通过浏览器发出请求，之后服务器进行回应，这个过程通常称为“握手”（handshaking）。
+
+
+
+
+·有多种方式实现WebSocket协议，比如SpringBoot官方推荐的基于STOMP实现，实现起来非常简单，还有通过Socket.IO来实现。 
+	STOMP：即Simple Text Orientated Messaging Protocol，它是一个简单的文本消息传输协议，属于 WebSocket 的子协议， 提供了一个可互操作的连接格式，允许STOMP客户端与任意STOMP消息代理（Broker）进行交互。STOMP协议由于设计简单， 易于开发客户端，因此在多种语言和多种平台上得到广泛地应用。

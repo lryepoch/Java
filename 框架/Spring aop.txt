@@ -1,44 +1,29 @@
 
-Spring Aop：
-
+--------------------
 ·在Spring中声明AspectJ切面, 只需要在IOC容器中将切面声明为Bean实例。当在Spring IOC容器中初始化AspectJ切面之后, Spring IOC容器就会为那些与AspectJ切面相匹配的Bean创建代理。
 
-·Advice(通知)： 某个连接点所采用的处理逻辑，也就是向连接点注入的代码，aop在特定的切入点上执行的增强处理。
 
+·Spring的AOP中有几个重要概念：
 
-·AspectJ 支持 5 种类型的通知注解：@Aspect 表示声明一个切面。
+	执行点（Executepoint） - 类初始化，方法调用。
+	连接点（Joinpoint） - 执行点+方位的组合，可确定Joinpoint，比如类开始初始化前，类初始化后，方法调用前，方法调用后。
+	切点（Pointcut） - 在众多执行点中，定位感兴趣的执行点。Executepoint相当于数据库表中的记录，而Pointcut相当于查询条件。
+	增强（Advice） - 织入到目标类连接点上的一段程序代码。除了一段程序代码外，还拥有执行点的方位信息。某个连接点所采用的处理逻辑，也就是向连接点注入的代码，aop在特定的切入点上执行的增强处理。
+	目标对象（Target） - 增强逻辑的织入目标类
+	引介（Introduction） - 一种特殊的增强（advice），它为类添加一些额外的属性和方法，动态为业务类添加其他接口的实现逻辑，让业务类成为这个接口的实现类。
+	代理（Proxy） - 一个类被AOP织入后，产生一个结果类，它便是融合了原类和增强逻辑的代理类。
+	切面（Aspect） - 切面由切点（Pointcut）和增强（Advice/Introduction）组成，既包括横切逻辑定义，也包括连接点定义。
 
-	@Before，前置增强，方法执行前调用。参数可为joinPoint、注解类[需要在注解中进行绑定(…… && @annotation(注解类的对象)")]。@Before("log()")。
-
-	@Around，环绕增强：方法正常执行前后调用。参数可为proceedingJoinPoint、注解类[需要在注解中进行绑定(…… && @annotation(注解类的对象)")]。@Around(value="log()&&@annotation(对象)" )
-			简单理解，环绕通知=前置+目标方法执行+后置通知。
-
-	@AfterReturning，后置增强：方法正常退出时执行。参数可为object。@AfterReturning(returning = "object", pointcut = "log()")
-
-	@AfterThrowing，异常抛出增强：方法抛异常时执行。@AfterThrowing(pointcut = "log()")
-
-	@After，final增强：不管是抛出异常或者正常退出都会执行。@After("log()")
-
-	详解：https://blog.csdn.net/u010502101/article/details/78823056
-
-	执行顺序：
-			try {
-		    // @Before 执行前通知
-
-		    // 执行目标方法
-
-		    // @Around 执行环绕通知 成功走finall，失败走catch
-			} finally {
-			    // @After 执行后置通知
-
-			    // @AfterReturning 执行返回后通知
-			} catch(e) {
-			    // @AfterThrowing 抛出异常通知
-			}
+	AOP工作重点：
+		如何通过切点（Pointcut）和增强（Advice）定位到连接点（Jointpoint）上；
+		如何在增强（Advice）中编写切面的代码。
 
 
 
-·切入点指示符：
+
+
+·关于切点PointCut的指示符：
+
 	execution：用于匹配方法执行的连接点；
 
 	within：用于匹配指定类型内的方法执行；
@@ -66,6 +51,57 @@ Spring Aop：
 	但Spring AOP目前不支持这些指示符，使用这些指示符将抛出IllegalArgumentException异常。这些指示符Spring AOP可能会在以后进行扩展。
 
 	详解：http://sishuok.com/forum/posts/list/281.html
+
+
+
+
+
+·切面注解说明：
+
+	@Aspect 表示声明一个切面。
+
+	@Before，前置增强，方法执行前调用。参数可为joinPoint、注解类[需要在注解中进行绑定(…… && @annotation(注解类的对象)")]。@Before("log()")。
+
+	@Around，环绕增强：方法正常执行前后调用。参数可为proceedingJoinPoint、注解类[需要在注解中进行绑定(…… && @annotation(注解类的对象)")]。
+						@Around(value="log()&&@annotation(对象)" )
+			简单理解，环绕通知=前置+目标方法执行+后置通知。
+
+	@AfterReturning，后置增强：方法正常退出时执行。参数可为object。@AfterReturning(returning = "object", pointcut = "log()")
+
+	@AfterThrowing，异常抛出增强：方法抛异常时执行。@AfterThrowing(pointcut = "log()")
+
+	@After，final增强：不管是抛出异常或者正常退出都会执行。@After("log()")
+
+	详解：https://blog.csdn.net/u010502101/article/details/78823056
+
+	执行顺序：
+			try {
+		    // @Before 执行前通知
+
+		    // 执行目标方法
+
+		    // @Around 执行环绕通知 成功走finally，失败走catch
+			} finally {
+			    // @After 执行后置通知
+
+			    // @AfterReturning 执行返回后通知
+			} catch(e) {
+			    // @AfterThrowing 抛出异常通知
+			}
+
+	注意：除了@Around外，每个方法里都可以加或者不加参数JoinPoint。
+		JoinPoint里包含了类名、被切面的方法名，参数等属性，可供读取使用。
+		@Around参数必须为ProceedingJoinPoint，pjp.proceed相应于执行被切面的方法。
+		@AfterReturning方法里，可以加returning = “xxx”，xxx即为在controller里方法的返回值。
+		@AfterThrowing方法里，可以加throwing = “XXX”，读取异常信息。如：
+		//后置异常通知
+		(throwing = "ex", pointcut = "webLog()")
+		public void throwss(JoinPoint jp, Exception ex){
+		    System.out.println("方法异常时执行.....");
+		}
+		一般常用的有before和afterReturn组合，或者单独使用Around，即可获取方法开始前和结束后的切面。
+
+
 
 
 
@@ -107,8 +143,6 @@ Spring Aop：
 			5.只能用public或默认(default)这两个访问权修饰，例如，String value()；这里把方法设为defaul默认类型；　 　
 	        6.如果只有一个参数成员，最好把参数名称设为"value"，后加小括号。例：下面的例子Name注解就只有一个参数成员。 
 
-
-
 	··基本语法：在底层实现上，所有定义的注解都会自动继承java.lang.annotation.Annotation接口。
 
 	··常用元注解：
@@ -138,7 +172,7 @@ Spring Aop：
 		@Inherited  标记注解，使用@Inherited修饰的注解作用于一个类，则该注解将被用于该类的子类。@Inherited注解只对那些@Target被定义为ElementType.TYPE的自定义注解起作用。
 
 
-	··springMVC的HandlerMethod类：HandlerMethod封装了很多属性，在访问请求方法的时候可以方便的访问到方法、方法参数、方法上的注解、所属类等并且对方法参数封装处理，也可以方便的访问到方法参数								的注解等信息。
+	··springMVC的HandlerMethod类：HandlerMethod封装了很多属性，在访问请求方法的时候可以方便的访问到方法、方法参数、方法上的注解、所属类等并且对方法参数封装处理，也可以方便的访问到方法参数的注解等信息。
 	
 	··反射操作获取注解：
 		1.如果我们要获得的注解是配置在方法上的，那么我们要从Method对象上获取；Method method = ((HandlerMethod)object).getMethod();
