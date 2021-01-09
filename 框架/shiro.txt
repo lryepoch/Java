@@ -33,8 +33,8 @@
 					而Shiro并不仅仅可以用在Web环境，也可以用在如普通的JavaSE环境、EJB等环境；所以，Shiro就抽象了一个自己的Session来管理主体与应用之间交互的数据；
 					这样的话，比如我们在Web环境用，刚开始是一台Web服务器；接着又上了台EJB服务器；这时想把两台服务器的会话数据放到一个地方，这个时候就可以实现自己的分布式会话（如把数据放到Memcached服务器）；
 
-	SessionDAO：DAO大家都用过，数据访问对象，用于会话的CRUD，比如我们想把Session保存到数据库，那么可以实现自己的SessionDAO，通过如JDBC写到数据库；
-				比如想把Session放到Memcached中，可以实现自己的Memcached SessionDAO；另外SessionDAO中可以使用Cache进行缓存，以提高性能；
+	SessionDAO：目的是为了将session持久化在内存中（MemorySessionDAO ），或者redis中（shiro-redis）。
+				把session持久化的原因有多个，分布式情况下共享session应该是原因之一；持久化就是通过sessionDao完成的。默认情况下，sessionDao的实现是MemorySessionDAO，即把session保存在内存中
 
 	CacheManager：缓存控制器，来管理如用户、角色、权限等的缓存的；因为这些数据基本上很少去改变，放到缓存中后可以提高访问的性能
 
