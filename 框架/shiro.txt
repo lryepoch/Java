@@ -255,3 +255,12 @@
 			return new SimpleAuthenticationInfo(users, user.getPassword(), getName());
 		}
 	读取登录信息就是：String loginName = (String) SecurityUtils.getSubject().getPrincipal();
+
+
+
+
+
+·拦截器Filter：
+isAccessAllowed：判断是否登录。在登录的情况下会走此方法，此方法返回true直接访问控制器。
+onAccessDenied：是否是拒绝登录。没有登录的情况下会走此方法。
+如果isAccessAllowed方法返回True，则不会再调用onAccessDenied方法，如果isAccessAllowed方法返回Flase,则会继续调用onAccessDenied方法。而onAccessDenied方法里面则是具体执行登陆的地方。由于我们已经登陆，所以此方法就会返回True(filter放行)，所以上面的onPreHandle方法里面的onAccessDenied方法就不会被执行。
