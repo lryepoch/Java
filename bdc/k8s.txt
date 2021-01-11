@@ -6,7 +6,7 @@
 
 	kubectl get nodes 			#查看节点
 
-	kubectl get ns （namespace） #查看命名空间
+	kubectl get ns （namespace） #查看全部命名空间
 
 	kubectl cluster-info 		#查看集群的信息，主要是host
 
