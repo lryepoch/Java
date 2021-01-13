@@ -96,3 +96,23 @@
 	4.router：router下的index.js文件中的routes定义了路径为'/'的路由，该路由对应的页面是HelloWorld组件。
 
 	整个页面渲染过程：访问http://localhost:8080/，显示的就是public/index.html页面，index.html原本只有一个根结点id="app"。
+
+
+
+
+
+
+·常见错误：
+报错：
+npm ERR! A complete log of this run can be found in:
+npm ERR! C:\Users\Lenovo\AppData\Roaming\npm-cache_logs\2020-02-18T05_24_41_971Z-debug.log
+
+说明：全局脚手架和本地脚手架版本不一样
+
+运行cmd命令
+
+npm install npm -g 要记住全局更新
+
+淘宝镜像命令：cnpm install npm -g 淘宝镜像会比较快
+
+再查看一下npm版本：npm -v
