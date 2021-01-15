@@ -71,6 +71,12 @@
 		--main.js：入口文件
 	--package.json
 
+	使用vue-cli模板构建vue项目还会有以下文件，属于webpack相关配置：
+	--config
+		--dev.env.js：开发环境的变量，npm run dev命令；在build文件下webpack.dev.conf可找到在什么地方引入了此变量；
+		--index.js：
+		--prod.env.js：生产环境的变量，npm run build命令；在build文件下webpack.prod.conf可找到在什么地方引入了此变量；
+
 
 
 
@@ -93,7 +99,7 @@
 		components: { App }引入根组件App.vue，App即App:App；
 		template: '<App/>' 是简写形式，等价于 <App></App>。
 
-	4.router：router下的index.js文件中的routes定义了路径为'/'的路由，该路由对应的页面是HelloWorld组件。
+	4.router：router下的index.js文件中的routes定义了路径为'/'的路由，该路由对应的页面是各个vue组件。
 
 	整个页面渲染过程：访问http://localhost:8080/，显示的就是public/index.html页面，index.html原本只有一个根结点id="app"。
 
