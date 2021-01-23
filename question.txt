@@ -138,7 +138,7 @@ redis的分布式锁
 
 冰箱产品竞争力评价系统
 项目描述：对市面上各大厂商开发的冰箱产品进行多维度的对比分析，根据已有的市场产品来指导公司今后冰箱产品的开发
-技术选型：spring Task、springboot、springMVC、mybatis、maven、mysql
+技术选型：spring Task、springboot、springMVC、mybatis、maven、mysql、swagger
 工作职责：
 1.基于rbac权限模型，开发用户管理模块以及角色管理模块；
 2.设置、获取得分权重以及用户对产品进行评分；

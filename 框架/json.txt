@@ -56,41 +56,46 @@
 
 ·JSON常见数据格式转换：
 	··区别：
-	JSONObject var obj = { "name": "xiaoling", "age": "18" }; 
+		JSONObject var obj = { "name": "xiaoling", "age": "18" }; 
 
-	JSON字符串 var obj = “{ "name": "xiaoling", "age": "18" }”;
+		JSON字符串 var obj = "{ "name": "xiaoling", "age": "18" }";
 
 
 	··转换：
-	从json对象中获取某个字段的json数组值：
-	JSONObject jsonObject = JSONObject.parseObject(string); 
-	JSONArray array = jsonObject.getJSONArray("data"); //data对应的是一个json数组
+		从json对象中获取某个字段的json数组值：
+			JSONObject jsonObject = JSONObject.parseObject(string); 
+			JSONArray array = jsonObject.getJSONArray("data"); //data对应的是一个json数组
 
-	JSON格式的数据转换成数组格式:
-	JSONArray array = JSONArray.parseArray(jsonString, T.class); 
-	JSONArray array = JSONArray.parseArray(jsonString);
+		JSON格式的数据转换成数组格式:
+			JSONArray array = JSONArray.parseArray(jsonString, T.class); 
+			JSONArray array = JSONArray.parseArray(jsonString);
 
-
-	json对象转换成java对象：
-	JSONObject json; 
-	T t = json.toJavaObject(T.class);
-
-	java对象转换json对象：
-	JSONObject jsonObject = (JSONObject)JSON.toJSON(object); 
-	or
-	JSONObject jsonObject = new JSONObject(object); 
-	or
-	JSONObject obj = JSONObject.parseObject(JSONObject.toJSONString(object));
+		从JSONArray中获取JSONObject：
+			for(int i=0; i<array.size(); i++){
+				JSONObject obj = array.getJSONObject(i);//array对应的是一个json数组
+			}
 
 
-	java对象转换成json字符串:
-	String jsonString = JSONObject.toJSONString(object);
+		json对象转换成java对象：
+			JSONObject json; 
+			T t = json.toJavaObject(T.class);
 
-	json字符串转换成java对象:
-	T t = JSONObject.parseObject(jsonString, T.class);
+		java对象转换json对象：
+			JSONObject jsonObject = (JSONObject)JSON.toJSON(object); 
+			or
+			JSONObject jsonObject = new JSONObject(object); 
+			or
+			JSONObject obj = JSONObject.parseObject(JSONObject.toJSONString(object));
 
-	json字符串转换成json对象：
-	JSONObject obj = JSONObject.parseObject(jsonString);
+
+		java对象转换成json字符串:
+			String jsonString = JSONObject.toJSONString(object);
+
+		json字符串转换成java对象:
+			T t = JSONObject.parseObject(jsonString, T.class);
+
+		json字符串转换成json对象：
+			JSONObject obj = JSONObject.parseObject(jsonString);
 
 
 
