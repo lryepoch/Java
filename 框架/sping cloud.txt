@@ -18,7 +18,7 @@
 
 
 
-·Spring Cloud的5个核心组件，在微服务架构中，分别扮演的角色：
+·spring cloud的5个核心组件，在微服务架构中，分别扮演的角色：
 
 	Eureka：注册中心。各个服务启动时，Eureka Client都会将服务注册到Eureka Server，并且Eureka Client还可以反过来从Eureka Server拉取注册表，从而知道其他服务在哪里。
 			Eureka Client分为服务提供者和服务消费者。

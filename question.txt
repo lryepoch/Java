@@ -15,35 +15,11 @@
 ·KEY department_name(department_name) ？建立索引。
 
 
-·为什么状态码要定义常量来表示？
-
-
-
-·添加或者修改内容时，为什么要在service的实现层把要添加或者修改的属性提取出来？
-根据您的喜好吧，或者业务需要
-
-
-
-
-·mapper.xml文件中parameterType、resultMap、resultType什么时候应该写、应该不写；
-
-
-·Navicat库名如何实现大写？
-
-
-
-·@RequestMapping()默认值？
- @RequestMapping(value="/")
- method 不写的话，默认GET、POST都支持，根据前端方式自动适应；
-
 
 
  ·如何求两个集合的交集？
 
 
-
-·subject.login(token)这个方法是去判断用户密码是否正确的，我知道他会调用AuthorizingRealm子类里面的doGetAuthenticationInfo方法去校验。
- 但是我想知道login是如何走到这个方法的，并且AuthorizingRealm子类是如何配置成shiro的校验类的？
 
 
 
@@ -146,7 +122,7 @@ redis的分布式锁
 4.个性化查询统计和对比冰箱竞品的各项参数；
 
 		
-项目成果：按时完成系统功能开发，为冷冻冷藏部门对市面上冰箱销售情况进行精准的参数分析以及价格对比提供支持；
+项目成果：按时完成系统功能开发，为冷冻冷藏部门对市面上冰箱销售情况进行精准的参数分析对比提供支持；
 
 
 知识点：对产品评分，默认一个型号只评一次
