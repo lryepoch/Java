@@ -63,7 +63,7 @@
 
 	··转换：
 		从json对象中获取某个字段的json数组值：
-			JSONObject jsonObject = JSONObject.parseObject(string); 
+			JSONObject jsonObject = JSONObject.parseObject(string); //string是一个JSONObject字符串
 			JSONArray array = jsonObject.getJSONArray("data"); //data对应的是一个json数组
 
 		JSON格式的数据转换成数组格式:
