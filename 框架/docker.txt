@@ -311,13 +311,8 @@ docker run -p 80:80 --name nginx \-e TZ="Asia/Shanghai" \-v /mydata/ngi
 
 ### 列出容器
 
-列出运行中的容器：
-
-docker ps
-
-列出所有容器：
-
-docker ps -a
+列出运行中的容器：docker ps
+列出所有容器：docker ps -a
 
 ### 停止容器
 
@@ -325,16 +320,12 @@ docker ps -a
 
 docker stop $ContainerName(or $ContainerId)
 
-例如：
-
-docker stop nginx#或者docker stop c5f5d5125587
+例如：docker stop nginx#或者docker stop c5f5d5125587
 
 ### 强制停止容器
-
 docker kill $ContainerName
 
 ### 启动容器
-
 docker start $ContainerName
 
 ### 进入容器
@@ -354,6 +345,7 @@ docker start $ContainerName
 ### 查看容器的IP地址：docker inspect --format '{{ .NetworkSettings.IPAddress }}' $ContainerName
 
 ### 修改容器的启动方式
+
 
 # 将容器启动方式改为always：docker container update --restart=always $ContainerName
 

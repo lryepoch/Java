@@ -151,7 +151,7 @@
 
 2、生成Token，有两种方式：
 
-    HS256 方式
+    2.1.HS256 方式
     try {
         Algorithm algorithm = Algorithm.HMAC256("secret");
         String token = JWT.create()
@@ -169,7 +169,7 @@
     }
 
 
-    RS256 方式
+    2.2.RS256 方式
     RSAPublicKey publicKey = //Get the key instance
     RSAPrivateKey privateKey = //Get the key instance
     try {

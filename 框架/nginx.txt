@@ -74,6 +74,43 @@
 
 
 
+·配置nginx跨域：
+	server {
+	  listen       80;
+	  server_name  api.abc.com;
+
+	  # 是否允许请求带有验证信息
+	  add_header Access-Control-Allow-Credentials true;
+	  # 允许跨域访问的域名,可以是一个域的列表，空格隔开，也可以是通配符*（不建议）
+	  add_header Access-Control-Allow-Origin  http://card.abc.com;
+	  # 允许使用的请求方法，以逗号隔开，可以用 *
+	  add_header Access-Control-Allow-Methods 'POST,GET,OPTIONS,PUT,DELETE';
+	  # 预检命令的缓存，如果不缓存每次会发送两次请求，单位为秒。
+	  # 第一次是浏览器使用OPTIONS方法发起一个预检请求，第二次才是真正的异步请求
+	  add_header Access-Control-Max-Age 3600;
+
+	  # 允许脚本访问的返回头
+	  add_header Access-Control-Allow-Headers 'Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Requested-With';
+	  # 允许自定义的头部，以逗号隔开,大小写不敏感
+	  add_header Access-Control-Expose-Headers 'WWW-Authenticate,Server-Authorization';
+
+	  # OPTIONS类的请求，是跨域先验请求
+	  if ($request_method = 'OPTIONS') {
+	     return 204; # http状态码 204 （无内容） 服务器成功处理了请求，但没有返回任何内容。可以返回 200
+	  }
+	  location / {
+	    # proxy_pass http://127.0.0.1:3000;
+	  }
+	  location /card {
+	    proxy_pass http://127.0.0.1:3001;
+	  }
+	  location /music {
+	    proxy_pass http://127.0.0.1:3002;
+	  }
+	}
+
+
+	
 
 ·关于CORS：
 	同源策略(Same Origin Policy)：具有相同的Origin，也即是拥有相同的协议、主机地址以及端口。一旦这三项数据中有一项不同，那么该资源就将被认为是从不同的Origin得来的，进而不被允许访问。
@@ -210,40 +247,7 @@
 
 
 
-·配置nginx跨域：
-	server {
-	  listen       80;
-	  server_name  api.abc.com;
 
-	  # 是否允许请求带有验证信息
-	  add_header Access-Control-Allow-Credentials true;
-	  # 允许跨域访问的域名,可以是一个域的列表，空格隔开，也可以是通配符*（不建议）
-	  add_header Access-Control-Allow-Origin  http://card.abc.com;
-	  # 允许使用的请求方法，以逗号隔开，可以用 *
-	  add_header Access-Control-Allow-Methods 'POST,GET,OPTIONS,PUT,DELETE';
-	  # 预检命令的缓存，如果不缓存每次会发送两次请求，单位为秒。
-	  # 第一次是浏览器使用OPTIONS方法发起一个预检请求，第二次才是真正的异步请求
-	  add_header Access-Control-Max-Age 3600;
-
-	  # 允许脚本访问的返回头
-	  add_header Access-Control-Allow-Headers 'Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Requested-With';
-	  # 允许自定义的头部，以逗号隔开,大小写不敏感
-	  add_header Access-Control-Expose-Headers 'WWW-Authenticate,Server-Authorization';
-
-	  # OPTIONS类的请求，是跨域先验请求
-	  if ($request_method = 'OPTIONS') {
-	     return 204; # http状态码 204 （无内容） 服务器成功处理了请求，但没有返回任何内容。可以返回 200
-	  }
-	  location / {
-	    # proxy_pass http://127.0.0.1:3000;
-	  }
-	  location /card {
-	    proxy_pass http://127.0.0.1:3001;
-	  }
-	  location /music {
-	    proxy_pass http://127.0.0.1:3002;
-	  }
-	}
 
 
 
