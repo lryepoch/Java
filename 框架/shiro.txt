@@ -220,8 +220,9 @@
 	getSubject 静态方法：这个是 Shiro 中最核心的方法了，用来获取 Subject
 
 	shiro常用api：
-	User user = SecurityUtils.getSubject().getPrincipal();
-	SecurityUtils.getSubject().logout();
+	User user = SecurityUtils.getSubject().getPrincipal(); //获取用户信息
+	SecurityUtils.getSubject().logout(); //登出
+	SecurityUtils.getSubject().getSession().setAttribute("realms", subject.getPrincipal());//用户信息存入session
 
 
 
