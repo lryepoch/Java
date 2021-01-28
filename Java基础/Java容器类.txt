@@ -1,0 +1,420 @@
+
+-----------------
+·数组与集合：
+数组（可以存储基本数据类型）是用来存放对象的一种容器，但是数组的长度固定，不适合在对象数量未知的情况下使用。
+集合（只能存储对象，对象类型可以不一样）的长度可变，可在多数情况下使用。
+
+
+·Java集合类：所有集合都是可迭代的。
+	Iterator:迭代器，它是Java集合的顶层接口（不包括 map系列的集合，Map接口是 map系列集合的顶层接口）
+  Iterator只能对容器进行向前遍历，而 ListIterator则继承了Iterator的思想，并提供了对List进行双向遍历的方法。
+
+
+·Java集合类存放的是什么类型数据？
+  1.Java集合如Map、Set、List等所有集合只能存放引用类型数据，它们都是存放引用类型数据的容器，不能存放如int、long、float、double等基础类型的数据。
+
+  2. 基本类型数据如何解决放进集合中呢？
+  可以通过包装类把基本类型转为对象类型，存放引用就可以解决这个问题。更方便的，由于有了自动拆箱和装箱功能，基本数据类型和其对应对象（包装类）之间的转换变得很方便，想把基本数据类型存入集合中，直接存就可以了，系统会自动将其装箱成封装类，然后加入到集合当中。
+
+
+
+·Collection：继承Iterator
+
+    ··List子接口(元素可以重复且有序)
+      判断是否包含某个数：调用contains()首先会调用方法indexOf(Object o)返回此列表中第一次出现的指定元素的索引，如果列表不包含该元素，则返回 -1。
+
+      ···LinkedList：底层双向循环链表，线程不安全。适合于中间位置的添加和删除。空间花费则体现在它的每一个元素都需要消耗比ArrayList更多的空间。
+
+          内部有一个类似于C语言的结构体的Entry内部类，Entry类包含了前一个元素和后一个元素的地址引用；
+
+          注意LinkedList和ArrayList一样也不是线程安全的，如果在多线程下访问，可以自己重写LinkedList，然后在需要同步的方法上面加上同步关键字synchronized。
+
+          LinkedList的遍历方法，如上面的ArrayList方法。因为有link.size（）可以计算大小，也可以使用迭代器；
+
+          LinkedList可以被当做堆栈来使用,由于LinkedList实现了接口Dueue（双向队列），所以LinkedList可以被当做堆栈来使用；
+
+          相关方法：
+            添加元素：添加单个元素；
+            如果不指定索引的话，元素将被添加到链表的最后；
+            public boolean add(Object element)；
+            public boolean add(int index, Object element)；
+
+            也可以把链表当初栈或者队列来处理：
+            public boolean addFirst(Object element)；
+            public boolean addLast(Object element)；
+            addLast()方法和不带索引的add()方法实现的效果一样；
+
+            删除指定元素：remove（index）；
+            删掉所有元素：清空LinkedList，list.clear()；
+            确认链表是否存在特定元素：list.contains("4")；
+
+
+      ···ArrayList：底层数组，线程不安全。适合于查询和修改，或者首尾的增加和删除。空间浪费主要体现在在list列表的结尾预留一定的容量空间。
+                    ArrayList默认初始容量为10；扩容后是原容量的*3/2+1；如ArrayList的容量为10，一次扩容后是容量为16；
+
+      ···Vector：底层数组，线程安全，但效率低。适合于查询。因为关键的添加，删除等方法都已经用synchronized关键字修饰。
+                  切记Vector是ArrayList的多线程的一个替代品。
+                  Vector默认初始容量为10；扩容后是原容量的2倍；如Vector的容量为10，一次扩容后是容量为20；
+
+        ····Stack：继承了Vector类，底层实现是数组。
+
+
+    ··Set子接口：
+				···HashSet：底层hash表。HashSet的元素就是其内部HashMap的键集合，所以HashSet可以做到元素不可重复且无序。
+
+          不重复：对象A和对象B，本来是不同的两个对象，正常情况下它们是能够放入到Set里面的，但是如果对象A和B的都重写了hashcode和equals方法，并且重写后的hashcode和equals方法是相同的话，那么A和B是不能同时放入到Set集合中去的。也就是Set集合中的去重和hashcode与equals方法直接相关。String类中重写了hashcode和equals方法。
+            hashcode和equals的约定关系如下：
+              1.如果两个对象相等，那么他们一定有相同的哈希值（hash code）。
+              2.如果两个对象的哈希值（hash code）相等，那么这两个对象有可能相等也有可能不相等。（需要再通过equals来判断）
+            
+          无序：虽然Set中元素没有顺序，但是元素在set中的位置是由该元素的hashcode决定的，其具体位置其实是固定的。
+
+              我们经常听说List是有序且可重复的，Set是无序且不重复的。这是一个误区，这里所说的顺序有两个概念，一是按照添加的顺序排列，二是按照自然顺序a-z/1-10排列。传统所说的Set无序指的是HashSet，它不能保证元素的添加顺序，更不能保证自然顺序，而Set的其他实现类是可以实现这两种顺序的。
+
+          底层实现：HashSet底层就是基于HashMap来实现，内部使用Map保存数据，即将HashSet的数据作为Map的key值保存，这也是HashSet中元素不能重复的原因。而Map中保存key值前，会去判断当前Map中是否含有该key对象，内部是先通过key的hashCode（），确定有相同的hash code之后，再通过equals方法判断是否相同，相同则不保存，不同则保存。
+
+          遍历：遍历HashSet的几种方法：2种。因为是无序的所以每组数据都没有索引，凡是需要通过索引来进行操作的方法都没有，所以也不能使用普通for循环来进行遍历，只有加强型for和迭代器两种遍历方法。
+
+          null值：在HashSet中仅仅能够存入一个null值哦；
+
+          方法：add();
+                remove();
+                clear();
+                size();
+                contains()和hashCode()&&equals()比较：
+                  contains()：此方法判断元素是否重复不准确。contains源码使用的是HashMap的getNdoe方法，当新建对象没有写hashCode和equals方法时，使用的是父类Object的方法。由于创建不同的对象的hashcode不同，equals返回false。所以不会满足源码中的if (e.hash == hash &&((k = e.key) == key || (key != null && key.equals(k))))条件。
+                  hashCode()&&equals()：判断元素是否重复；HashSet新添对象必须重写这两个方法，否则就会调用Object的原方法导致出错。
+                                        String对象已经重写了hashCode()和equals()方法，只要String的value相等，即返回的hashcode相等，equals返回true。
+
+            ····LinkedHashSet：底层hash表。继承自HashSet的，支持对规则集内的元素排序。HashSet中的元素是没有被排序的，而LinkedHashSet保证元素按照添加顺序排序。
+
+
+				···TreeSet：底层基于红黑树实现；内部是TreeMap的SortedSet。TreeSet元素按自然顺序排序。TreeSet会对存储在其中的数据进行自动排序，这个概念与数据结构中的二叉排序树类似，通过二叉排序树对数据进行存储然后通过中序遍历取出的数据是从小到大排序。
+
+          在实例化TreeSet时，我们可以给TreeSet指定一个比较器来指定树形集中的元素顺序。
+          TreeSet要实现Comparable接口，覆盖compareTo方法（【元素自身具备比较性时使用】这种是自然顺序，或者叫做默认顺序）。
+          或者实现Comparator接口，覆盖compare方法（当元素自身不具备比较性，或者具备的比较性不是所需要的。这时就需要让集合自身具备比较性。当TreeSet的两种排序都存在时，以第二种方法为主）；String实体类中实现Comparable接口。
+
+
+        ···HashSet和TreeSet是如何区分重复元素？
+
+          HashSet区分重复元素：【依靠hashCode()和equal()方法】
+          先使用hashCode()判断已经存在HashSet中元素的hashcode值和将要加入元素hashcode值是否相同。如果不同，直接添加；如果相同，再调用equals()判断，如果返回true表示HashSet中已经添加该对象了，不需要再次添加（重复），如果返回false就表示不重复，可以直接加入HashSet中。
+
+          TreeSet区分重复元素：
+          TreeSet中的元素对象如果实现Comparable接口，使用compareTo方法区分元素是否重复。如果没实现Comparable接口，自定义比较器（该类实现Comparator接口，覆盖compare方法）比较该元素对象，调用TreeSet的构造方法new TreeSet(自定义比较器参数)，这样就可以比较元素对象了；
+
+
+    ··Queue：队列是一种先进先出的数据结构，元素在队列末尾添加，在队列头部删除。Queue接口扩展自Collection，并提供插入、提取、检验等操作。
+              方法offer表示向队列添加一个元素，poll()与remove()方法都是移除队列头部的元素，两者的区别在于如果队列为空，那么poll()返回的是null，而remove()会抛出一个异常。方法element()与peek()主要是获取头部元素，不删除。
+
+            接口Deque，是一个扩展自Queue的双端队列，它支持在两端插入和删除元素，因为LinkedList类实现了Deque接口，所以通常我们可以使用LinkedList来创建一个队列。PriorityQueue类实现了一个优先队列，优先队列中元素被赋予优先级，拥有高优先级的先被删除。
+
+
+
+
+
+·快速失败(fail-fast)和安全失败(fail-safe)的区别是什么？
+
+  一：快速失败（fail—fast）
+      在用迭代器遍历一个集合对象时，如果遍历过程中对集合对象的结构进行了修改（增加、删除），则会抛出Concurrent Modification Exception。
+
+      原理：迭代器在遍历时直接访问集合中的内容，并且在遍历过程中使用一个 modCount 变量。集合在被遍历期间如果结构发生变化，就会改变modCount的值。每当迭代器使用hashNext()/next()遍历下一个元素之前，都会检测modCount变量是否为expectedmodCount值，是的话就返回遍历；否则抛出异常，终止遍历。
+
+      注意：这里异常的抛出条件是检测到 modCount！=expectedmodCount 这个条件。如果集合发生变化时修改modCount值刚好又设置为了expectedmodCount值，则异常不会抛出。因此，不能依赖于这个异常是否抛出而进行并发操作的编程，这个异常只建议用于检测并发修改的bug。
+
+      场景：java.util包下的集合类都是快速失败的，不能在多线程下发生并发修改（迭代过程中被修改）。
+
+  二：安全失败（fail—safe）
+      采用安全失败机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，在拷贝的集合上进行遍历。
+
+      原理：由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发Concurrent Modification Exception。
+
+      缺点：基于拷贝内容的优点是避免了Concurrent Modification Exception，但同样地，迭代器并不能访问到修改后的内容，即：迭代器遍历的是开始遍历那一刻拿到的集合拷贝，在遍历期间原集合发生的修改迭代器是不知道的。
+
+      场景：java.util.concurrent包下的容器都是安全失败，可以在多线程下并发使用，并发修改。
+
+
+
+
+
+
+·Map：对象是key、value的映射关系，key不允许重复。
+      对于效率，Map由于采用了哈希散列，查找元素时明显比ArrayList快。
+
+    ··HashMap：底层hash表。线程不安全，key和value都允许出现null值。
+      ···LinkedHashMap
+    
+    ··WeakHashMap：改进的HashMap，实现了“弱引用”，如果一个key不被引用，则被GC回收。
+
+    ··HashTable：底层hash表。线程安全，实现一个key-value映射的哈希表，key和value都不允许出现null值。
+
+      ···Properties(继承HashTable)
+          Properties（Java.util.Properties），Properties类继承自Hashtable，主要用于读取Java的配置文件，文件的内容的格式是“键=值”的格式，文本注释信息可以用"#"来注释;
+            它提供了几个主要的方法：
+              getProperty ( String key)，用指定的键在此属性列表中搜索属性。也就是通过参数 key ，得到 key 所对应的 value。
+
+              load(InputStream inStream)，从输入流中读取属性列表（键和元素对）。通过对指定的文件（比如说上面的 test.properties 文件）进行装载来获取该文件中的所有键 - 值对。以供 getProperty ( String key) 来搜索。
+
+              setProperty(String key, String value)，调用Hashtable的方法put() 。他通过调用基类的put方法来设置键 - 值对。
+
+              store(OutputStream out, String comments)，以适合使用load()加载到 Properties 表中的格式，将此 Properties 表中的属性列表（键和元素对）写入输出流。与 load 方法相反，该方法将键 - 值对写入到指定的文件中去。
+
+              clear()，清除所有装载的 键 - 值对。该方法在基类中提供。
+
+          Java读取Properties文件:
+            Java读取Properties文件的方法有很多，详见： Java读取Properties文件的六种方法
+
+            但是最常用的还是通过java.lang.Class类的getResourceAsStream(String name)方法来实现，如下可以这样调用：
+            InputStream in = getClass().getResourceAsStream("资源Name");作为我们写程序的，用此一种足够。
+
+            或者下面这种也常用：InputStream in = new BufferedInputStream(new FileInputStream(filepath));
+
+
+    ··TreeMap：底层二叉树。
+
+
+
+
+
+
+·HashMap：
+
+  ··来自：HashMap实现了Map、CloneMap、Serializable三个接口，并且继承自AbstractMap类;
+     
+  ··内部实现：
+
+        Entry是HashMap中的一个内部类，用于链表的存储；Entry是一个结点，它持有下一个元素的引用，这样就构成了一个链表。
+        Map.Entry<Object, Object>是Map声明的一个内部接口，此接口为泛型，定义为Entry<K,V>。它表示Map中的一个实体（一个key-value对）。接口中有getKey()，getValue()方法。
+
+        Map提供了一些常用方法，如keySet()、entrySet()等方法。
+        keySet()方法返回值是Map中key值的集合；
+        entrySet()的返回值是一个键值对的集合，此集合的类型为Map.Entry<K,V>。
+
+        因为Map这个类没有继承Iterable接口，所以不能直接通过map.iterator来遍历（list，set就是实现了这个接口，所以可以直接这样遍历），所以就只能先转化为set类型，用entrySet()方法，其中set中的每一个元素值就是map中的一个键值对，也就是Map.Entry<K,V>，然后就可以遍历了。
+
+        注：Map及其子类虽然没有实现Interable、Iterator，但是，Map内部生成Collection，从而间接实现Iterable接口和生成Iterator。所以，Map也可以使用迭代器。
+
+
+  ··大小：新建一个HashMap时，默认的话会初始化一个大小为16，负载因子为0.75的空的HashMap；
+
+  ··扩容方式：当数据量已经超过初始定义的负载因子时，HashMap如何处理？
+            数量达到了 16 * 0.75 = 12 就需要将当前16的容量进行扩容，容量扩充为原来的两倍，然后对每个节点重新计算哈希值。扩容这个过程涉及到rehash、复制数据等操作，所以非常消耗性能。
+
+  ··遍历过程：HashMap的遍历3种方法：http://blog.csdn.net/tsyj810883979/article/details/6746274
+            1.使用keySet遍历，while循环；
+            2.使用entrySet遍历，while循环；
+            3.使用for循环遍历。
+
+  ··put操作：
+      1.7：
+          判断当前数组是否需要初始化。
+          如果key为空，则put 一个空值进去。
+          根据key计算出 hashcode，定位出所在桶。
+          如果桶是一个链表则需要遍历判断里面的hashcode、key是否和传入key相等，如果相等则进行覆盖，并返回原来的值。
+          如果桶是空的，说明当前位置没有数据存入；新增一个Entry对象写入当前位置。
+
+
+      1.8：
+          1.判断当前桶是否为空，空的就需要初始化（resize 中会判断是否进行初始化）。
+          大致说说这个resize，如果table为空，就将table初始化为一个长度为16的，负载因子为0.75的数组。否则就初始化为之前table长度的两倍。这个时候这个数组的大小为16，但是容量只有16*0.75=12。门限值=容量*负载因子。一旦数组中的元素超过门限值，就会重新resize。这些在代码中都能看到。
+          ················- 
+
+          2.根据当前 key的 hashcode定位到具体的桶中并判断是否为空，为空表明没有Hash冲突，就把值放在这里。
+
+          3.如果当前桶有值（Hash冲突），那么就要比较当前桶中的key（用equals()方法比价）、key的hashcode与写入的key是否相等，相等就赋值给e，在第8步的时候会统一进行赋值及返回。
+          如果新来的数据，不仅hash值相同，而且还和之前的key值equal，那肯定就是key值相同，就是说你现在put进来的key值之前的map里面就有，当然我就把这个节点返回给你了，你在这个节点上操作就行。
+          ················
+          4.如果当前桶为红黑树，那就要按照红黑树的方式写入数据。
+          5.如果是个链表，就需要将当前的 key、value 封装成一个新节点写入到当前桶的后面（形成链表）。
+          6.接着判断当前链表的大小是否大于预设的阈值，大于时就要转换为红黑树。
+          7.如果在遍历过程中找到 key 相同时直接退出遍历。
+          8.如果 e != null 就相当于存在相同的 key,那就需要将值覆盖。
+          9.最后判断是否需要进行扩容。
+
+
+          回答：
+          1.对可以求hash值，然后计算下标；
+          2.如果没有碰撞，直接放入桶中；
+          3.如果冲突了，以链表方式链接；
+          4.如果链表长度超过阈值，链表转成红黑树；
+          5.如果节点已经存在就替换旧值；
+          6.如果桶满了，就需要resize。
+
+
+  ··get操作：
+      1.7：
+          首先也是根据 key 计算出 hashcode，然后定位到具体的桶中。
+          判断该位置是否为链表。
+          不是链表就根据 key、key 的 hashcode 是否相等来返回值。
+          为链表则需要遍历直到 key 及 hashcode 相等时候就返回值。
+          啥都没取到就直接返回 null。
+
+      1.8：
+          首先将 key hash 之后取得所定位的桶。这个hashCode是个int型的值，计算出来的这个值就是数据在数组中的索引。get的速度是很快的，没有查找的过程，时间复杂度是O(1)。
+          如果桶为空则直接返回 null 。
+          否则判断桶的第一个位置(有可能是链表、红黑树)的 key 是否为查询的 key，是就直接返回 value。
+          如果第一个不匹配，则判断它的下一个是红黑树还是链表。
+          红黑树就按照树的查找方式返回值。
+          不然就按照链表的方式遍历匹配返回值。
+
+  
+  ··判断重复：判断HashMap中是否存在某个键，使用containsKey(Object key)方法来判断，而不是get()因为当使用get时，如果返回null，可能表示该键对应的值是null，也可能没有该键。
+
+  ··版本：1.7和1.8的实现上的不同；
+    背景：当Hash冲突严重时，在桶上形成的链表会变的越来越长，这样在查询时的效率就会越来越低；时间复杂度为O(N)。
+            当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。
+
+    关于HashMap的一些说法：
+            a)HashMap是一个“链表散列”的数据结构，即数组和链表的结合体。HashMap的底层结构是一个数组，数组中的每一项是一条链表。
+            b)HashMap的实例有俩个参数影响其性能： “初始容量” 和 装填因子。
+
+            d)HashMap中的key-value都是存储在Entry中的。
+            e)HashMap可以存null键和null值，不保证元素的顺序恒久不变，它的底层使用的是数组和链表，通过hashCode()方法和equals()方法保证键的唯一性。
+
+            f)解决冲突主要有三种方法：定址法，拉链法，再散列法。HashMap是采用拉链法，也就是链地址法解决哈希冲突的。
+              注：链表法是将相同hash值的对象组成一个链表放在hash值对应的槽位；
+
+              用开放定址法解决冲突的做法是：
+              当冲突发生时，使用某种探查(亦称探测)技术在散列表中形成一个探查(测)序列。 沿此序列逐个单元地查找，直到找到给定的关键字，或者碰到一个开放的地址(即该地址单元为空)为止（若要插入，在探查到开放的地址，则可将待插入的新结点存入该地址单元）。
+
+              拉链法解决冲突的做法是： 
+              所谓 “拉链法” 就是将链表和数组相结合。也就是说创建一个链表数组，数组中每一格就是一个链表。若遇到哈希冲突，则将冲突的值加到链表中即可。
+
+
+
+·关于HashMap和Hashtable区别：【底层实现都是数组+链表】
+
+        1）继承不同。public class Hashtable extends Dictionary implements Map；
+                    public class HashMap extends AbstractMap implements Map
+
+        2）线程是否安全：Hashtable中的方法是同步的（内部除构造方法以外的所有方法都加了synchronized关键字来保证同步），所以线程安全。
+            而HashMap中的方法在缺省情况下是非同步的。
+            在多线程并发的环境下，可以直接使用Hashtable，但是要使用HashMap的话就要自己增加同步处理了，需要使用Collections.syschronizedMap()方法来获取一个线程安全的集合【其实现原理是Collections定义了一个synchronizedMap的内部类，该类实现了Map接口，在调用方法时使用synchronized保证线程同步，实际上还是传入HashMap的实例】。
+
+        3）Hashtable中，key和value都不允许出现null值。
+          在HashMap中，null可以作为key，这样的key只有一个，可以有一个或多个key所对应的value为null。当get()方法返回null值时，即可以表示HashMap中没有该键，也可以表示该键所对应的值为null。因此，在HashMap中不能由get()方法来判断HashMap中是否存在某个键，而应该用containsKey()方法来判断。
+
+        4）两个遍历方式的内部实现上不同。
+          Hashtable、HashMap都使用了Iterator。而由于历史原因，Hashtable还使用了Enumeration的方式。
+
+        5）Hashtable和HashMap它们两个内部实现方式的数组的初始大小和扩容的方式。
+          Hashtable中hash数组默认大小是11，增加的方式是 old*2+1。
+          HashMap中hash数组的默认大小是16，增加的方式是 old*2。
+
+        6）另一个区别是HashMap的迭代器(Iterator)是fail-fast迭代器，而Hashtable的enumerator迭代器不是fail-fast的。
+          所以当有其它线程改变了HashMap的结构（增加或者移除元素），将会抛出ConcurrentModificationException，但迭代器本身的remove()方法移除元素则不会抛出ConcurrentModificationException异常。但这并不是一个一定发生的行为，要看JVM。这条同样也是Enumeration和Iterator的区别。
+
+        7）Hashtable使用Enumeration，HashMap使用Iterator。
+
+        8）哈希值的使用不同，Hashtable直接使用对象的hashCode。而HashMap重新计算hash值。
+
+        9）效率：因为线程安全的问题，HashMap 要比 HashTable 效率高一点。另外，HashTable 基本被淘汰，不要在代码中使用它；
+
+        10）底层数据结构：JDK1.8以后的HashMap在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。Hashtable 没有这样的机制。
+
+          源码：
+          //Map接口中的对象是key和value的对应关系，以键值对的形式出现。
+
+          //HashMap的源码，线程不安全。
+          //在数组中我们是通过数组下标来对其内容索引的，而在Map中我们通过对象来对对象进行索引，用来索引的对象叫做key，其对应的对象叫做value。
+          public class HashMap<K,V> extends AbstractMap<K,V> implements Map<K,V>, Cloneable, Serializable{
+
+                                 //HashMap的put方法，没有同步
+
+                                 public V put(K key, V value){
+                                  ...
+                                          if (key == null)
+                                           return putForNullKey(value);
+                                          ...
+                                 }
+           
+
+           //以下是HashMap中的方法，注意，没有contains方法
+           public boolean containsKey(Object key) {...}	//是否存在某个键
+           public boolean containsValue(Object value){...}	//是否存在某个值
+            
+          }
+
+
+
+          //Hashtable的源码，线程安全
+          public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneable, java.io.Serializable{
+
+                         //Hashtable的put方法
+                         //当然，Hashtable的其他方法，如get，size，remove等方法，
+                         //都加了synchronized关键词同步操作
+
+                         public synchronized V put(K key, V value){
+
+                                      //...synchronized...
+
+                                      if (value == null) {
+                                          throw new NullPointerException();
+                                      }
+                                      ...
+                   }
+           //以下是Hashtable的方法
+           public synchronized boolean contains(Object value);
+          作用：测试此映射表中是否存在与指定值关联的键（如果此 Hashtable 将一个或多个键映射到此值，则返回 true）。
+
+           public synchronized boolean containsKey(Object key);
+           public boolean containsValue(Object value);
+
+          }
+
+
+
+
+·Java中HashMap和TreeMap的区别？
+
+  HashMap：数组方式存储key/value，线程非安全，允许null作为key和value，key不可以重复，value允许重复；不保证元素迭代顺序是按照插入时的顺序；key的hash值是先计算key的hashcode值，然后再进行计算；每次容量扩容会重新计算所以key的hash值，会消耗资源，要求key必须重写equals()和hashcode()方法；
+  默认初始容量16，加载因子0.75，扩容为旧容量乘2，查找元素快，如果key一样则比较value，如果value不一样，则按照链表结构存储value，就是一个key后面有多个value。
+
+  TreeMap：基于红黑二叉树的NavigableMap的实现，线程非安全，不允许null，key不可以重复，value允许重复，存入TreeMap的元素应当实现Comparable接口或者实现Comparator接口，会按照排序后的顺序迭代元素，两个相比较的key不得抛出classCastException。主要用于存入元素的时候对元素进行自动排序，迭代输出的时候就按排序顺序输出。
+
+
+
+
+
+
+ConcurrentHashMap
+----------------------
+·为什么要使用ConcurrentHashMap?
+
+  ··没有对比就没有伤害，在并发编程中使用HashMap可能会导致程序死循环。而使用线程安全的Hashtable效率又非常低下，基于以上两个原因，才有了ConcurrentHashMap。
+      ···为什么说HashMap可能会导致死循环？
+          因为HashMap在并发执行put操作时，会导致HashMap的Entry链表形成环形数据结构，一旦形成环形数据结构，Entry的next节点永远不会为空，就会产生死循环获取Entry，导致CPU利用率接近100%，所以在并发情况下不能使用HashMap。
+
+      ···为什么说Hashtable效率低下？
+            Hashtable使用synchronized来保证线程安全。当一个线程访问Hashtable的同步方法，其他线程也访问Hashtable的同步方法就会进入阻塞或轮询状态。这个的同步方法包括读和写，可以理解Hashtable只有一把锁，所有的线程不管做什么，都是竞争这一把锁，例如线程1使用put进行元素添加，线程2不但不能使用put来添加元素，也不能使用get方法来获取元素。
+
+  ··ConcurrentHashMap是一个线程安全的HashMap，它的主要功能是提供了一组和Hashtable功能相同、线程安全的方法，并且性能好。
+    ConcurrentHashMap可以做到读取数据不加锁，并且其内部的结构可以让其在进行写操作的时候能够将锁的粒度保持地尽量地小，不用对整个ConcurrentHashMap加锁；
+    使用Hashtable或者Collections.synchronizedMap这两位选手都有一个共同的问题：性能。因为不管是读还是写操作，他们都会给整个集合上锁，导致同一时间的其他操作被阻塞。
+
+  ··为什么ConcurrentHashMap效率高，线程安全？  因为ConcurrentHashMap使用锁分段技术来有效的提升并发的访问率。
+
+  ··和HashMap非常类似，唯一的区别就是其中的核心数据如value ，以及链表都是volatile修饰的，保证了获取时的可见性。
+
+
+
+
+·ConcurrentHashMap 和 Hashtable的区别?
+   ConcurrentHashMap 和 Hashtable 的区别主要体现在实现线程安全的方式上不同。
+
+      ··底层数据结构： 
+        JDK1.7的 ConcurrentHashMap 底层采用 分段的数组+链表 实现，JDK1.8的 ConcurrentHashMap采用的数据结构跟HashMap1.8的结构一样，数组+链表/红黑二叉树。
+        Hashtable 和JDK1.8 之前的 HashMap的底层数据结构类似都是采用 数组+链表 的形式，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的；
+
+      ··实现线程安全的方式(重要)： 
+        JDK1.7时，ConcurrentHashMap(分段锁)对整个桶数组进行了分割分段(Segment)，每一把锁只锁容器其中一部分数据，多线程访问容器里不同数据段的数据，就不会存在锁竞争，提高并发访问率。（默认分配16个Segment，比Hashtable效率提高16倍。） 
+        一个 Segment包含一个HashEntry数组，每个HashEntry是一个链表结构的元素，每个Segment守护着一个HashEntry数组里的元素，当对HashEntry数组的数据进行修改时，必须首先获得对应的 Segment的锁。
+
+        JDK1.8时，已经摒弃了Segment的概念，而是直接用Node数组+链表+红黑树的数据结构来实现，并发控制使用synchronized和CAS来操作。（JDK1.6以后对synchronized锁做了很多优化） 整个看起来就像是优化过且线程安全的 HashMap，虽然在JDK1.8中还能看到Segment的数据结构，但是已经简化了属性，只是为了兼容旧版本；synchronized只锁定当前链表或红黑二叉树的首节点，这样只要hash不冲突，就不会产生并发，效率又提升N倍。
+
+        ② Hashtable(同一把锁) :使用 synchronized来保证线程安全，效率非常低下。当一个线程访问同步方法时，其他线程也访问同步方法，可能会进入阻塞或轮询状态，如使用put() 添加元素，另一个线程不能使用 put()添加元素，也不能使用get()，竞争会越来越激烈效率越低。
+
+
+
+
