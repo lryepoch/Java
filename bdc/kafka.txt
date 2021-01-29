@@ -132,6 +132,13 @@
 
 
 
+·kafka丢失消息的情况：消息丢失会发生在Broker，Producer和Consumer三种。
+	··Broker丢失消息是由于Kafka本身的原因造成的，kafka为了得到更高的性能和吞吐量，将数据异步批量的存储在磁盘中。消息的刷盘过程，为了提高性能，减少刷盘次数，kafka采用了批量刷盘的做法。即，按照一定的消息量，和时间间隔进行刷盘。这种机制也是由于linux操作系统决定的。将数据存储到linux操作系统种，会先存储到页缓存（Page cache）中，按照时间或者其他条件进行刷盘（从page cache到file），或者通过fsync命令强制刷盘。数据在page cache中时，如果系统挂掉，数据会丢失。
+
+
+
+
+
 ·kafka producer发送数据：
 	··ProducerRecord：发送给kafka broker的key/value值对；
 					包含字段有topic/partition/headers/key/value/timestamp；
