@@ -3,6 +3,10 @@
 --------------------
 字符串
 
+·对字符串的操作可以归结为以下几类：
+	字符串的比较、连接操作（不同编程语言实现方式有所不同）；
+	涉及子串的操作，比如前缀，后缀等；
+	字符串间的匹配操作，如 KMP 算法、BM 算法等。
 
 
 
@@ -49,7 +53,7 @@
 	}
 
 
-·能够运用递归方法解决树的为前序遍历、中序遍历和后序遍历问题
+·能够运用递归方法解决树的为前序遍历、中序遍历和后序遍历问题：
 	前序遍历，时间复杂度：O(n)，空间复杂度：最坏是O(n)，平均是O(logN)【n是节点个数】
 	中序遍历，时间复杂度：O(n)，空间复杂度：O(logN)【n是节点个数】
 	后序遍历，时间复杂度：O(n)，空间复杂度：最坏是O(n)，平均是O(logN)【n是节点个数】
@@ -73,34 +77,16 @@
 
 
 
-·能用运用迭代方法解决树的为前序遍历、中序遍历和后序遍历问题
-	前序遍历，显式调用栈
-
-	class Solution {
-    public List<Integer> preorderTraversal(TreeNode root) {
-        List<Integer> res = new ArrayList<Integer>();
-        if (root == null) {
-            return res;
-        }
-
-        Deque<TreeNode> stack = new LinkedList<TreeNode>();
-        TreeNode node = root;
-        while (!stack.isEmpty() || node != null) {
-            while (node != null) {
-                res.add(node.val);
-                stack.push(node);
-                node = node.left;
-            }
-            node = stack.pop();
-            node = node.right;
-        }
-        return res;
-    }
-}
+·能用运用迭代方法解决树的为前序遍历、中序遍历和后序遍历问题：
+	前序遍历，显式调用栈，进栈前加入到集合中
+	中序遍历，显式调用栈，出栈时加入到集合中
+	后序遍历，显式调用栈，出栈时加入到集合中，进栈方式跟中序遍历不同；
 
 
 
-·能用运用广度优先搜索解决树的层序遍历问题
+
+
+·能用运用广度优先搜索解决树的层序遍历问题：
 
 	层序遍历就是逐层遍历树结构。
 
@@ -154,5 +140,5 @@
 
 广度优先
 
-
+	通常，我们使用队列来帮助我们做广度优先搜索。
 
