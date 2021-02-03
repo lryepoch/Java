@@ -1,0 +1,77 @@
+
+-----------------
+·概述：
+	··使用Erlang编写的一个开源的消息队列，本身支持很多的协议：AMQP，XMPP, SMTP,STOMP，也正是如此，使的它变的非常重量级，更适合于企业级的开发。同时实现了Broker架构，核心思想是生产者不会将消息直接发送给队列，消息在发送给客户端时先在中心队列排队。
+		对路由(Routing)、负载均衡(Load balance)、数据持久化都有很好的支持。多用于进行企业级的ESB整合。
+
+	··RabbitMQ 是实现 AMQP（高级消息队列协议）的消息中间件的一种，最初起源于金融系统，用于在分布式系统中存储转发消息。
+		RabbitMQ 主要是为了实现系统之间的双向解耦而实现的。当生产者大量产生数据时，消费者无法快速消费，那么需要一个中间层。保存这个数据。
+
+	··谈到队列服务, 会有三个概念： 发消息者、队列、收消息者，RabbitMQ 在这个基本概念之上, 多做了一层抽象, 在发消息者和 队列之间, 加入了交换器 (Exchange). 这样发消息者和队列就没有直接联系, 转而变成发消息者把消息给交换器, 交换器根据调度策略再把消息再给队列。
+
+
+
+
+
+·rabbitmq的交换机模式分类：
+
+	··与 ActiveMQ 拿到消息就直接放在队列等待消费者拿走不同， Rabbit 拿到消息之后，会先交给 交换机 （Exchange）, 然后交换机再根据预先设定的不同绑定( Bindings )策略，来确定要发给哪个队列。比起 ActiveMQ 多了 Exchange 和 Bindings。正是由于有了 Exchange 和 Bindings， RabbitMQ 就可以灵活地支撑各种模式。
+
+	··RabbitMQ提供了4种Exchange模式：direct，fanout，topic，header。header模式在实际使用中较少。
+
+		direct：消息中的路由键(routing key)如果和Bindding中的binding key一致，交换器就将消息发送到相应的队列中。完全匹配，单播的模式。
+				Direct Exchange 是 RabbitMQ 默认的交换机模式，也是最简单的模式，根据key全文匹配去寻找队列。
+
+		fanout：每个发到fanout类型交换器的消息都会分到所有绑定的队列上，并不处理路由键。fanout类型转发消息是最快的。
+				Fanout Exchange消息广播的模式，不管路由键或者是路由模式，会把消息发给绑定给它的全部队列，如果配置了 routing_key 会被忽略。
+
+		topic：topic交换器通过模式匹配分配消息的路由键属性，将路由键和路由模式进行匹配，此时队列需要绑定到一个模式上。
+				模式会识别两个通配符：# 匹配0个或多个单词，* 匹配一个单词。
+
+
+
+
+·ACK确认机制：
+	1.什么是消息确认ACK？如果在处理消息的过程中，消费者的服务器在处理消息时出现异常，那么可能这条正在处理的消息没有完成消息消费，数据就会丢失。为了确保数据不会丢失RabbitMQ支持消息确认-ACK。
+
+	2.ACK的消息确认机制：
+		ACK机制是消费者从RabbitMQ收到消息并处理完成后，反馈给RabbitMQ的，RabbitMQ收到反馈后才将此消息从队列中删除。
+
+		如果一个消费者在处理消息出现了网络不稳定、服务器异常等现象，会将消息重新放入队列中。
+
+		如果在集群的情况下，RabbitMQ会立即将这个消息推送给这个在线的其他消费者，这种机制保证了在消费者服务端故障的时候，不会丢失任何消息和任务。
+
+		消息永远不会从RabbitMQ中删除：只有当消费者正确发送ACK反馈，RabbitMQ确认收到后，消息才会从RabbitMQ服务器的数据中删除。
+
+		消息的ACK确认机制默认是打开的。
+
+	补充：
+		每个Consumer可能需要一段时间才能处理完收到的数据。如果在这个过程中，Consumer出错了或者异常退出了，而数据还没有处理完成，那么非常不幸，这段数据就丢失了。
+
+		如果我们采用no-ack的方式进行确认，也就是说，每次Consumer接到数据后，而不管是否处理完成，RabbitMQ Server会立即把这个Message标记为完成，然后从queue中删除了。 如果一个Consumer异常退出了，它处理的数据能够被另外的Consumer处理，这样数据在这种情况下就不会丢失了（注意是这种情况下）。
+
+		为了保证数据不被丢失，RabbitMQ支持消息确认机制，即acknowledgments。为了保证数据能被正确处理而不仅仅是被Consumer收到，那么我们不能采用no-ack。而应该是在处理完数据后发送ack。 在处理数据后发送的ack，就是告诉RabbitMQ数据已经被接收，处理完成，RabbitMQ可以去安全的删除它了。
+
+		如果Consumer退出了但是没有发送ack，那么RabbitMQ就会把这个Message发送到下一个Consumer。这样就保证了在Consumer异常退出的情况下数据也不会丢失。
+
+		这里并没有用到超时机制。RabbitMQ仅仅通过Consumer的连接中断来确认该Message并没有被正确处理。也就是说，RabbitMQ给了Consumer足够长的时间来做数据处理。 这样即使你通过Ctr-C中断了Recieve.cs，那么Message也不会丢失了，它会被分发到下一个Consumer。
+
+		如果忘记了ack，那么后果很严重。当Consumer退出时，Message会重新分发。然后RabbitMQ会占用越来越多的内存，由于RabbitMQ会长时间运行，因此这个”内存泄漏”是致命的。
+
+
+
+
+
+
+·解决RabbitMQ重启后，消息丢失的问题?/RabbitMQ消息如何持久化?
+	交换器(Exchange)的持久化：channel.exchangeDeclare(EXCHANGE_NAME, "direct", true);
+
+	队列(Queue)的持久化：channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+
+	消息(Message)的持久化：String message = "durable exchange test";
+							AMQP.BasicProperties props = new AMQP.BasicProperties().builder().deliveryMode(2).build();
+							channel.basicPublish(EXCHANGE_NAME, "", props, message.getBytes());
+
+	在生产环境中，我们需要考虑万一生产者挂了，消费者挂了，或者rabbitmq挂了怎么样。一般来说，如果生产者挂了或者消费者挂了，其实是没有影响，因为消息就在队列里面。那么万一 rabbitmq 挂了，之前在队列里面的消息怎么办，其实可以做消息持久化，RabbitMQ 会把信息保存在磁盘上。
+
+	做法是可以先从 Connection 对象中拿到一个 Channel 信道对象，然后再可以通过该对象设置 消息持久化。
