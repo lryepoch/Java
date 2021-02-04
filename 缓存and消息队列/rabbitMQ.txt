@@ -72,6 +72,15 @@
 							AMQP.BasicProperties props = new AMQP.BasicProperties().builder().deliveryMode(2).build();
 							channel.basicPublish(EXCHANGE_NAME, "", props, message.getBytes());
 
-	在生产环境中，我们需要考虑万一生产者挂了，消费者挂了，或者rabbitmq挂了怎么样。一般来说，如果生产者挂了或者消费者挂了，其实是没有影响，因为消息就在队列里面。那么万一 rabbitmq 挂了，之前在队列里面的消息怎么办，其实可以做消息持久化，RabbitMQ 会把信息保存在磁盘上。
+	在生产环境中，我们需要考虑万一生产者挂了，消费者挂了，或者rabbitmq挂了怎么样。一般来说，如果生产者挂了或者消费者挂了，其实是没有影响，因为消息就在队列里面。那么万一 rabbitmq挂了，之前在队列里面的消息怎么办，其实可以做消息持久化，RabbitMQ 会把信息保存在磁盘上。
 
 	做法是可以先从 Connection 对象中拿到一个 Channel 信道对象，然后再可以通过该对象设置 消息持久化。
+
+
+
+
+
+
+·springboot中@RabbitListener 和 @RabbitHandler 搭配使用：
+	@RabbitListener 可以标注在类上面，需配合 @RabbitHandler注解一起使用；
+	@RabbitListener 标注在类上面表示当有收到消息的时候，就交给 @RabbitHandler 的方法处理，具体使用哪个方法处理，根据 MessageConverter 转换后的参数类型；

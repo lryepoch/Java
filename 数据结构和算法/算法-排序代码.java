@@ -252,7 +252,7 @@ class Solution{
 
 
 //冒泡排序【从前向后冒泡，完了再次从前往后，重复冒泡】
-//概念：对于n个记录，从第1个开始，依次对相邻两个元素进行比较，前一个大于后一个，则交换位置。一轮过后，最大记录沉到最后。对前n-1个记录重复上述操作，直到只剩一个记录为止。
+//概念：对于n个记录，从第1个开始，依次对相邻两个元素进行比较，前一个大于后一个，则交换位置。一轮过后，最小记录升到最前。对后n-1个记录重复上述操作，直到只剩一个记录为止。
 //时间复杂度O(n^2）
 //空间复杂度O(1)
 //稳定排序
@@ -261,18 +261,14 @@ class Solution{
 
 class Solution{
 	public void bubbleSort(int[] a){
-		//遍历次数，个数-1
-		for (int j=0;j<a.length-1 ;j++ ) {			
-			//遍历了n次，就减去n个数
-				for(int i=0;i<a.length-1-j;i++){	
-					//相邻两个数比较
-						if(a[i]>a[i+1]){			
-						//最大的元素沉到底部，之后数组个数减一。重新再来一遍遍			
-							int x=a[i];
-							a[i]=a[i+1];
-							a[i+1]=x;
-						}
-				}
+		for(int i=0;i<nums.length-1;i++){
+            for(int j=i+1;j<nums.length;j++){
+                if(nums[i]>nums[j]){
+                    int temp = nums[i];
+                    nums[i]=nums[j];
+                    nums[j]=temp;
+                }
+            }
 		}
 	}
 }
