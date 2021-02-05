@@ -42,7 +42,7 @@
 ·栈的基本操作除了在栈顶进行插入和删除外，还有栈的初始化，判空以及取栈顶元素等。
 ·LIFO
 ·DFS
-
+·数组和单链表
 
 
 
@@ -54,7 +54,9 @@
 ·队列常用的方法有：add、remove、element、offer、poll、peek、put、take。
 ·FIFO
 ·BFS
+·数组和单链表
 
+·循环队列
 
 
 
