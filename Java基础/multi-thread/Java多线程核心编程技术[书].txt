@@ -17,7 +17,7 @@ java多线程核心编程技术：
 				···i··与system.out.println的异常：i··在println之前执行的。
 
 		··currentThread（）方法：返回代码段正被哪个线程调用的信息。
-				Thread.currentThread（）.getName（）与this.getName（）的区别？？？？？。
+				Thread.currentThread().getName（）与this.getName()的区别？？？？？。
 
 				使用Thread.currentThread().getName()和使用this.getName()和对象实例.getName(),都可以得到线程的名称,但是使用this调用getName()方法只能在本类中，而不能在其他类中，更不能在Runnable接口中，所以只能使用Thread.currentThread().getName()获取线程的名称，否则会出现编译时异常。
 
@@ -30,8 +30,7 @@ java多线程核心编程技术：
 				···一个进程里main是一开始就活着的，但是，它跟main方法半毛钱关系都没有，仅仅是同名罢了；
 				···谁调用了start函数，谁才把自己交给线程调度器，谁才是活着的线程，否则，管你继承啥，还是实现啥，都是一个普通的对象；
 				···实现了Runable接口的对象具有运行线程的资格，但是，只要它不被start，它就是一个普通的对象，有资格，并不代表它就是线程，线程是活着的东西，对象是死的；
-				···线程可以级级包裹嵌套，就像上边一样，它运行的是：target的run
-				自己调用run的话，仅仅就是一个函数调用，要让调度器去调用，它才是一个线程。
+				···线程可以级级包裹嵌套，就像上边一样，它运行的是：target的run自己调用run的话，仅仅就是一个函数调用，要让调度器去调用，它才是一个线程。
 
 		··线程类的构造方法、静态块是被new这个线程类所在的线程所调用的，而run方法里面的代码才是被线程自身所调用的。
 

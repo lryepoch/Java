@@ -9,19 +9,20 @@
 		1、扩展java.lang.Thread类。 
 
 		2、实现java.lang.Runnable接口。
-		··实现步骤：
-			定义类实现Runnable接口；
-			覆盖接口中的run方法。将线程任务代码定义到run方法中；
-			创建Thread类的对象；
-			将Runnable接口的子类对象作为参数传递给Thread类的构造函数；
-			调用Thread类的start方法开启线程。
+			··实现步骤：
+				定义类实现Runnable接口；
+				覆盖接口中的run方法。将线程任务代码定义到run方法中；
+				创建Thread类的对象；
+				将Runnable接口的子类对象作为参数传递给Thread类的构造函数；
+				调用Thread类的start方法开启线程。
 
-		··这种方式的好处： 
-			1. 实现Runnable接口避免了单继承的局限性，所以较为常用。 
-			2. 实现Runnable接口的方式，更加的符合面向对象，线程分为两部分，一部分线程对象，一部分线程任务。
+			··这种方式的好处： 
+				实现Runnable接口避免了单继承的局限性，所以较为常用。 
+				实现Runnable接口的方式，更加的符合面向对象，线程分为两部分，一部分线程对象，一部分线程任务。
 
-			继承Thread类：run方法在Thread里。线程对象和线程任务耦合在一起。一旦创建Thread类的子类对象，既是线程对象，又有线程任务。 
-			实现Runnable接口：run方法在Runnable里。将线程任务单独分离出来封装成对象（Runnable接口类型），用Runnable来标明线程任务，用Thread来明确线程对象。Runnable接口对线程对象和线程任务进行解耦。
+		继承Thread类：run()在Thread里。线程对象和线程任务耦合在一起。一旦创建Thread类的子类对象，既是线程对象，又有线程任务。
+
+		实现Runnable接口：run()在Runnable里。将线程任务单独分离出来封装成对象（Runnable接口类型），用Runnable来标明线程任务，用Thread来明确线程对象。Runnable接口对线程对象和线程任务进行解耦。
 
 
 		>创建线程的三种方式的对比
@@ -30,14 +31,14 @@
 
 
 	二、实例化线程：
-					 1、如果是扩展java.lang.Thread类的线程，则直接new即可。
-	                 2、如果是实现了java.lang.Runnable接口的类，则用Thread的构造方法：
+				 1、如果是扩展java.lang.Thread类的线程，则直接new即可。
+                 2、如果是实现了java.lang.Runnable接口的类，则用Thread的构造方法：
 
-	        Thread(Runnable target) 
-	        Thread(Runnable target, String name) 
-	        Thread(ThreadGroup group, Runnable target) 
-	        Thread(ThreadGroup group, Runnable target, String name) 
-	        Thread(ThreadGroup group, Runnable target, String name, long stackSize)
+        Thread(Runnable target) 
+        Thread(Runnable target, String name) 
+        Thread(ThreadGroup group, Runnable target) 
+        Thread(ThreadGroup group, Runnable target, String name) 
+        Thread(ThreadGroup group, Runnable target, String name, long stackSize)
 
 	三、启动线程： 在线程的Thread对象上调用start()方法，而不是run()或者别的方法。
 
@@ -47,26 +48,26 @@
 
 ·问题：java多线程有几种实现方法，都是什么？同步有几种实现方法，都是什么?         
 
-			1、java实现多线程有 2 种方法：
+		1、java实现多线程有 2 种方法：
 
-				（1）继承Thread类；
+			（1）继承Thread类；
 
-				（2）实现Runnable接口；
+			（2）实现Runnable接口；
 
-				这两种方法的共同点：
+			这两种方法的共同点：
 
-				不论用哪种方法，都必须用Thread（如果是Thead子类就用它本身）产生线程，然后再调用start()方法。
+			不论用哪种方法，都必须用Thread（如果是Thead子类就用它本身）产生线程，然后再调用start()方法。
 
-				两种方法的不同点：
+			两种方法的不同点：
 
-						1、继承Thread类有一个缺点就是单继承，而实现Runnable接口则弥补了它的缺点，可以实现多继承
+				1、继承Thread类有一个缺点就是单继承，而实现Runnable接口则弥补了它的缺点，可以实现多继承
 
-						2、继承Thread类，如果产生Runnable实例对象，就必须产生多个Runnable实例对象，然后再用Thread产生多个线程；而实现Runnable接口，只需要建立一个实现这个类的实例，然后用这一个实例对象产生多个线程。即实现了资源的共享性。
-        
+				2、继承Thread类，如果产生Runnable实例对象，就必须产生多个Runnable实例对象，然后再用Thread产生多个线程；而实现Runnable接口，只需要建立一个实现这个类的实例，然后用这一个实例对象产生多个线程。即实现了资源的共享性。
+    
 
-			2、同步的实现方面有 2 种，分别是synchronized，wait与notify。
+		2、同步的实现方面有 2 种，分别是synchronized，wait与notify。
 
-				另解决线程同步与互斥的主要方式是Cas、Synchronized、和Lock。
+			另解决线程同步与互斥的主要方式是Cas、Synchronized、和Lock。
 
 
 
@@ -140,6 +141,26 @@
 
 
 
+·Java 同步块（synchronized block）用来标记方法或者代码块是同步的。有四种不同的同步块：
+
+	实例方法：同步在拥有该方法的对象上。这样，每个实例其方法同步都同步在不同的对象上，即该方法所属的实例。只有一个线程能够在实例方法同步块中运行。
+	静态方法：同步在该方法所在的类对象上。因为在Java虚拟机中一个类只能对应一个类对象，所以同时只允许一个线程执行同一个类中的静态同步方法。
+	实例方法中的同步块：使用了“this”，即为调用add方法的实例本身。一次只有一个线程能够在同步于同一个监视器对象的Java方法内执行。
+	静态方法中的同步块：
+
+·同步方法和同步代码块的区别是什么？
+
+	同步方法默认用this或者当前类class对象作为锁；
+	同步代码块可以选择以什么来加锁，比同步方法要更细颗粒度，我们可以选择只同步会发生同步问题的部分代码而不是整个方法；
+	同步方法使用关键字 synchronized修饰方法，而同步代码块主要是修饰需要进行同步的代码，用   synchronized（object）{代码内容}进行修饰；
+
+
+
+
+
+
+
+
 ·CAS与ABA问题：
 
 	CAS：乐观锁的一种实现，是一种轻量级锁，Juc中很多工具类的实现就是基于Cas。
@@ -167,6 +188,7 @@
 
 
 ·ThreadLocal详解：同一个线程下，变量跨类跨方法调用！！！！！！
+					ThreadLocal类可以让你创建的变量只被同一个线程进行读和写操作。因此，尽管有两个线程同时执行一段相同的代码，而且这段代码又有一个指向同一个ThreadLocal变量的引用，但是这两个线程依然不能看到彼此的ThreadLocal变量域。
 	
 	>背景：
 		多线程下，有时候遇到的问题：
@@ -317,24 +339,6 @@
 		参考我的博客：concurrent.atomic 包下的类 AtomicInteger 的使用。
 
 		AtomicInteger：JDK6以后，新增加了一个包java.util.concurrent.atomic，里面有各种原子类，比如AtomicInteger。而AtomicInteger提供了各种自增，自减等方法，这些方法都是原子性的。 换句话说，自增方法 incrementAndGet是线程安全的，同一个时间，只有一个线程可以调用这个方法。
-
-
-
-
-
-·同步方法和同步代码块的区别是什么？
-
-	同步方法默认用this或者当前类class对象作为锁；
-	同步代码块可以选择以什么来加锁，比同步方法要更细颗粒度，我们可以选择只同步会发生同步问题的部分代码而不是整个方法；
-	同步方法使用关键字 synchronized修饰方法，而同步代码块主要是修饰需要进行同步的代码，用   synchronized（object）{代码内容}进行修饰；
-
-
-
-
-·线程为什么调用start()而不是直接调用run()？
-
-	1、run()方法只是一个类中的普通方法，直接执行和普通的方法没有设么两样;
-	2、start()方法则不同，它首先做了创建线程等一系列工作，然后调用行的run()方法。
 
 
 
