@@ -95,6 +95,7 @@
 
 	API:
 	Math.pow(底数,几次方)：实现数组的交错求和
+	Math.max(x, y);
 	Arrays.sort(数组)：排序函数（快速排序）
 
 

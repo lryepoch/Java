@@ -1,7 +1,8 @@
 
 ---------------
 ·搭建vue开发环境的步骤：
-	··下载node.js安装包安装：(Vue项目通常通过webpack工具来构建，而webpack命令的执行是依赖node.js的环境的，所以首先要安装node.js。)
+	··下载node.js安装包安装：
+		(vue项目通常通过webpack工具来构建，而webpack命令的执行是依赖node.js的环境的，所以首先要安装node.js。)
 		测试是否安装成功：node -v；npm -v
 
 	··安装cnpm：原生npm下载依赖包过慢，更换成淘宝镜像可以提高下载效率。
