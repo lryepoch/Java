@@ -5,7 +5,7 @@
 线性表的查找：
 //顺序查找
 //如果找到，返回数组下标；
-//时间复杂度O(n),
+//时间复杂度O(n), 空间复杂度O(1)
 
 class Solution{
 	public int seqSearch(int[] a,int key){
