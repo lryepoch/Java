@@ -50,12 +50,18 @@
 	··字符串转化成字符数组：char[] xxx = string.toCharArray()。
 	··字符串转换成byte数组：byte[] str = string.getBytes();
 	··以特定字符分割字符串，并返回字符串数组：String[] str=string.split("-");
+	··字符串以一个或者一个以上的空白字符作为标志，将字符串转化成一个集合：Arrays.asList(s.split("\\s+"));
+	··集合以逗号将集合元素连接成一个字符串：String.join(",", wordList);
+	··对char判空用 Character.isSpaceChar(c)更准确；
 
-	··Stringbuffer s 转化成String：s.toString()。
+	··StringBuffer s 转化成String：s.toString()。
+		StringBuilder/StringBuffer的reverse()方法：反转字符串；
+
 	··向字符串变量中添加字符：Stringbuffer有append()。
 
-	··遍历字符串： for(int i=0;i<string.length();i++)
-	        				{        string.charAt(i)；}。
+	··遍历字符串： for(int i=0;i<string.length();i++){     
+	        			string.charAt(i)；
+	        		}
 	
 	··将数组中的某个值转化成单个字符：string.valueOf(a[j++])。
 
