@@ -261,3 +261,18 @@ redis的分布式锁
 
 
 
+1.熟悉Java基础，io，集合，多线程等基础类库，jvm；
+
+2.熟悉常见的数据结构和算法；
+
+3.熟悉常见的设计模式；
+
+4.熟悉使用spring、springboot、springmvc、shiro、mybatis、mybatis-plus、jpa、swagger等常用web开发框架；
+
+5.熟悉关系型数据库mysql的设计与开发；
+
+6.熟悉使用项目构建工具maven、版本管理工具git以及发布容器docker；
+
+7.熟悉使用redis、kafka等常用中间件；
+
+8.熟悉常见的linux指令，了解计算机操作系统、计算机网络等；
