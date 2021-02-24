@@ -1,7 +1,7 @@
 
 ·概念：一个轻量级的快速开发框架。
 		设计目的是用来简化新Spring应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。
-		Spring启动框架。
+		spring启动框架。
 
 
 ·SpringBoot所具备的特征有：
@@ -87,7 +87,7 @@
 	        ··如果该文件下还有其他静态文件夹，需要在application.properties中配置，否则该文件下的静态文件不能被引用或者访问。
 				spring.mvc.static-path-pattern=/static/**  
 
-	template：模板文件夹，该文件下的页面不能通过地址栏地址直接访问，需要经过Controller类来访问，需要在application.properties中配置对应的模板引擎：   
+	templates：模板文件夹，该文件下的页面不能通过地址栏地址直接访问，需要经过Controller类来访问，需要在application.properties中配置对应的模板引擎：   
 
 	         #配置模板引擎
 	          spring.thymeleaf.prefix=classpath:/templates/
@@ -115,7 +115,7 @@
 
 ·springboot异常处理：【status/code/message/data】
 	
-	局部异常处理：@Controller + @ExceptionHandler【在当前controller类中定义被@ExceptionHandler修饰的方法】
+	局部异常处理：@Controller + @ExceptionHandler【在具体controller类中定义被@ExceptionHandler修饰的方法】
 	全局异常处理：@ControllerAdvice + @ExceptionHandler
 
 	Springboot异常处理，可以通过一下几种方法：
@@ -126,7 +126,9 @@
 	2、使用@ControllerAdvice来进行统一异常处理，@ExceptionHandler(value = Exception.class)来指定捕获的异常 ；
 
 		··定义一个返回值的数据结构CommonResult；
+
 		··定义全局异常处理器@ControllerAdvice，里面定义了异常捕抓器@ExceptionHandler，可以捕抓参数检测不合格（MethodArgumentNotValidException）、其他Exception类及其子异常类、自定义异常类（GlobalException）；
+
 		··定义一个错误码枚举类ResultEnum；
 			常见状态码：200-OK-响应成功
 						400-Bad Request-请求出现语法错误，一般请求参数不对
@@ -193,9 +195,9 @@
 	··HandlerInterceptorAdapter：拦截组件
 							   拦截组件HandlerInterceptorAdapter可以有多个，需要注册到WebMvcConfigurer里面，在WebMvcConfigurer里面拦截器是按顺序执行的。
 
-		在Spring Boot2.0及Spring 5.0前, 该类WebMvcConfigurerAdapter被标记为@Deprecated，已被废弃。
+		在Spring Boot2.0 及Spring 5.0 前, 该类WebMvcConfigurerAdapter被标记为@Deprecated，已被废弃。
 		官方推荐直接实现WebMvcConfigurer或者直接继承WebMvcConfigurationSupport，方式一实现WebMvcConfigurer接口（推荐），方式二继承WebMvcConfigurationSupport类。
-		在Spring Boot 2.0后都是靠重写WebMvcConfigurer的方法来添加自定义拦截器，消息转换器等。
+		在Spring Boot 2.0后 都是靠重写WebMvcConfigurer的方法来添加自定义拦截器，消息转换器等。
 
 
 	··概念：
@@ -248,33 +250,33 @@
 
 ·SpringBoot读取properties或者application.yml配置文件中的数据：
 
-1、使用@Value注解读取。前提：当前类是一个组件；
+	1、使用@Value注解读取。前提：当前类是一个组件；
 
-2、使用@ConfigurationProperties注解读取方式。
-@Component
-@ConfigurationProperties(prefix = "user")
+	2、使用@ConfigurationProperties注解读取方式。
+	@Component
+	@ConfigurationProperties(prefix = "user")
 
-3、读取指定文件
-3.1、@PropertySource+@Value注解读取方式
-在resources下新建配置config/db-config.properties 
-注意：@PropertySource不支持yml文件读取。
-@Component
-@PropertySource(value = { "config/db-config.properties" })
+	3、读取指定文件
+		3.1、@PropertySource+@Value注解读取方式
+		在resources下新建配置config/db-config.properties 
+		注意：@PropertySource不支持yml文件读取。
+		@Component
+		@PropertySource(value = { "config/db-config.properties" })
 
-3.2、@PropertySource+@ConfigurationProperties注解读取方式
-@Component
-@ConfigurationProperties(prefix = "db")
-@PropertySource(value = { "config/db-config.properties" })
+		3.2、@PropertySource+@ConfigurationProperties注解读取方式
+		@Component
+		@ConfigurationProperties(prefix = "db")
+		@PropertySource(value = { "config/db-config.properties" })
 
-4、使用Environment读取
-@Autowired
-private Environment environment;
+	4、使用Environment读取
+	@Autowired
+	private Environment environment;
 
-//读取配置类 CEnvironment读取方式
-@RequestMapping(value = "/getConfigenv")
-public String getConfigenv() {
-return "获取的配置信息 :" +
-    " name=" + environment.getProperty("user.name") +
-    " address=" + environment.getProperty("user.address") +
-    " , company=" + environment.getProperty("user.company");
-}
+	//读取配置类 CEnvironment读取方式
+	@RequestMapping(value = "/getConfigenv")
+	public String getConfigenv() {
+	return "获取的配置信息 :" +
+	    " name=" + environment.getProperty("user.name") +
+	    " address=" + environment.getProperty("user.address") +
+	    " , company=" + environment.getProperty("user.company");
+	}

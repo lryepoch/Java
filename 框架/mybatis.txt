@@ -5,7 +5,7 @@
 	支持普通SQL、存储过程和高级映射的持久层框架；
 
 	主要思想=将SQL语句和程序代码分离，在配置文件中灵活实现SQL语句；
-	对JDBC操作数据库的过程进行封装，开发组只需关注SQL语句即可。
+	对JDBC操作数据库的过程进行封装，开发者只需关注SQL语句即可。
 
 
 
@@ -173,12 +173,12 @@
 
 
 ·输入(parameterType)与输出(resultType、resultMap)映射：
-		··输入映射parameterType
-		··输出映射：
-			···resultType：sql查询的列名要和resultType指定pojo的属性名相同
-			···resultMap：用于别名的配置，实现高级映射【别名+延迟加载】
+	··输入映射parameterType
+	··输出映射：
+		···resultType：sql查询的列名要和resultType指定pojo的属性名相同
+		···resultMap：用于别名的配置，实现高级映射【别名+延迟加载】
 
-		··高级映射：输入映射parameterType而言是没有所谓的高级映射的，也就是说高级映射只针对于输出映射(因为高级映射设计到多张表)。
+	··高级映射：输入映射parameterType而言是没有所谓的高级映射的，也就是说高级映射只针对于输出映射(因为高级映射设计到多张表)。
 
 
 

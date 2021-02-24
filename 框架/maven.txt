@@ -9,17 +9,19 @@
 
 	mvn compile		##编译。将Java源代码文件.java编译成.class文件(jvm执行.class文件生成机器码文件)；编译生成的.class文件和资源输出到target/classes目录下
 
-	mvn test		##测试。使用适当的单元测试框架（例如JUnit）运行测试
+	mvn test		##测试。使用单元测试框架（例如JUnit）运行测试类。
+							eg：指定运行多个测试用例类： mvn test -Dtest=XXTestA，XXTestB
 
 	mvn package 	##打包。如果不想直接运行.class文件，可以将其打包。.class文件打包完成后，会在/target目录下生成一个jar文件（动态web工程打war包，Java工程打jar包），
 							文件名由<artifactId> 和 <version>组成。
-	mvn verify  	##检查。对集成测试的结果进行检查，以保证质量达标
+
+	mvn verify  	##检查。对集成测试的结果进行检查，以保证质量达标。
 
 	mvn install		##安装。项目代码将会经过编译[compile]、测试[test]、打包[package]即安装到本地仓库，以供其他项目使用
 	
 	mvn deploy		##部署。安装并发布到指定远程仓库。/拷贝最终的工程包到远程仓库中，以共享给其他开发人员和工程
 
-	mvn clean 		##清除。清除target目录下以前编译生成的文件及jar包
+	mvn clean 		##清除。清除target目录下之前编译生成的文件及jar包
 
 
 
@@ -45,11 +47,11 @@
 
 
 ·其他：
-	··当idea的按键打包失败时，可用代码：mvn clean package -DskipTests
+	··当idea的按键打包失败时，可用代码：mvn clean package -DskipTests		或者添加跳过单元测试的依赖包；
 
 
 
 
 ·Maven标签：
 	<optional>：我们自己的jar需要引用一些别的组件，但是提供给别人调用时，别人其实用不上这部分功能，但是因为你自己的pom中依赖了这些jar，导致别人也得依赖这些jar。
-				设置optional=true，这样外部应用你的依赖时就可以只依赖需要的依赖就可以了。 
+				而设置optional=true，这样别人应用你的依赖时就可以只依赖需要的依赖就可以了。 
