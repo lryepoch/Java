@@ -1,29 +1,31 @@
-Java多线程学习笔记全
+Java多线程学习笔记
 一线程的创建和启动
 java使用Thread类代表线程所有的线程对象都必须是Thread类或其子类的实例。
 每条线程的作用是完成一定的任务实际上就是执行一段程序流一段顺序流的代码。
 Java使用run方法来封装这样一段程序。
 
 1.继承Thread类创建线程类/**继承Thread来创建线程类*/
-publicclassFirstThreadextendsThread{
-private int i;
-//重写run方法run方法的方法体就是线程执行体
-public void run(){
-for(;i<10;i++){
-System.out.println(this.getName()+":"+i);
-}
-}
-publicstaticvoidmain(String[]args){
-for(inti=0;i<20;i++){
-System.out.println(Thread.currentThread().getName()+".."+i);
-if(i==10){
-System.out.println("--------------------------------------------");
-newFirstThread().start();
-newFirstThread().start();
-System.out.println("---------------------------------------------");
-}
-}
-}
+public class FirstThreadextendsThread {
+    private int i;
+
+    //重写run方法run方法的方法体就是线程执行体
+    public void run() {
+        for (; i < 10; i++) {
+            System.out.println(this.getName() + ":" + i);
+        }
+    }
+
+    publicstaticvoidmain(String[] args) {
+        for (inti = 0; i < 20; i++) {
+            System.out.println(Thread.currentThread().getName() + ".." + i);
+            if (i == 10) {
+                System.out.println("--------------------------------------------");
+                newFirstThread().start();
+                newFirstThread().start();
+                System.out.println("---------------------------------------------");
+            }
+        }
+    }
 }
 结果红色部分每次运行都不一致因为多线程也是并发的
 main..0
@@ -55,11 +57,14 @@ Thread-0:2
 Thread-0:3
 main..12
 main..13
-......总结：从上面结果可以看出Thread-0和Thread-1两条线程输出的i变量都不连续注意i
+......
+
+总结：从上面结果可以看出Thread-0和Thread-1两条线程输出的i变量都不连续注意i
 变量是FirestThread的实例属性而不是局部变量但因为程序每次创建线程都会创建一个
 FirstThread对象所以Thread-0和Thread-1不能共享该实例属性。
-使用继承Thread类的方法来创建线程类多条线程之间无法共享线程类的实例变量。2.实现Runnable接口创建线程类publicclassSecondThreadimplementsRunnable{
-privateinti;
+使用继承Thread类的方法来创建线程类多条线程之间无法共享线程类的实例变量。2.实现Runnable接口创建线程类
+public class SecondThreadimplementsRunnable{
+private int i;
 publicvoidrun(){
 for(;i<20;i++){
 System.out.println(Thread.currentThread().getName()+":"+i);
@@ -1290,7 +1295,9 @@ pool.shutdown();
 2------pool-1-thread-2线程局部变量副本值pool-1-thread-2
 0------pool-1-thread-3线程局部变量副本值null
 1------pool-1-thread-3线程局部变量副本值null
-2------pool-1-thread-3线程局部变量副本值pool-1-thread-3总结ThreadLocal并不能代替同步机制两者面向的问题领域不同同步机制是为了多个线程同步对
+2------pool-1-thread-3线程局部变量副本值pool-1-thread-3
+
+总结ThreadLocal并不能代替同步机制两者面向的问题领域不同同步机制是为了多个线程同步对
 相同资源的并发访问是多个线程之间进行通信的有效方式。而ThreadLocal是隔离多个线程的数据
 共享根本就没有在多个线程之间共享资源也就更不用对多个线程同步了。
 所以如果进行多个线程之间共享资源达到线程之间通信功能就同步。
