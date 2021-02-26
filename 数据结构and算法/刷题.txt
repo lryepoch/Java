@@ -40,6 +40,7 @@
 
 ·单向链表：
 	在大多数情况下，我们将使用头结点(第一个结点)来表示整个列表。ListNode prev = head; //初始化，head相当于一个起始站；
+	定义一个具有头节点的链表：ListNode dummy=  new ListNode(-1);
 
 	双指针：slow=slow.next；fast=fast.next.next
 		题型：倒数第几……
