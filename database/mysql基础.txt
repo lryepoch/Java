@@ -255,7 +255,7 @@
 
 
 
-· Mysql通用函数：
+·Mysql通用函数：
 
 	1.字符函数：
 		CONCAT()	字符连接	 模糊查询：concat('%',#{0},'%') 这是mysql的写法。select * from   category_  where name like concat('%',#{0},'%')
@@ -395,29 +395,22 @@
 
 
 ·drop、truncate 和 delete 的区别：
-	··内容和范围：
-		drop           删除整个表(包括结构和数据)；
-		truncate     只删除数据，只能对表操作并且只能删除整张表的数据，不可使用where条件，
-		                  且对于外键（foreignkey ）约束引用的表，不能使用 truncate table；
-		delete        只删除数据，可以删除table和view并且可以删除部分数据，因其可以使用where条件；
+	··内容和范围和空间：
+		drop      删除整个表(包括结构和数据)；会将表所占用的空间释放；
 
-	··空间：
-		drop           会将表所占用的空间释放；
-		truncate     会将表和索引所占用的空间会恢复到初始化大小；
-		delete        不会减少表和索引的空间，高水线(high watermark)保持原位置不变(这就是为什么有时候一张没有数据的空表所占用的空间仍然很大的原因)；
+		truncate  只删除数据，只能对表操作并且只能删除整张表的数据，不可使用where条件。且对于外键（foreignkey）约束引用的表，不能使用。会将表和索引所占用的空间会恢复到初始化大小；
+			truncate要点:   1）不会返回删除的记录数；2）重建自动增长的主键 ；3）删除表，再新建表。
+
+		delete    只删除数据，可以删除表和视图数据并且可以删除部分数据，因其可以使用where条件；不会减少表和索引的空间，高水线(high watermark)保持原位置不变(这就是为什么有时候一张没有数据的空表所占用的空间仍然很大的原因)；
 
 	··效率：
 		快到慢一般为drop > truncate > delete，delete因为需要写日志会比较慢；
 
 	··语言和回滚：
-		drop和truncate为DDL语句，会隐式自动提交，即操作立即生效，且原数据不放到rollback segment中，不能回滚，不会触发触发器；
+		drop和truncate为DDL语句，会隐式自动提交，即一操作立即生效，且原数据不放到rollback segment中，不能回滚，不会触发触发器；
 		delete是DML语句，需要手动提交才会永久保存，原数据放到rollback segment中，可以回滚。
 
-　　··truncate要点:   1）不会返回删除的记录数；
-　　　　　　　　　    2）重建自动增长的主键 ；
-　　　　　　　　　    3）删除表，再新建表。
 
-	··merge可以同时对数据表进行赠加和修改操作；
 
 
 ·MYSQL_pconnect和MYSQL_connect有什么区别？
@@ -432,7 +425,7 @@
 		使用 limit 语句 + order by 语句可以实现查找开头或者结尾开始的特定几条记录。
 		limit m,n : 表示从第m+1条开始，取n条数据；【2个参数的单位都是"条"】
 		limit n ： 表示从第1条开始，取n条数据，详细写是limit 0,n ；【参数n的单位是"条"】
-		本题limit 2,1 表示从第3条数据开始，取一条数据，即入职员工时间排名第三的员工。
+		本题limit 2,1 表示从第3条数据开始，取一条数据
 
 	··分页需求：
 		客户端通过传递start(页码)，pageSize(每页显示的条数)两个参数去分页查询数据库表中的数据，那我们知道MySql数据库提供了分页的函数limit m,n，但是该函数的用法和我们的需求不一样，所以就需要我们根据实际情况去改写适合我们自己的分页语句，具体的分析如下：
@@ -440,8 +433,8 @@
 		比如：
 		首先规定一页有10条数据，
 		查询第1条到第10条的数据的sql是：select * from table limit 0,10;   ->对应我们的需求就是查询第一页的数据：select * from table limit (1-1)*10,10;
-		查询第10条到第20条的数据的sql是：select * from table limit 10,10;  ->对应我们的需求就是查询第二页的数据：select * from table limit (2-1)*10,10;
-		查询第20条到第30条的数据的sql是：select * from table limit 20,10;  ->对应我们的需求就是查询第三页的数据：select * from table limit (3-1)*10,10;
+		查询第11条到第20条的数据的sql是：select * from table limit 10,10;  ->对应我们的需求就是查询第二页的数据：select * from table limit (2-1)*10,10;
+		查询第21条到第30条的数据的sql是：select * from table limit 20,10;  ->对应我们的需求就是查询第三页的数据：select * from table limit (3-1)*10,10;
 		查询第x条到第y条的数据的sql是：select * from table limit n,10;  ->对应我们的需求就是查询第n页的数据：select * from table limit (n-1)*10,10;
 
 	··总结：分页sql格式是：select * from table limit (start-1)*pageSize, pageSize; 其中start是页码，pageSize是每页显示的条数。
@@ -456,9 +449,7 @@
 
 		INSERT INTO  目标表  SELECT  * FROM  来源表 ;
 
-		例如，要将 articles 表插入到 newArticles 表中，则可以通过如下SQL语句实现：
-
-		INSERT INTO  newArticles  SELECT  * FROM  articles ;
+		例如，要将 articles 表全部字段插入到 newArticles 表中，则可以通过如下SQL语句实现：INSERT INTO  newArticles  SELECT  * FROM  articles ;
 
 		2、如果只希望导入指定字段，可以用这种方法：
 

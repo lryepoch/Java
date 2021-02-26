@@ -83,9 +83,9 @@
 
 
 ·vue运行过程：
-	1.index.html：index.html如其他html一样，但一般只定义一个空的根节点，在main.js里面定义的实例将挂载在根节点下，内容都通过vue组件来填充。
+	index.html：index.html如其他html一样，但一般只定义一个空的根节点，在main.js里面定义的实例将挂载在根节点下，内容都通过vue组件来填充。
 
-	2.App.vue：一个vue页面通常由三部分组成:模板(template)、js(script)、样式(style)
+	App.vue：一个vue页面通常由三部分组成:模板(template)、js(script)、样式(style)
 		1) template
 		其中模板只能包含一个父节点，<router-view/>为<router-view></router-view>的简写，是子路由视图，后面的路由页面都显示在此处。
 
@@ -95,12 +95,12 @@
 		3) style
 		样式通过style标签<style></style>包裹，默认是影响全局的，如需定义作用域只在该组件下起作用，需在标签上加scoped，<style scoped></style>
 
-	3.main.js：main.js主要是引入vue框架，根组件及路由设置，并且定义vue实例。
+	main.js：main.js主要是引入vue框架，根组件及路由设置，并且定义vue实例。
 		router相当于router:router，为ES6写法，在对象中，如果键值对一样的话，可以简写为一个；
 		components: { App }引入根组件App.vue，App即App:App；
 		template: '<App/>' 是简写形式，等价于 <App></App>。
 
-	4.router：router下的index.js文件中的routes定义了路径为'/'的路由，该路由对应的页面是各个vue组件。
+	router：router下的index.js文件中的routes定义了路径为'/'的路由，该路由对应的页面是各个vue组件。
 
 	整个页面渲染过程：访问http://localhost:8080/，显示的就是public/index.html页面，index.html原本只有一个根结点id="app"。
 
