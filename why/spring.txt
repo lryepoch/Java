@@ -1,13 +1,15 @@
 
 spring
 ----------------
- Spring MVC和Struts2的区别。 
- Spring用了哪些设计模式。 
+ 什么是IOC，什么是依赖注入。
  Spring中AOP主要用来做什么。 
  Spring注入bean的方式。 
- 什么是IOC，什么是依赖注入。 
  Spring是单例还是多例，怎么修改。 
  Spring事务隔离级别和传播性。 
+  Spring MVC和Struts2的区别。 
+ Spring用了哪些设计模式。 
+
+ @Resource和@Autowired区别？名称、类型
 
 
 
@@ -42,6 +44,10 @@ mybatis
 
 
 
+
+
+shiro
+----------------
 
 
 
