@@ -83,6 +83,24 @@ redis的分布式锁
 
 
 
+
+
+
+如何防止重复提交？用token保持请求的幂等性。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 资源签审系统
 项目描述：针对公司的大数据平台和云平台资源提供一个申请渠道，统一管理mysql数据库、hive、hbase、kafka等大数据资源、云服务器资源的申请使用以及审批流程
 技术选型：spring、springboot、springMVC、mybatis、ldap、redis、maven、mysql、jwt、shell script、openstack4j
