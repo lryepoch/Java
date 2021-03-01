@@ -22,9 +22,9 @@
 
 ·/：最高级的目录；
 	在/底下最常用的3个目录：
-		/usr：保存用户使用的应用程序和工具；
-		/home：用户的主目录，一般以该用户的账户名来命名；
-		/root ：超级管理员的主目录，又称根目录。用~表示；
+	/usr：保存用户使用的应用程序和工具；
+	/home：用户的主目录，一般以该用户的账户名来命名；
+	/root ：超级管理员的主目录，又称根目录。用~表示；
 
 
 ·如果修改系统配置，就去 /etc 找，如果修改用户的应用程序配置，就在用户家目录的隐藏文件里找。
@@ -97,6 +97,7 @@
 		rm -f var/usr/epd/test.html     #强制删除文件，这里不用加r，因为绝对文件路径就是test.html了
 
 		cp：复制文件。    cp myfile* ./mydirectory     （将当前目录下myfile开头的文件复制到当前目录的子目录mydirectory）
+		cp -r xxx yyy         #需要连同文件夹一块复制
 
 		mv：移动文件或者重命名。	mv ../mydirectory/myfile1 student21   （将mydirectory子目录下的myfile1移动到当前目录的子目录student21下）
 
@@ -121,6 +122,8 @@
 
 		ps -ef|grep port             #查看内部端口
 		lsof -i:port                #查看外部端口的占用情况，比如查看22号端口使用情况，lsof -i:22
+
+		top          #查看CPU占用情况
 
 
 	··系统级：
