@@ -71,8 +71,10 @@
 
 			nextLine()方法的结束符只是Enter键。即nextLine()方法返回的是Enter键之前的所有字符，它是可以得到带空格的字符串的。
 
-		判断字符是不是英文字母：(ch>='A' && ch <='Z') || (ch>='a' && ch <='z')
-		判断字符是不是数字：Character.isDigit('c')
+		判断字符是英文字母：(ch>='A' && ch <='Z') || (ch>='a' && ch <='z')
+		判断字符是数字：Character.isDigit('c');
+		判断元素是字母或者数字：Character.isLetterOrDigit(s.charAt(left));
+		将字符转换成小写：Character.toLowerCase(sgood.charAt(left));
 
 		string 和 int 型都支持直接加减
 			'C'+'8'-'3'= 'C'+'5',由于'C'+1='D'，所以结果为char 'H' => %c；
