@@ -286,7 +286,7 @@ Spring系列：spring3.x与jdk1.7兼容，而spring4.x与jdk1.8兼容！！！
 					3）事务具体运行状态：TransactionStatus；一组方法；
 		
 		
-		详解：1) 事务管理器：用于执行具体的事务操作。
+				详解：1) 事务管理器：用于执行具体的事务操作。
 							Public interface PlatformTransactionManager{
 
 								   TransactionStatus getTransaction(TransactionDefinition definition)  throws TransactionException;
@@ -304,7 +304,7 @@ Spring系列：spring3.x与jdk1.7兼容，而spring4.x与jdk1.8兼容！！！
 							另外还有JtaTransactionManager 、JdoTransactionManager、JmsTransactionManager等等。
 				
 
-					2)事务定义信息：该接口在前面已经介绍过，它用于定义一个事务。它包含了事务的静态属性，比如：事务传播行为、超时时间等等。Spring为我们提供了一个默认的实现类：DefaultTransactionDefinition，该类适用于大								多数情况。如果该类不能满足需求，可以通过实现 TransactionDefinition 接口来实现自己的事务定义。
+					2)事务定义信息：该接口在前面已经介绍过，它用于定义一个事务。它包含了事务的静态属性，比如：事务传播行为、超时时间等等。Spring为我们提供了一个默认的实现类：DefaultTransactionDefinition，该类适用于大多数情况。如果该类不能满足需求，可以通过实现 TransactionDefinition 接口来实现自己的事务定义。
 
 							 	1).Spring本身并不直接管理事务，而是提供了事务管理器接口，对于不同的框架或者数据源则用不同的事务管理器；
 								 	而对于事务，它把相关的属性都封装到一个实体里边去，有以下的属性:
@@ -334,25 +334,25 @@ Spring系列：spring3.x与jdk1.7兼容，而spring4.x与jdk1.8兼容！！！
 
 ·spring事务回滚：
 
-1 Spring事务回滚机制是这样的：当所拦截的方法有指定异常抛出，事务才会自动进行回滚！
+	1. Spring事务回滚机制是这样的：当所拦截的方法有指定异常抛出，事务才会自动进行回滚！
 
-  我们需要注意的地方有四点： 如果你在开发当中引入Spring进行事务管理，但是事务没能正常的自动回滚，可以对照下面四点，缺一不可！
+	  我们需要注意的地方有四点： 如果你在开发当中引入Spring进行事务管理，但是事务没能正常的自动回滚，可以对照下面四点，缺一不可！
 
-     ··被拦截方法	注解式：方法或者方法所在类被@Transactional注解；
+	     ··被拦截方法	注解式：方法或者方法所在类被@Transactional注解；
 
-                    拦截配置式：<tx:method />应该包含对该方法，名称格式的定义， 且方法需要在expression定义的范围内；
+	                    拦截配置式：<tx:method />应该包含对该方法，名称格式的定义， 且方法需要在expression定义的范围内；
 
-     ··异常    该方法的执行过程必须出现异常，这样事务管理器才能被触发，并对此做出处理；
-		
-     ··指定异常    默认配置下，事务只会对Error与RuntimeException及其子类这些unChecked异常，做出回滚。一般的，Exception是Checked异常不会发生回滚（如果一般Exception想回滚要做出配置）；
-	 
-	 ··异常抛出    即方法中出现的指定异常，只有在被事务管理器捕捉到以后，事务才会据此进行事务回滚；
+	     ··异常    该方法的执行过程必须出现异常，这样事务管理器才能被触发，并对此做出处理；
+			
+	     ··指定异常    默认配置下，事务只会对Error与RuntimeException及其子类这些unChecked异常，做出回滚。一般的，Exception是Checked异常不会发生回滚（如果一般Exception想回滚要做出配置）；
+		 
+		 ··异常抛出    即方法中出现的指定异常，只有在被事务管理器捕捉到以后，事务才会据此进行事务回滚；
 
 
 
-2 在实际开发中，有时并没有异常发生，但是由于事务结果未满足具体业务需求，所以我们不得不手动回滚事务！
-	··手动抛出异常（如果你没有配置一般异常事务回滚，请抛出运行时异常）；
-	··编程式实现手动回滚；
+	2. 在实际开发中，有时并没有异常发生，但是由于事务结果未满足具体业务需求，所以我们不得不手动回滚事务！
+		··手动抛出异常（如果你没有配置一般异常事务回滚，请抛出运行时异常）；
+		··编程式实现手动回滚；
 
 
 
@@ -368,56 +368,6 @@ Spring系列：spring3.x与jdk1.7兼容，而spring4.x与jdk1.8兼容！！！
 
 
 
-·Spring的Bean和类之间的关系？
-	当我们使用Spring后就应该这样使用User对象，首先在applicationContext.xml中添加<bean>标签，一个<bean>标签代表一个pojo对象。
-
-		class A
-		{
-
-		} 
-
-		class B
-		{
-
-		} 
-
-		class C
-		{
-
-		} 
-
-		class Service
-		{ 
-				private A a; 
-				private B b; 
-				private C c; 
-
-				//setter&getter 
-		} 
-
-		上面对应下面的bean： 
-									<beans> 
-												<bean id="a" class="package.A"> 
-												</bean> 
-
-												<bean id="b" class="package.B"> 
-												</bean> 
-
-												<bean id="c" class="package.C"> 
-												</bean> 
-
-												<bean id="service" class="package.Service"> 
-												   <property name="a" ref="a"/> 
-												   <property name="b" ref="b"/> 
-												   <property name="c" ref="c"/> 
-												</bean> 
-									</beans> 
-
-		这样就把A，B，C，Service都实例化完成了；
-		
-		可以直接
-		Service service=getService()； 
-		A a=getService().getA()；
 
 
 
