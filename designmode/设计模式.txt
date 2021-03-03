@@ -1,4 +1,5 @@
-﻿-----------------------
+﻿
+-----------------
 ·设计模式主要是基于以下的面向对象设计原则：
 	对接口编程而不是对实现编程。
 	优先使用对象组合而不是继承。
@@ -61,7 +62,7 @@
 
 
 
--------------------
+----------------
 ·GoF的23种设计模式的功能：
 	··根据目的来分：
 		根据模式是用来完成什么工作来划分，这种方式可分为创建型模式、结构型模式和行为型模式3种。
@@ -105,108 +106,108 @@
 
 
 
---------------------------
+-----------------
 ·单例模式
-		概念：保证一个类仅有一个实例，并提供一个访问它的全局访问点。避免了频繁地创建和销毁对象而带来性能的损耗；
+	概念：保证一个类仅有一个实例，并提供一个访问它的全局访问点。避免了频繁地创建和销毁对象而带来性能的损耗；
 
-		应用场景：
-	　　（1）资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如上述中的日志文件，应用配置。
-	　　（2）控制资源的情况下，方便资源之间的互相通信。如数据库连接池，多线程线程池，Windows任务管理器。
-	    （3）实际上，配置信息类、管理类、控制类、门面类、代理类。通常被设计为单例类，像Java的Struts、Spring框架，.Net的Spring.Net框架，以及Php的Zend框架都大量使用了单例模式。
+	应用场景：
+　　（1）资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如上述中的日志文件，应用配置。
+　　（2）控制资源的情况下，方便资源之间的互相通信。如数据库连接池，多线程线程池，Windows任务管理器。
+    （3）实际上，配置信息类、管理类、控制类、门面类、代理类。通常被设计为单例类，像Java的Struts、Spring框架，.Net的Spring.Net框架，以及Php的Zend框架都大量使用了单例模式。
 
-		举例：1.Spring容器中使用的注册表式实现的单例模式，简单来说，就是使用同一个工具类，管理多个不同类的实例创建，每次只需在工具类中注册该类，即可获得该类的实例。
-　　    	2.像我们在搭建heibernate框架时，是sessionFactory创建session，session对象操作数据库的。当多个线程共享session时就会出现数据安全问题，因此企业开发中，我们不会把它设计成单例模式。
+	举例：1.Spring容器中使用的注册表式实现的单例模式，简单来说，就是使用同一个工具类，管理多个不同类的实例创建，每次只需在工具类中注册该类，即可获得该类的实例。
+		  2.像我们在搭建heibernate框架时，是sessionFactory创建session，session对象操作数据库的。当多个线程共享session时就会出现数据安全问题，因此企业开发中，我们不会把它设计成单例模式。
 		
 
-		·饿汉式：线程安全；但是类加载时就初始化，浪费内存。
+	·饿汉式：线程安全；但是类加载时就初始化，浪费内存。
 
-		·懒汉式：线程不安全；因为没有加锁 synchronized，所以严格意义上它并不算单例模式。
+	·懒汉式：线程不安全；因为没有加锁 synchronized，所以严格意义上它并不算单例模式。
 
-		·懒汉式改进1：lazy loading，能够在多线程中很好的工作，但是，效率很低；
-
-
-		·懒汉式改进2：增加一个静态内部类，在这个静态内部类中创建外部类的实例，这个内部类和外部类并没有绑定的关系，而且只有被调用到才会装载，从而也可以实现了延迟加载。线程安全。
+	·懒汉式改进1：lazy loading，能够在多线程中很好的工作，但是，效率很低；
 
 
-		·双检锁：线程安全且在多线程情况下能保持高性能。
-						类加载时申明对象,  volatile解决多线程共享变量下及时感知变量的最新状态。 
-
-			  问题：为什么必须要加volatile，主要用来避免重排序问题导致其他的线程看到了一个已经分配内存和地址但没有初始化的对象，也就是说这个对象还不是处于可用状态，但是就被其他线程引用了。
-
-						双重检验锁是对同步块加锁的方法。为什么会称为双重检验，因为有两次对instance == null的检查，一次在同步块中/一次在同步块外部。
-
-						对于两次instance是否为空的判断解释：
-						1.第一次判断：
-						       为了提高性能！！！
-						       如果去掉这次的判断，直接运行synchronized，会使每个线程进入getInstance()都会得到一个静态内部锁。这样的话，锁的获得以及释放的开销（包括上下文切换，内存同步等）都不可避免，降低了效率。所以在synchronized前面加一次判断是否为空，则会大大减少synchronized同步块的执行次数。
-
-						2.第二次判断：
-								为了线程安全！！！
-								因为可能会有多个线程一起进入同步块外的 if，如果在同步块内不进行二次检验的话就会生成多个实例。
+	·懒汉式改进2：增加一个静态内部类，在这个静态内部类中创建外部类的实例，这个内部类和外部类并没有绑定的关系，而且只有被调用到才会装载，从而也可以实现了延迟加载。线程安全。
 
 
+	·双检锁：线程安全且在多线程情况下能保持高性能。
+					类加载时申明对象,  volatile解决多线程共享变量下及时感知变量的最新状态。 
 
-							//饿汉式
-							public class Singleton{
-								private Singleton(){
+		  问题：为什么必须要加volatile，主要用来避免重排序问题导致其他的线程看到了一个已经分配内存和地址但没有初始化的对象，也就是说这个对象还不是处于可用状态，但是就被其他线程引用了。
 
-								}
-								private static Singleton singleton=new Singleton();
-								public static Singleton getInstance(){
-									return singleton;
-								}
+					双重检验锁是对同步块加锁的方法。为什么会称为双重检验，因为有两次对instance == null的检查，一次在同步块中/一次在同步块外部。
+
+					对于两次instance是否为空的判断解释：
+					1.第一次判断：
+					       为了提高性能！！！
+					       如果去掉这次的判断，直接运行synchronized，会使每个线程进入getInstance()都会得到一个静态内部锁。这样的话，锁的获得以及释放的开销（包括上下文切换，内存同步等）都不可避免，降低了效率。所以在synchronized前面加一次判断是否为空，则会大大减少synchronized同步块的执行次数。
+
+					2.第二次判断：
+							为了线程安全！！！
+							因为可能会有多个线程一起进入同步块外的 if，如果在同步块内不进行二次检验的话就会生成多个实例。
+
+
+
+						//饿汉式
+						public class Singleton{
+							private Singleton(){
+
+							}
+							private static Singleton singleton=new Singleton();
+							public static Singleton getInstance(){
+								return singleton;
+							}
+						}
+
+
+						//懒汉式
+						public class Singleton{
+							private Singleton(){
+
+							}
+							private static Singleton singleton;
+
+							private static Singleton getInstance(){
+								if(singleton==null)
+									singleton = new Singleton();
+								return singleton;
+							}
+						}
+
+
+						//静态内部类
+						public class Singleton{
+							private Singleton(){
+
 							}
 
-
-							//懒汉式
-							public class Singleton{
-								private Singleton(){
-
-								}
-								private static Singleton singleton;
-
-								private static Singleton getInstance(){
-									if(singleton==null)
-										singleton = new Singleton();
-									return singleton;
-								}
+							private static class SingletonH{
+								private static final Singleton singleton=new Singleton();
 							}
 
-
-							//静态内部类
-							public class Singleton{
-								private Singleton(){
-
-								}
-
-								private static class SingletonH{
-									private static final Singleton singleton=new Singleton();
-								}
-
-								public static final Singleton getInstance(){
-									//静态内部类调用其成员属性
-									return SingletonH.singleton;
-								}
+							public static final Singleton getInstance(){
+								//静态内部类调用其成员属性
+								return SingletonH.singleton;
 							}
+						}
 
 
-							//双检锁
-							public class Singleton{
-								private Singleton(){
+						//双检锁
+						public class Singleton{
+							private Singleton(){
 
-								}
-								private volatile static Singleton singleton;
-								public static Singleton getInstance(){
-									if(instance==null){
-										synchronized(Singleton.class){
-											if (instance==null) {
-												singleton= new Singleton();
-											}
+							}
+							private volatile static Singleton singleton;
+							public static Singleton getInstance(){
+								if(instance==null){
+									synchronized(Singleton.class){
+										if (instance==null) {
+											singleton= new Singleton();
 										}
 									}
-									return singleton;
 								}
+								return singleton;
 							}
+						}
 
 
 

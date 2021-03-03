@@ -115,21 +115,6 @@ springboot
 
 
 
-shiro
------------------
- 谈一谈RBAC？
- 什么是shiro？shiro的优点？
- shiro安全数据源有哪些？
- Shiro架构各个核心组件？
- Authentication认证方式？认证流程？
- Authorization授权方式？授权流程？
-
- 比较SpringSecurity 和 Shiro？
-
-
-
-
-
 
 
 
