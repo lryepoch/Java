@@ -88,6 +88,7 @@ mybatis
 
  Hibernate和Mybatis的区别？
  介绍下Mybatis和Hibernate的缓存机制？ 
+ MyBatis-Plus和mybatis的区别？
 
 
 
