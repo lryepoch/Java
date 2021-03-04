@@ -90,6 +90,12 @@ mybatis
  介绍下Mybatis和Hibernate的缓存机制？ 
  MyBatis-Plus和mybatis的区别？
 
+ Mybatis 与 JDBC 的关系?
+ xml 文件定义 SQL 语句如何解析?
+ Mybatis 中 Mapper 接口的存储与实现?
+ Mybatis SQL 的执行过程?
+ Mybatis 中分页如何实现?
+
 
 
 
