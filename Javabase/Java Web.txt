@@ -6,11 +6,11 @@
 		Servlet是用来处理客户端请求并产生动态网页内容的Java类。Servlet主要是用来处理或者是存储HTML表单提交的数据，产生动态内容，在无状态的HTTP协议下管理状态信息。
 
 	··servlet中的两个接口：
-			···ServletConfig：获取配置信息。
-				servletConfig对象：用于封装servlet的配置信息。从一个servlet被实例化后，对任何客户端在任何时候访问有效，但仅对servlet自身有效，一个servlet的ServletConfig对象不能被另一个servlet访问。
+		···ServletConfig：获取配置信息。
+			servletConfig对象：用于封装servlet的配置信息。从一个servlet被实例化后，对任何客户端在任何时候访问有效，但仅对servlet自身有效，一个servlet的ServletConfig对象不能被另一个servlet访问。
 
-			···ServletContext：每个web应用都有唯一的一个ServletContext，可以被同一个web下的多个servlet共享数据。
-				ServletContext对象：servlet容器在启动时会加载web应用，并为每个web应用创建唯一的servletContext对象，可以把ServletContext看成是一个Web应用的服务器端组件的共享内存，在ServletContext中可以存放共享数据。ServletContext对象是真正的一个全局对象，凡是web容器中的Servlet都可以访问。整个web应用只有唯一的一个ServletContext对象。
+		···ServletContext：每个web应用都有唯一的一个ServletContext，可以被同一个web下的多个servlet共享数据。
+			ServletContext对象：servlet容器在启动时会加载web应用，并为每个web应用创建唯一的servletContext对象，可以把ServletContext看成是一个Web应用的服务器端组件的共享内存，在ServletContext中可以存放共享数据。ServletContext对象是真正的一个全局对象，凡是web容器中的Servlet都可以访问。整个web应用只有唯一的一个ServletContext对象。
 
 
 	··Servlet的生命周期：
