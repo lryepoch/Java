@@ -17,9 +17,6 @@ base
 
  try、catch、finally都有return语句时执行哪个?
 
- 分布式锁的实现。 
- 分布式session存储解决方案。 
-
  1个汉字utf-8编码的话，占多少个字节？
  true、false 与 null 是关键字吗？
 
@@ -115,11 +112,14 @@ io & File
 
 多线程
 -----------------
+ base:
+ 什么叫线程？什么叫多线程？
  什么是线程安全? 分布式环境下，怎么保证线程安全?
  线程的本质(操作系统与CPU是如何执行线程的)
  有没有一种一定能保证线程安全的代码写法？（偷偷告诉你，真的有！）
  多线程和单线程的区别和联系？
  多线程一定快吗？
+
  什么是同步？什么又是异步？
  什么是阻塞（Blocking）和非阻塞（Non-Blocking）？
  并发（Concurrency）和并行（Parallelism）的区别呢？
@@ -132,28 +132,9 @@ io & File
  Java 中线程有几种状态？
  多个线程如何保持A1B2C3等顺序交替输出？
 
- JUC 包：
  Runnable接口和Callable接口的区别?
  sleep( ) 和 wait( n)、wait( ) 的区别？
- 如何调用 wait（）方法的？使用 if 块还是循环？为什么？
- synchronized 关键字？
- synchronized、Lock、ReentrantLock、ReadWriteLock?
- synchronized JMM CAS AQS lock这些高频出现的面试概念究竟是什么？
- volatile 关键字？
- volatile 能使得一个非原子操作变成原子操作吗？yes
- volatile 修饰符的有过什么实践？
- ThreadLocal（线程局部变量）关键字?
- ThreadLocal有没有内存泄漏的问题？为什么？
-
- 线程池有了解吗？为什么要使用线程池？核心线程池内部实现了解吗？
- 创建线程池的4种方式?
- ThreadPoolExecutor的内部工作原理?
- 下列三种业务，应该如何使用线程池：
-		高并发、任务执行时间短
-		并发不高、任务执行时间长
-		并发高、业务执行时间长
-
- Atomic关键字?
+ 如何调用 wait()方法的？使用 if 块还是循环？为什么？
  创建线程有哪几种方式？两种方式有什么区别呢？
  run() 方法和 start() 方法有什么区别？
  你怎么理解线程优先级？
@@ -163,9 +144,32 @@ io & File
  用 wait-notify 写一段代码来解决生产者-消费者问题？
  用 Java 写一个线程安全的单例模式（Singleton）？
 
+ synchronized:
+ synchronized、Lock、ReentrantLock、ReadWriteLock?
+ synchronized JMM CAS AQS lock这些高频出现的面试概念究竟是什么？
+
+ volatile:
+ volatile 能使得一个非原子操作变成原子操作吗？yes
+ volatile 修饰符的有过什么实践？
+
+ threadlocal：
+ ThreadLocal有没有内存泄漏的问题？为什么？
+
+ 线程池：
+ 线程池有了解吗？为什么要使用线程池？核心线程池内部实现了解吗？
+ 创建线程池的4种方式?
+ ThreadPoolExecutor的内部工作原理?
+ 下列三种业务，应该如何使用线程池：
+	高并发、任务执行时间短
+	并发不高、任务执行时间长
+	并发高、业务执行时间长
+
+ 锁：
  悲观锁/乐观锁 共享锁/独占锁 整体锁/分段锁 可重入锁/不可重入锁
  无锁、偏向锁、轻量级锁、重量级锁有什么差别？无锁、偏向锁、轻量级锁、重量级锁升级过程?
- 介绍下CAS(无锁技术)?
+ 介绍下CAS(无锁技术)?ABA问题？
+
+ 分布式锁的实现？分布式session存储解决方案？
 
 
 
@@ -231,3 +235,18 @@ jvm
  单例模式
  工厂方法模式
  抽象工厂模式
+
+
+
+
+
+
+
+
+Java web
+-----------------
+ 什么是Servlet？
+ Servlet的工作模式？
+ Servlet 的工作原理？
+ Servlet 的生命周期?
+ Servlet 接口中定义的方法？
