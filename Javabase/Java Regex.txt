@@ -1,11 +1,12 @@
 
-·正则表达式定义了字符串的模式：
+--------------
+正则表达式定义了字符串的模式：
 	正则表达式可以用来搜索、编辑或处理文本。
 
 
-·从JDK1.4开始提供了支持正则表达式API。java.util.regex 包主要包括以下三个类：
+从JDK1.4开始提供了支持正则表达式API。java.util.regex 包主要包括以下三个类：
 
-	··Pattern类：
+	Pattern类：
 		pattern对象是一个正则表达式的编译表示。Pattern类没有公共构造方法。要创建一个Pattern对象，你必须首先调用其公共静态编译方法，它返回一个Pattern对象。该方法接受一个正则表达式作为它的第一个参数。
 
 		切割：String split()方法;            #根据给定正则表达式的匹配拆分此字符串。返回一个字符串数组。
@@ -34,16 +35,16 @@
 	    boolean isMatch = Pattern.matches(pattern, content);
 	    System.out.println("字符串中是否包含了 'runoob' 子字符串? " + isMatch);	true
 
-	··Matcher类：
+	Matcher类：
 		Matcher对象是对输入字符串进行解释和匹配操作的引擎。与Pattern类一样，Matcher也没有公共构造方法。你需要调用Pattern对象的matcher方法来获得一个Matcher对象。
 
-		···索引方法：
+		索引方法：
 			public int start()				返回以前匹配的初始索引。
 			public int start(int group)			返回在以前的匹配操作期间，由给定组所捕获的子序列的初始索引
 			public int end()				返回最后匹配字符之后的偏移量。
 			public int end(int group)		返回在以前的匹配操作期间，由给定组所捕获子序列的最后字符之后的偏移量。
 
-		···查找方法：
+		查找方法：
 			public boolean lookingAt()		尝试将从区域开头开始的输入序列与该模式匹配。lookingAt方法虽然不需要整句都匹配，但是需要从第一个字符开始匹配。
 			public boolean find()			尝试查找与该模式匹配的输入序列的下一个子序列。
 			public boolean find(int start）		重置此匹配器，然后尝试查找匹配该模式、从指定索引开始的输入序列的下一个子序列。
@@ -51,7 +52,7 @@
 
 			其实，String类中的matches方法。用的就是Pattern和Matcher对象来完成的。	只不过被String的方法封装后，用起来较为简单。但是功能却单一。
 
-		···替换方法：
+		替换方法：
 			public Matcher appendReplacement(StringBuffer sb, String replacement)		实现非终端添加和替换步骤。
 			public StringBuffer appendTail(StringBuffer sb)			实现终端添加和替换步骤。
 			public String replaceAll(String replacement)			替换模式与给定替换字符串相匹配的输入序列的每个子序列。
@@ -59,10 +60,10 @@
 			public static String quoteReplacement(String s)		返回指定字符串的字面替换字符串。这个方法返回一个字符串，就像传递给Matcher类的appendReplacement 方法一个字面字符串一样工作。
 
 
-	··PatternSyntaxException：
-		···PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。
+	PatternSyntaxException：
+		PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。
 
-		···PatternSyntaxException类提供了下面的方法来帮助我们查看发生了什么错误。
+		PatternSyntaxException类提供了下面的方法来帮助我们查看发生了什么错误。
 			public String getDescription()		获取错误的描述。
 			public int getIndex() 			获取错误的索引。
 			public String getPattern()		获取错误的正则表达式模式。
@@ -70,20 +71,20 @@
 
 
 
-·Java中有四个内置的运行正则表达式的方法，分别是 matches()、split()、replaceFirst()、replaceAll()。注意replace()方法不支持正则表达式。
+Java中有四个内置的运行正则表达式的方法，分别是 matches()、split()、replaceFirst()、replaceAll()。注意replace()方法不支持正则表达式。
 
-	··s.matches("regex")	当仅且当正则匹配整个字符串时返回 true
+	s.matches("regex")	当仅且当正则匹配整个字符串时返回 true
 
-	··s.split("regex")		按匹配的正则表达式切片字符串
+	s.split("regex")		按匹配的正则表达式切片字符串
 
-	··s.replaceFirst("regex", "replacement")	替换首次匹配的字符串片段
+	s.replaceFirst("regex", "replacement")	替换首次匹配的字符串片段
 
-	··s.replaceAll("regex", "replacement")		替换所有匹配的字符
-
-
+	s.replaceAll("regex", "replacement")		替换所有匹配的字符
 
 
-·关于\：
+
+
+关于\：
 	在其他语言中，\\ 表示：我想要在正则表达式中插入一个普通的（字面上的）反斜杠，请不要给它任何特殊的意义。
 	在 Java 中，\\ 表示：我要插入一个正则表达式的反斜线，所以其后的字符具有特殊的意义。
 
@@ -93,7 +94,7 @@
 
 
 
-·语法规则：
+语法规则：
 	.（点号）：匹配除"\r\n"之外的任何单个字符。若要匹配包括"\r\n"在内的任意字符，请使用诸如"[\s\S]"之类的模式。
 	()：组
 	[]：或
@@ -149,17 +150,17 @@
 
 
 
-·捕获组：
-	··把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。eg：正则表达式 (dog) 创建了单一分组，组里包含"d"，"o"，和"g"。
+捕获组：
+	把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。eg：正则表达式 (dog) 创建了单一分组，组里包含"d"，"o"，和"g"。
 
-	··通过从左至右计算其开括号来编号。数左小括号"("，第几个就是第几组。
+	通过从左至右计算其开括号来编号。数左小括号"("，第几个就是第几组。
 		在表达式（（A）（B（C））），有四个这样的组：
 												((A)(B(C)))
 												(A)
 												(B(C))
 												(C)
 
-	··通过调用matcher对象的groupCount()方法来查看表达式有多少个分组。groupCount()方法返回一个int值，表示matcher对象当前有多个捕获组。
+	通过调用matcher对象的groupCount()方法来查看表达式有多少个分组。groupCount()方法返回一个int值，表示matcher对象当前有多个捕获组。
 		一个特殊的组（group(0)），它总是代表整个表达式。该组不包括在 groupCount()的返回值中。
 
 		// 按指定模式在字符串查找
@@ -182,8 +183,8 @@
 
 
 
-·正则表达式的贪婪和非贪婪匹配：
-	··什么是正则表达式的贪婪【非懒惰模式】与非贪婪【懒惰模式】匹配
+正则表达式的贪婪和非贪婪匹配：
+	什么是正则表达式的贪婪【非懒惰模式】与非贪婪【懒惰模式】匹配
 
 		如：
 		(1)String str="abcaxc";
@@ -203,7 +204,7 @@
 				匹配结果：src="test.jpg"
 				因为匹配到第一个"就结束了一次匹配，不会继续向后匹配，因为他懒惰嘛。
 
-	··总结：当此字符紧随任何其他限定符（*、+、?、{n}、{n,}、{n,m}）之后时，匹配模式是"非贪心的"。
+	总结：当此字符紧随任何其他限定符（*、+、?、{n}、{n,}、{n,m}）之后时，匹配模式是"非贪心的"。
 			"非贪心的"模式匹配搜索到的、尽可能短的字符串，而"默认"的"贪心的"模式匹配搜索到的、尽可能长的字符串。
 			例如，在字符串"oooo"中，"o+?"只匹配单个"o"，而"o+"匹配所有"o"。
 

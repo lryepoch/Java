@@ -43,6 +43,7 @@ exception
 
 io & File
 ---------------------
+ io:
  什么是IO流？
  什么是比特(Bit)？什么是字节(Byte)？什么是字符(Char)？以及他们的区别？
 
@@ -59,13 +60,16 @@ io & File
  OutputStream里面的write()是什么意思,write(byte b[], int off, int len)这个方法里面的三个参数分别是什么意思？
 
  io流怎样读取文件的？ 使用File对象获取文件路径;  通过字符流Reader加入文件;  使用字符缓存流BufferedReader处理Reader;  再定义一个字符串，循环遍历出文件。
+ Java IO 分类？BIO/NIO/AIO(NIO.2)
+ IO和NIO的区别？
 
+
+ file:
  说说File类? 1.它不属于IO流，也不是用于文件操作的。2.它主要是用于获取一个文件的属性、读写权限、大小等信息。
 
  说说RandomAccessFile？既不是输入流也不是输出流。既可以读文件，也可以写文件。
 
- Java IO 分类？BIO/NIO/AIO(NIO.2)
- IO和NIO的区别？
+
 
 
 

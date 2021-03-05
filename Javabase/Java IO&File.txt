@@ -1,0 +1,156 @@
+
+IO
+---------------
+IO流的分类：
+    按照流的流向分，可以分为输入流和输出流；
+    按照操作单元划分，可以划分为字节流和字符流；
+    按照流的角色划分为节点流和处理流。
+
+
+IO操作包括：对硬盘读写，对socket读写，对外设读写。
+    一个完整的IO请求包括2个阶段：查看数据是否就绪；进行数据拷贝（内核将数据拷贝到用户线程）；
+    Java传统IO都是阻塞IO。
+
+
+
+IO类型：
+    BIO：同步阻塞。
+    AIO：异步非阻塞。
+    NIO：同步非阻塞。
+        NIO简介：Java NIO 是 java 1.4, 之后新出的一套IO接口NIO中的N可以理解为Non-blocking，不单纯是New。
+
+        NIO与IO区别:
+            1)IO是面向流的，NIO是面向缓冲区的；
+            2)IO流是阻塞的，NIO流是不阻塞的;
+            3)NIO有选择器，而IO没有。
+
+        读数据和写数据方式:
+            从通道进行数据读取 ：创建一个缓冲区，然后请求通道读取数据。
+            从通道进行数据写入 ：创建一个缓冲区，填充数据，并要求通道写入数据。
+
+        NIO核心组件简单介绍：
+            Channels
+            Buffers
+            Selectors
+
+    传统的IO流是阻塞式的，会一直监听一个ServerSocket，在调用read等方法时，他会一直等到数据到来或者缓冲区已满时才返回。调用accept也是一直阻塞到有客户端连接才会返回。每个客户端连接过来后，服务端都会启动一个线程去处理该客户端的请求。并且多线程处理多个连接。每个线程拥有自己的栈空间并且占用一些CPU时间。每个线程遇到外部未准备好的时候，都会阻塞掉。阻塞的结果就是会带来大量的进程上下文切换。
+
+    对于NIO，它是非阻塞式，但是NIO的IO行为还是同步的。核心类：
+        1.Buffer为所有的原始类型提供 (Buffer)缓存支持。
+        2.Charset字符集编码解码解决方案
+        3.Channel一个新的原始 I/O抽象，用于读写Buffer类型，通道可以认为是一种连接，可以是到特定设备，程序或者是网络的连接。
+
+
+
+字节流与字符流的区别?
+    实际上字节流在操作时本身不会用到缓冲区（内存），是文件本身直接操作的，而字符流在操作时使用了缓冲区，通过缓冲区再操作文件。
+    字节流一般用来处理图像，视频，以及PPT，Word类型的文件。字符流一般用于处理纯文本类型的文件，如TXT文件等。字节流可以用来处理纯文本文件，但是字符流不能用于处理图像视频等非文本类型的文件。
+
+    提问：使用字节流好还是字符流好？学习完字节流和字符流的基本操作后，已经大概地明白了操作流程的各个区别，那么在开发中是使用字节流好还是字符流好呢？
+    回答：使用字节流更好。所有的文件在硬盘或在传输时都是以字节的方式进行的，包括图片等都是按字节的方式存储的，而字符是只有在内存中才会形成，所以在开发中，字节流使用较为广泛。
+
+
+
+抽象类InputStream与OutputStream：
+	FileInputStream与FileOutputStream：把文件作为字节流进行读写操作！！
+	BufferInputStream与BufferOutputStream
+
+
+抽象类Reader与Writer：
+	FileReader 与FileWriter
+	BufferedReader 与BufferedWriter 
+		在BufferedReader中有一个重要的方法readLine()；该方法用于一次读取一行文本。
+
+	OutputStreamWriter是Writer的子类，而InputStreamReader是Reader的子类：
+		在JDK中提供了两个类可以将字节流转换为字符流，它们分别是InputStreamReader和OutputStreamWriter。
+
+
+
+其他IO流：将文件临时存储到缓冲区，方便以后读取；所有的数据先写入缓冲区，最后一次行写入文件。
+		ByteArrayInputStream和ByteArrayOutputStream：
+		ByteArrayOutputStream类在创建对象时就创建一个byte型数组的缓冲区，向数组中写数据时该对象会把所有的数据先写入缓冲区，
+		最后一次行写入文件，ByteArrayInputStream是从缓冲区中读取数据。
+
+
+
+序列化?
+    把Java对象转换为字节序列的过程称为对象的序列化，也就是将对象写入到IO流中。
+    序列化是为了解决在对对象流进行读写操作时所引发的问题。序列化机制允许将实现序列化的Java对象转换位字节序列，这些字节序列可以保存在磁盘上，或通过网络传输，以达到以后恢复成原来的对象。序列化机制使得对象可以脱离程序的运行而独立存在。
+
+    要对一个对象序列化，这个对象就需要实现Serializable接口，如果这个对象中有一个变量是另一个对象的引用，则引用的对象也要实现Serializable接口，这个过程是递归的。Serializable接口中没有定义任何方法，只是作为一个标记来指示实现该接口的类可以进行序列化。
+
+反序列化就是从 IO 流中恢复对象。
+
+序列化怎么保证升级前后的兼容性呢？
+    java序列化提供了一个private static final long serialVersionUID 的序列化版本号，只有版本号相同，即使更改了序列化属性，对象也可以正确被反序列化回来。
+
+
+
+
+
+File
+---------------
+File类的使用：
+    1.java.io.File用于表示文件（文件）；
+    2.File类只用于表示文件（目录）的信息（名称、大小等），不能用于文件内容的访问；
+    3.ALT+/：显示类的构造方法；
+    4.File的API；
+
+
+eg：
+Java读取txt文件和写入txt文件：
+package edu.thu.keyword.test;  
+  
+import java.io.File;  
+import java.io.InputStreamReader;  
+import java.io.BufferedReader;  
+import java.io.BufferedWriter;  
+import java.io.FileInputStream;  
+import java.io.FileWriter;  
+  
+public class cin_txt {  
+    static void main(String args[]) {  
+        try { // 防止文件建立或读取失败，用catch捕捉错误并打印，也可以throw  
+  
+            /* 1.读入TXT文件 */  
+             /** 
+		     * 以行为单位读取文件，常用于读面向行的格式化文件 
+		     */  
+            String pathname = "D:\\twitter\\13_9_6\\dataset\\en\\input.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径  
+            File filename = new File(pathname);                             // 要读取以上路径的input。txt文件  
+            // if(filename.isFile() && filename.exists()) {		}          //判断文件是否存在
+
+            //第一种a：既然使用了字节类FileInputStream()，那么对应的需要使用InputStreamReader()这个方法进行解读刚装进来内存当中的数据；
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(filename));             // 建立一个输入流对象reader  
+            BufferedReader br = new BufferedReader(reader);                                             // 建立一个对象，它把文件内容转成计算机能读懂的语言  
+
+            //第二种a（直接用字符类）：BufferedReader br = new BufferedReader(new FileReader(filename));     //构造一个BufferedReader类来读取文件
+
+            //第一种b：
+            String line = "";  
+            line = br.readLine();  
+            while (line != null) {  		// 一次读入一行，直到读入null为文件结束  
+                line = br.readLine(); 	// 一次读入一行数据  
+            }  
+
+            //第二种b（一步到位）：while(（line=br.readline()）!=null){
+
+            }
+
+  
+            /* 2.写入Txt文件 */  
+            File writename = new File(".\\result\\en\\output.txt");         // 相对路径，如果没有则要建立一个新的output。txt文件  
+            writename.createNewFile();                                      // 创建新文件  
+            BufferedWriter out = new BufferedWriter(new FileWriter(writename))；
+            out.write("我会写入文件啦\r\n");                                   // \r\n即为换行  
+            out.flush();                                                    // 把缓存区内容压入文件  
+            out.close();                                                    // 最后记得关闭文件  
+  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+}  
+
+
+
